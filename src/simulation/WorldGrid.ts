@@ -132,6 +132,7 @@ export class WorldGrid extends Grid<WorldCell> {
     colonyId: number,
     permanent: boolean = false
   ): void {
+    if (!this.checkCoords(coords)) return;
     const cell = this.getByCoords(coords);
     const colonyCell = cell.markers[colonyId];
     const modeIndex = type as number;
@@ -145,6 +146,7 @@ export class WorldGrid extends Grid<WorldCell> {
   }
 
   addFoodByCoords(coords: { x: number; y: number }, quantity: number): void {
+    if (!this.checkCoords(coords)) return;
     const cell = this.getByCoords(coords);
     if (!cell.wall) {
       cell.food += quantity;

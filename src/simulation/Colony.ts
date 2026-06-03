@@ -31,9 +31,14 @@ export class Colony {
     this.id = colonyId;
     this.base.food = 0.0;
     this.antsColor = Config.COLONY_COLORS[colonyId] || '#ffffff';
-    const antsCount = 1000;
-    for (let i = antsCount; i-- > 0; ) {
+    const workerCount = 900;
+    const soldierCount = 100;
+    for (let i = workerCount; i-- > 0; ) {
       this.createWorker();
+    }
+    for (let i = soldierCount; i-- > 0; ) {
+      const ant = this.createWorker();
+      this.specializeSoldier(ant);
     }
   }
 

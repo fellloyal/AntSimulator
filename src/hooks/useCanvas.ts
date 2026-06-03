@@ -4,6 +4,8 @@ import useStore, { type EditTool } from '@/store/useStore';
 import type { Renderer } from '@/render/Renderer';
 import type { Simulation } from '@/simulation/Simulation';
 import { Config } from '@/simulation/Config';
+import { Mode } from '@/simulation/types';
+import { World } from '@/simulation/World';
 
 interface CanvasInteractionHandlers {
   onMouseDown: (e: React.MouseEvent<HTMLCanvasElement>) => void;
@@ -47,32 +49,37 @@ export function useCanvas(
 
       const cellSize = sim.world.map.cellSize;
       const halfBrush = Math.floor(brushSize / 2);
+      const baseCX = Math.floor(worldX / cellSize);
+      const baseCY = Math.floor(worldY / cellSize);
 
       for (let dy = -halfBrush; dy <= halfBrush; dy++) {
         for (let dx = -halfBrush; dx <= halfBrush; dx++) {
-          // Convert to cell coordinates
-          const cx = Math.floor(worldX / cellSize) + dx;
-          const cy = Math.floor(worldY / cellSize) + dy;
+          const cx = baseCX + dx;
+          const cy = baseCY + dy;
+          const coords = { x: cx, y: cy };
 
           switch (tool) {
             case 'food':
-              // addFoodAt takes pixel coords
-              sim.world.addFoodAt(
-                cx * cellSize + cellSize / 2,
-                cy * cellSize + cellSize / 2,
-                5
-              );
+              sim.world.map.addFoodByCoords(coords, 10);
+              sim.world.map.addMarkerByCoords(coords, Mode.ToFood, 1.0, 0, true);
               break;
             case 'wall':
-              // addWallByCoords takes cell coords
-              sim.world.addWallByCoords({ x: cx, y: cy });
+              sim.world.addWallByCoords(coords);
               break;
             case 'erase':
-              // clearCell takes cell coords
-              sim.world.map.clearCell({ x: cx, y: cy });
+              sim.world.map.clearCell(coords);
+              // Also clear all markers
+              if (sim.world.map.checkCoords(coords)) {
+                const cell = sim.world.map.getByCoords(coords);
+                cell.wall = 0;
+                cell.food = 0;
+                cell.density = 0;
+                for (let ci = 0; ci < Config.MAX_COLONIES_COUNT; ci++) {
+                  World.clearMarkersOfCell(cell.markers[ci]);
+                }
+              }
               break;
             case 'colony':
-              // Colony creation handled on mouseUp to avoid spam
               break;
           }
         }

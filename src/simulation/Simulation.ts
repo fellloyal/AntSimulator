@@ -17,6 +17,7 @@ export class Simulation {
     this.fightSystem = new FightSystem();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loadMap(_filename: string): void {
     // Stub - map loading not implemented in web version
   }

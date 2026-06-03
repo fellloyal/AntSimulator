@@ -21,12 +21,11 @@ export class ColonyRenderer {
     const cr = parseInt(color.slice(1, 3), 16);
     const cg = parseInt(color.slice(3, 5), 16);
     const cb = parseInt(color.slice(5, 7), 16);
-    const colorDark = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
     const colorLight = `rgb(${Math.min(255, cr + ((255 - cr) >> 2))},${Math.min(255, cg + ((255 - cg) >> 2))},${Math.min(255, cb + ((255 - cb) >> 2))})`;
 
     // Choose LOD level
     if (zoom >= LOD_DETAIL) {
-      this.renderAntsDetailed(ctx, ants, color, colorDark, colorLight, cr, cg, cb);
+      this.renderAntsDetailed(ctx, ants, color, colorLight, cr, cg, cb);
     } else if (zoom >= LOD_SIMPLE) {
       this.renderAntsMedium(ctx, ants, color, cr, cg, cb);
     } else {
@@ -42,7 +41,6 @@ export class ColonyRenderer {
       const ant = ants[i];
       if (ant.phase === Mode.Dead) continue;
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
-      const w = 2 * scale;
       const h = 4 * scale;
       const angle = ant.direction.angle + Math.PI / 2;
       const cos = Math.cos(angle);
@@ -130,7 +128,7 @@ export class ColonyRenderer {
   // LOD 2: Full detail with legs and antennae
   private renderAntsDetailed(
     ctx: CanvasRenderingContext2D, ants: Ant[],
-    color: string, colorDark: string, colorLight: string,
+    color: string, colorLight: string,
     cr: number, cg: number, cb: number
   ): void {
     // Batch 1: Body segments (alive, non-dying)
@@ -272,7 +270,7 @@ export class ColonyRenderer {
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
       const angle = ant.direction.angle + Math.PI / 2;
       ctx.globalAlpha = alpha;
-      ctx.fillStyle = colorDark;
+      ctx.fillStyle = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
       ctx.save();
       ctx.translate(ant.position.x, ant.position.y);
       ctx.rotate(angle);

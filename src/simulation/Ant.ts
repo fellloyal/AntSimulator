@@ -1,4 +1,4 @@
-import { PI, getLength, getNormalized, getAngle } from '@/common/math';
+import { PI, getAngle, getNormalized } from '@/common/math';
 import { RNG } from '@/common/RNG';
 import { Cooldown } from '@/common/Cooldown';
 import { Direction } from '@/common/Direction';

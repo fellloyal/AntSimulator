@@ -11,9 +11,9 @@ export default function App() {
   const setupConfig = useStore((s) => s.setupConfig);
   const startSimulation = useStore((s) => s.startSimulation);
 
-  const { simulationRef, rendererRef } = useSimulation(canvasRef, started, setupConfig);
+  const { simulationRef, rendererRef, workerRef, workerRendererRef } = useSimulation(canvasRef, started, setupConfig);
 
-  const canvasHandlers = useCanvas(canvasRef, rendererRef, simulationRef);
+  const canvasHandlers = useCanvas(canvasRef, rendererRef, simulationRef, workerRef, workerRendererRef);
 
   if (!started) {
     return <SetupScreen onStart={startSimulation} />;

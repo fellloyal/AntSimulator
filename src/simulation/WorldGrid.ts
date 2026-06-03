@@ -293,7 +293,7 @@ export class WorldGrid extends Grid<WorldCell> {
       distance: -1.0,
     };
 
-    let cellP = this.getCellCoords(p);
+    const cellP = this.getCellCoords(p);
     const step = {
       x: d.x < 0.0 ? -1 : 1,
       y: d.y < 0.0 ? -1 : 1,

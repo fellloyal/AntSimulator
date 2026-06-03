@@ -2,8 +2,13 @@ import { useRef, useCallback, useEffect } from 'react';
 import type { RefObject } from 'react';
 import { Simulation } from '@/simulation/Simulation';
 import { Renderer } from '@/render/Renderer';
+import { WorkerRenderer } from '@/render/WorkerRenderer';
 import useStore, { type SetupConfig } from '@/store/useStore';
 import { Config } from '@/simulation/Config';
+import type { WorkerCommand, WorkerResponse } from '@/simulation/worker-protocol';
+
+// Set to true to use Web Worker for simulation
+const USE_WORKER = true;
 
 export function useSimulation(
   canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -12,10 +17,18 @@ export function useSimulation(
 ) {
   const simulationRef = useRef<Simulation | null>(null);
   const rendererRef = useRef<Renderer | null>(null);
+  const workerRendererRef = useRef<WorkerRenderer | null>(null);
+  const workerRef = useRef<Worker | null>(null);
   const animFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const fpsFramesRef = useRef<number>(0);
   const fpsTimeRef = useRef<number>(0);
+  const useWorkerRef = useRef(USE_WORKER);
+
+  // Latest data from worker
+  const antDataRef = useRef<Float32Array | null>(null);
+  const worldDataRef = useRef<Float32Array | null>(null);
+  const worldDimsRef = useRef<{ width: number; height: number; cellSize: number } | null>(null);
 
   const paused = useStore((s) => s.paused);
   const speed = useStore((s) => s.speed);
@@ -27,68 +40,177 @@ export function useSimulation(
   const setColonyStats = useStore((s) => s.setColonyStats);
   const setFps = useStore((s) => s.setFps);
 
-  // Initialize simulation when user clicks "Start"
+  // === Worker mode: receive data from worker ===
+  const handleWorkerMessage = useCallback(
+    (e: MessageEvent<WorkerResponse>) => {
+      const msg = e.data;
+      if (msg.type === 'frame') {
+        antDataRef.current = new Float32Array(msg.antData);
+        worldDataRef.current = new Float32Array(msg.worldData);
+        setColonyStats(msg.stats);
+        setFps(msg.fps);
+      }
+    },
+    [setColonyStats, setFps]
+  );
+
+  // === Initialize ===
   useEffect(() => {
     if (!started) return;
 
-    const sim = new Simulation();
+    if (useWorkerRef.current) {
+      // Worker mode
+      try {
+        const worker = new Worker(
+          new URL('@/simulation/simulation-worker.ts', import.meta.url),
+          { type: 'module' }
+        );
+        worker.onmessage = handleWorkerMessage;
+        workerRef.current = worker;
 
-    // Create colonies based on setup config
-    const { workerCount, soldierCount, colonyCount } = setupConfig;
-    for (let i = 0; i < colonyCount; i++) {
-      const angle = (i / colonyCount) * 2 * Math.PI;
-      const cx = Config.WORLD_WIDTH / 2 + Math.cos(angle) * 300;
-      const cy = Config.WORLD_HEIGHT / 2 + Math.sin(angle) * 300;
-      sim.createColony(cx, cy, workerCount, soldierCount);
+        // Create a lightweight world for the worker renderer
+        const tempSim = new Simulation();
+        worldDimsRef.current = {
+          width: tempSim.world.map.width,
+          height: tempSim.world.map.height,
+          cellSize: tempSim.world.map.cellSize,
+        };
+
+        const wr = new WorkerRenderer(tempSim.world.map.width, tempSim.world.map.height, tempSim.world.map.cellSize);
+        workerRendererRef.current = wr;
+
+        // Set colony colors
+        const colonyCount = setupConfig.colonyCount;
+        wr.coloniesColor = Array.from({ length: colonyCount }, (_, i) => Config.COLONY_COLORS[i] || '#ffffff');
+
+        // Resize canvas
+        const resizeCanvas = () => {
+          const canvas = canvasRef.current;
+          if (canvas) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            wr.viewport.offsetX = (canvas.width - Config.WORLD_WIDTH) / 2;
+            wr.viewport.offsetY = (canvas.height - Config.WORLD_HEIGHT) / 2;
+          }
+        };
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Send init command
+        worker.postMessage({
+          type: 'init',
+          config: setupConfig,
+        } satisfies WorkerCommand);
+
+        return () => {
+          window.removeEventListener('resize', resizeCanvas);
+          worker.terminate();
+          workerRef.current = null;
+        };
+      } catch {
+        // Fallback to main thread if Worker fails
+        useWorkerRef.current = false;
+      }
     }
 
-    simulationRef.current = sim;
-    rendererRef.current = new Renderer(sim.world);
+    if (!useWorkerRef.current) {
+      // Main thread mode (fallback)
+      const sim = new Simulation();
+      const { workerCount, soldierCount, colonyCount } = setupConfig;
+      for (let i = 0; i < colonyCount; i++) {
+        const angle = (i / colonyCount) * 2 * Math.PI;
+        const cx = Config.WORLD_WIDTH / 2 + Math.cos(angle) * 300;
+        const cy = Config.WORLD_HEIGHT / 2 + Math.sin(angle) * 300;
+        sim.createColony(cx, cy, workerCount, soldierCount);
+      }
 
-    // Add colonies to renderer and set colors
-    for (const colony of sim.colonies) {
-      rendererRef.current.addColony(colony);
-    }
-    rendererRef.current.worldRenderer.coloniesColor = sim.colonies.map(
-      (c, i) => Config.COLONY_COLORS[i] || '#ffffff'
-    );
+      simulationRef.current = sim;
+      rendererRef.current = new Renderer(sim.world);
 
-    // Resize canvas to fill window
-    const resizeCanvas = () => {
-      const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        if (rendererRef.current) {
-          rendererRef.current.viewport.offsetX =
-            (canvas.width - Config.WORLD_WIDTH) / 2;
-          rendererRef.current.viewport.offsetY =
-            (canvas.height - Config.WORLD_HEIGHT) / 2;
+      for (const colony of sim.colonies) {
+        rendererRef.current.addColony(colony);
+      }
+      rendererRef.current.worldRenderer.coloniesColor = sim.colonies.map(
+        (_, i) => Config.COLONY_COLORS[i] || '#ffffff'
+      );
+
+      const resizeCanvas = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          if (rendererRef.current) {
+            rendererRef.current.viewport.offsetX = (canvas.width - Config.WORLD_WIDTH) / 2;
+            rendererRef.current.viewport.offsetY = (canvas.height - Config.WORLD_HEIGHT) / 2;
+          }
         }
-      }
-    };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+      };
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
 
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
-    };
+      return () => {
+        window.removeEventListener('resize', resizeCanvas);
+        if (animFrameRef.current) {
+          cancelAnimationFrame(animFrameRef.current);
+        }
+      };
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started]);
 
-  // Sync display options to renderer
+  // Sync display options
   useEffect(() => {
     if (rendererRef.current) {
       rendererRef.current.renderAnts = showAnts;
       rendererRef.current.worldRenderer.drawMarkers = showMarkers;
       rendererRef.current.worldRenderer.drawDensity = showDensity;
     }
+    if (workerRendererRef.current) {
+      workerRendererRef.current.renderAnts = showAnts;
+      workerRendererRef.current.drawMarkers = showMarkers;
+      workerRendererRef.current.drawDensity = showDensity;
+    }
   }, [showAnts, showMarkers, showDensity]);
 
-  // Main loop
+  // Sync pause/speed to worker
+  useEffect(() => {
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        type: 'pause',
+        paused,
+      } satisfies WorkerCommand);
+    }
+  }, [paused]);
+
+  useEffect(() => {
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        type: 'speed',
+        speed,
+        maxSpeed,
+      } satisfies WorkerCommand);
+    }
+  }, [speed, maxSpeed]);
+
+  // === Worker render loop ===
+  const workerLoop = useCallback(
+    () => {
+      const wr = workerRendererRef.current;
+      const canvas = canvasRef.current;
+      if (!wr || !canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Render with latest data from worker
+      wr.render(ctx, canvas.width, canvas.height, antDataRef.current, worldDataRef.current);
+
+      animFrameRef.current = requestAnimationFrame(workerLoop);
+    },
+    [canvasRef]
+  );
+
+  // === Main thread render loop ===
   const loop = useCallback(
     (time: number) => {
       const sim = simulationRef.current;
@@ -99,17 +221,13 @@ export function useSimulation(
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Calculate delta time
       if (lastTimeRef.current === 0) {
         lastTimeRef.current = time;
       }
       let dt = (time - lastTimeRef.current) / 1000;
       lastTimeRef.current = time;
-
-      // Clamp dt to avoid spiral of death
       dt = Math.min(dt, 0.05);
 
-      // FPS counter
       fpsFramesRef.current++;
       fpsTimeRef.current += dt;
       if (fpsTimeRef.current >= 1.0) {
@@ -118,7 +236,6 @@ export function useSimulation(
         fpsTimeRef.current = 0;
       }
 
-      // Update simulation
       if (!paused) {
         const steps = maxSpeed ? 5 : speed;
         const stepDt = dt / steps;
@@ -127,10 +244,8 @@ export function useSimulation(
         }
       }
 
-      // Render
       renderer.render(ctx, canvas.width, canvas.height);
 
-      // Update colony stats
       const stats = sim.colonies.map((colony) => ({
         id: colony.id,
         color: colony.antsColor,
@@ -145,17 +260,27 @@ export function useSimulation(
     [paused, speed, maxSpeed, setColonyStats, setFps, canvasRef]
   );
 
-  // Start / stop loop
+  // Start render loop
   useEffect(() => {
     if (!started) return;
     lastTimeRef.current = 0;
-    animFrameRef.current = requestAnimationFrame(loop);
-    return () => {
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
-    };
-  }, [loop, started]);
+
+    if (useWorkerRef.current) {
+      animFrameRef.current = requestAnimationFrame(workerLoop);
+      return () => {
+        if (animFrameRef.current) {
+          cancelAnimationFrame(animFrameRef.current);
+        }
+      };
+    } else {
+      animFrameRef.current = requestAnimationFrame(loop);
+      return () => {
+        if (animFrameRef.current) {
+          cancelAnimationFrame(animFrameRef.current);
+        }
+      };
+    }
+  }, [loop, workerLoop, started]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -172,5 +297,5 @@ export function useSimulation(
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [togglePause]);
 
-  return { simulationRef, rendererRef };
+  return { simulationRef, rendererRef, workerRef, workerRendererRef };
 }

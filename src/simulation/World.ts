@@ -1,5 +1,4 @@
 import { toInt } from '@/common/math';
-import { Config } from '@/simulation/Config';
 import { Mode, type ColonyCell } from '@/simulation/types';
 import { WorldGrid } from '@/simulation/WorldGrid';
 import { WorldRenderer } from '@/render/WorldRenderer';

@@ -17,6 +17,7 @@ export class Colony {
   antCreationId = 0;
   colorChanged = false;
   positionChanged = false;
+  private _soldiersCount = 0;
 
   constructor(x: number, y: number, maxAnts: number) {
     this.base = new ColonyBase({ x, y }, Config.COLONY_SIZE);
@@ -70,6 +71,7 @@ export class Colony {
     ant.width *= soldierScale;
     ant.damage *= soldierScale * 2.0;
     ant.maxAutonomy *= soldierScale;
+    this._soldiersCount++;
   }
 
   genericAntsUpdate(dt: number, world: WorldLike): void {
@@ -110,7 +112,19 @@ export class Colony {
   }
 
   removeDeadAnts(): void {
-    this.ants = this.ants.filter((ant) => !ant.isDead());
+    // Swap-and-pop: avoid creating a new array
+    let writeIdx = 0;
+    for (let i = 0; i < this.ants.length; i++) {
+      const ant = this.ants[i];
+      if (!ant.isDead()) {
+        this.ants[writeIdx] = ant;
+        ant.id = writeIdx;
+        writeIdx++;
+      } else if (ant.type === AntType.Soldier) {
+        this._soldiersCount--;
+      }
+    }
+    this.ants.length = writeIdx;
   }
 
   killWeakAnts(world: WorldLike): number {
@@ -125,7 +139,7 @@ export class Colony {
   }
 
   soldiersCount(): number {
-    return this.ants.filter((a) => a.type === AntType.Soldier).length;
+    return this._soldiersCount;
   }
 
   setColor(color: string): void {

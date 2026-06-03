@@ -1,68 +1,57 @@
-# AntSimulator
+# React + TypeScript + Vite
 
-Very simple ants simulator.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-# Installation
+Currently, two official plugins are available:
 
-## Prerequisites
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-In order to compile this project you will need to:
- - have [SFML](https://www.sfml-dev.org/index.php) installed on your system. If you don't know how to do it see [this link](https://www.sfml-dev.org/tutorials/2.5/#getting-started).
- - have [CMake](https://cmake.org/) installed
+## Expanding the ESLint configuration
 
-## Compilation
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-Detailed explanation [here](https://preshing.com/20170511/how-to-build-a-cmake-based-project/)
-
-### On Linux with `install.sh`
-- Go in the repo folder
-
-`cd the/repo/location`
-
-- Execute `install.sh` script
-
-`./install.sh`
-
-##### On Ubuntu from Docker
- - Install Docker (see [this](https://docs.docker.com/engine/install/))
- - Execute `install_from_docker.sh` script
-```sh
-docker build -t myimages/ant-simulator:latest .
-docker create -it --name dummy myimages/ant-simulator:latest bash
-docker cp dummy:/AntSimulator/build/AntSimulator .
-rm -rf build/
-mkdir build/
-mv AntSimulator build/
-cp -r res/ build/
-docker rm -f dummy
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
-Executable files will be located in the build folder.
 
-### On Windows with CMake GUI and Visual Studio
- - Install the right SFML version or compile it (see [this](https://www.sfml-dev.org/tutorials/2.5/start-vc.php))
- - Run CMake
- - Select the repo location
- 
-![Cmake 1](https://github.com/johnBuffer/AntSimulator/blob/master/img/cmake_1.PNG)
- - Click on `Configure`, if you have installed the `x64` version of SFML, in the pop up window select `x64` in the `Optionnal platform for generator` drop down
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-![Cmake 2](https://github.com/johnBuffer/AntSimulator/blob/master/img/cmake_2.PNG)
- - Click on `Finish`
- - Click on `Generate`
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-![Cmake 3](https://github.com/johnBuffer/AntSimulator/blob/master/img/cmake_3.PNG)
- - You can now open the generated project and build it.
-
-# Commands
-
-|Command|Action|
-|---|---|
-|**P**|Pause/Unpause the simulation|
-|**M**|Toggle markers drawing|
-|**A**|Toggle ants drawing|
-|**S**|Toggle max speed mode|
-|**W**|Toggle Wall mode|
-|**E**|Toggle Wall erase mode|
-|**Right click**|Add food|
-|**Left click**|Move view|
-|**Wheel**|Zoom|
+export default tseslint.config({
+  extends: [
+    // other configs...
+    // Enable lint rules for React
+    reactX.configs['recommended-typescript'],
+    // Enable lint rules for React DOM
+    reactDom.configs.recommended,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```

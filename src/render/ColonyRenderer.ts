@@ -52,9 +52,9 @@ export class ColonyRenderer {
       ctx.fill();
 
       // Abdomen (gaster) - largest segment
-      const abdRx = 2.2 * scale;
-      const abdRy = 2.8 * scale;
-      const abdY = 2.0 * scale;
+      const abdRx = 1.6 * scale;
+      const abdRy = 2.2 * scale;
+      const abdY = 1.8 * scale;
       ctx.beginPath();
       ctx.ellipse(0, abdY, abdRx, abdRy, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -100,30 +100,30 @@ export class ColonyRenderer {
       ctx.lineWidth = 0.4 * scale;
 
       for (let li = 0; li < 3; li++) {
-        const legBaseY = thoraxY - 0.5 * scale + li * 1.0 * scale;
+        const legBaseY = thoraxY - 0.3 * scale + li * 0.9 * scale;
         const phase = li * 2.094; // 2π/3 offset
-        const swingL = Math.sin(legWobble + phase) * 0.3;
-        const swingR = Math.sin(legWobble + phase + Math.PI) * 0.3;
+        const swingL = Math.sin(legWobble + phase) * 0.25;
+        const swingR = Math.sin(legWobble + phase + Math.PI) * 0.25;
 
-        // Left leg
-        const lAngleL = -Math.PI / 2 - 0.5 + swingL;
-        const lMidX = -thoraxR * 0.7 + Math.cos(lAngleL) * legLen * 0.5;
-        const lMidY = legBaseY + Math.sin(lAngleL) * legLen * 0.5;
-        const lEndX = lMidX - legLen * 0.3;
-        const lEndY = lMidY + legLen * 0.5;
+        // Left leg (extends to -X)
+        const lStartX = -thoraxR * 0.7;
+        const lMidX = lStartX - legLen * 0.5;
+        const lMidY = legBaseY + legLen * 0.15 + swingL * legLen;
+        const lEndX = lMidX - legLen * 0.15;
+        const lEndY = lMidY + legLen * 0.35;
         ctx.beginPath();
-        ctx.moveTo(-thoraxR * 0.7, legBaseY);
+        ctx.moveTo(lStartX, legBaseY);
         ctx.quadraticCurveTo(lMidX, lMidY, lEndX, lEndY);
         ctx.stroke();
 
-        // Right leg
-        const rAngleR = Math.PI / 2 + 0.5 + swingR;
-        const rMidX = thoraxR * 0.7 + Math.cos(rAngleR) * legLen * 0.5;
-        const rMidY = legBaseY + Math.sin(rAngleR) * legLen * 0.5;
-        const rEndX = rMidX + legLen * 0.3;
-        const rEndY = rMidY + legLen * 0.5;
+        // Right leg (extends to +X)
+        const rStartX = thoraxR * 0.7;
+        const rMidX = rStartX + legLen * 0.5;
+        const rMidY = legBaseY + legLen * 0.15 + swingR * legLen;
+        const rEndX = rMidX + legLen * 0.15;
+        const rEndY = rMidY + legLen * 0.35;
         ctx.beginPath();
-        ctx.moveTo(thoraxR * 0.7, legBaseY);
+        ctx.moveTo(rStartX, legBaseY);
         ctx.quadraticCurveTo(rMidX, rMidY, rEndX, rEndY);
         ctx.stroke();
       }

@@ -164,9 +164,52 @@ export class WorldGrid extends Grid<WorldCell> {
   }
 
   clearCell(coords: { x: number; y: number }): void {
+    if (!this.checkCoords(coords)) return;
     const cell = this.getByCoords(coords);
     cell.wall = 0;
     cell.food = 0;
+    cell.density = 0;
+    for (let ci = 0; ci < Config.MAX_COLONIES_COUNT; ci++) {
+      const mc = cell.markers[ci];
+      mc.intensity = [0, 0, 0];
+      mc.permanent = false;
+      mc.repellent = 0;
+      mc.currentAnt = -1;
+      mc.fighting = false;
+    }
+  }
+
+  computeDistanceField(): void {
+    const maxIterWall = 3;
+    const maxIterSpace = 3;
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const cell = this.getByCoords({ x, y });
+        if (cell.wall) {
+          cell.wallDist = this.getMinDist(x, y, false, maxIterWall);
+        } else {
+          cell.wallDist = this.getMinDist(x, y, true, maxIterSpace);
+        }
+      }
+    }
+  }
+
+  private getMinDist(x: number, y: number, distToWall: boolean, maxIter: number): number {
+    let minDist = maxIter;
+    for (let dx = -maxIter; dx <= maxIter; dx++) {
+      for (let dy = -maxIter; dy <= maxIter; dy++) {
+        const cell = this.getSafeByCoords({ x: x + dx, y: y + dy });
+        if (cell) {
+          if ((cell.wall && distToWall) || (!cell.wall && !distToWall)) {
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < minDist) {
+              minDist = dist;
+            }
+          }
+        }
+      }
+    }
+    return Math.min(1.0, minDist / maxIter);
   }
 
   update(dt: number): void {

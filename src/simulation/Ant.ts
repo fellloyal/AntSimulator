@@ -59,6 +59,18 @@ export class Ant {
   libertyCoef = 0.0;
   autonomy = 0.0;
 
+  // Walking wobble
+  wobblePhase: number;
+  wobbleFreq = 4.0;
+
+  // Occasional pause
+  pauseTimer = 0.0;
+  isPaused = false;
+
+  // Death fade-out
+  dyingTimer = 0.0;
+  static readonly DYING_DURATION = 2.0;
+
   // Identity
   id = 0;
   colId = 0;
@@ -82,6 +94,7 @@ export class Ant {
     this.colId = colonyId;
     this.attackCooldown = new Cooldown(1.5, 0.0);
     this.type = AntType.Worker;
+    this.wobblePhase = RNG.getUnder(2 * PI);
   }
 
   addToWorldGrid(world: WorldLike): void {
@@ -132,8 +145,9 @@ export class Ant {
   }
 
   updatePosition(world: WorldLike, dt: number): void {
+    const speed = this.getMoveSpeed();
     const v = this.direction.getVec();
-    const hit = world.map.getFirstHit(this.position, v, dt * Ant.moveSpeed);
+    const hit = world.map.getFirstHit(this.position, v, dt * speed);
     if (hit.cell) {
       const hitsThreshold = 4;
       if (this.hits > hitsThreshold) {
@@ -146,8 +160,8 @@ export class Ant {
       this.direction.setDirectionNow(v);
     } else {
       this.hits = 0;
-      this.position.x += dt * Ant.moveSpeed * v.x;
-      this.position.y += dt * Ant.moveSpeed * v.y;
+      this.position.x += dt * speed * v.x;
+      this.position.y += dt * speed * v.y;
       if (
         this.position.x < 0.0 ||
         this.position.x > Config.WORLD_WIDTH ||
@@ -202,6 +216,24 @@ export class Ant {
     this.autonomy += dt;
     this.internalClock += dt;
     this.toEnemyMarkersCount += dt;
+    this.wobblePhase += this.wobbleFreq * dt * 2 * PI;
+  }
+
+  updateDying(dt: number): void {
+    this.dyingTimer += dt;
+    if (this.dyingTimer >= Ant.DYING_DURATION) {
+      this.phase = Mode.Dead;
+    }
+  }
+
+  getMoveSpeed(): number {
+    if (this.isPaused) return 0.0;
+    const baseSpeed = Ant.moveSpeed;
+    // Carrying food: slower
+    if (this.phase === Mode.ToHome || this.phase === Mode.ToHomeNoFood) {
+      return baseSpeed * 0.8;
+    }
+    return baseSpeed;
   }
 
   getMarkersSamplingType(): Mode {
@@ -259,7 +291,8 @@ export class Ant {
     if (this.phase === Mode.ToHome || this.phase === Mode.ToHomeNoFood) {
       world.addFoodAt(this.position.x, this.position.y, 1);
     }
-    this.phase = Mode.Dead;
+    this.phase = Mode.Dying;
+    this.dyingTimer = 0.0;
     this.removeFromWorldGrid(world);
   }
 

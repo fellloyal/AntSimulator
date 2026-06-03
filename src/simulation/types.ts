@@ -5,7 +5,8 @@ export enum Mode {
   Refill = 3,
   Flee = 4,
   ToHomeNoFood = 5,
-  Dead = 6,
+  Dying = 6,
+  Dead = 7,
 }
 
 export enum FightMode {

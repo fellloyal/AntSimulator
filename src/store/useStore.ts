@@ -2,7 +2,18 @@ import { create } from 'zustand';
 
 export type EditTool = 'none' | 'food' | 'wall' | 'erase' | 'colony';
 
+export interface SetupConfig {
+  workerCount: number;
+  soldierCount: number;
+  colonyCount: number;
+}
+
 interface SimulatorState {
+  // Setup phase
+  started: boolean;
+  setupConfig: SetupConfig;
+  startSimulation: (config: SetupConfig) => void;
+
   paused: boolean;
   speed: number;
   maxSpeed: boolean;
@@ -33,6 +44,10 @@ interface SimulatorState {
 }
 
 const useStore = create<SimulatorState>((set) => ({
+  started: false,
+  setupConfig: { workerCount: 800, soldierCount: 200, colonyCount: 1 },
+  startSimulation: (config) => set({ started: true, setupConfig: config }),
+
   paused: false,
   speed: 1,
   maxSpeed: false,

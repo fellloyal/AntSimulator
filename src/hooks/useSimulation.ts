@@ -2,10 +2,14 @@ import { useRef, useCallback, useEffect } from 'react';
 import type { RefObject } from 'react';
 import { Simulation } from '@/simulation/Simulation';
 import { Renderer } from '@/render/Renderer';
-import useStore from '@/store/useStore';
+import useStore, { type SetupConfig } from '@/store/useStore';
 import { Config } from '@/simulation/Config';
 
-export function useSimulation(canvasRef: RefObject<HTMLCanvasElement | null>) {
+export function useSimulation(
+  canvasRef: RefObject<HTMLCanvasElement | null>,
+  started: boolean,
+  setupConfig: SetupConfig
+) {
   const simulationRef = useRef<Simulation | null>(null);
   const rendererRef = useRef<Renderer | null>(null);
   const animFrameRef = useRef<number>(0);
@@ -23,15 +27,28 @@ export function useSimulation(canvasRef: RefObject<HTMLCanvasElement | null>) {
   const setColonyStats = useStore((s) => s.setColonyStats);
   const setFps = useStore((s) => s.setFps);
 
-  // Initialize simulation and renderer on mount
+  // Initialize simulation when user clicks "Start"
   useEffect(() => {
+    if (!started) return;
+
     const sim = new Simulation();
-    const colony = sim.createColony(Config.WORLD_WIDTH / 2, Config.WORLD_HEIGHT / 2);
+
+    // Create colonies based on setup config
+    const { workerCount, soldierCount, colonyCount } = setupConfig;
+    for (let i = 0; i < colonyCount; i++) {
+      const angle = (i / colonyCount) * 2 * Math.PI;
+      const cx = Config.WORLD_WIDTH / 2 + Math.cos(angle) * 300;
+      const cy = Config.WORLD_HEIGHT / 2 + Math.sin(angle) * 300;
+      sim.createColony(cx, cy, workerCount, soldierCount);
+    }
+
     simulationRef.current = sim;
     rendererRef.current = new Renderer(sim.world);
 
-    // Add colony to renderer and set colors
-    rendererRef.current.addColony(colony);
+    // Add colonies to renderer and set colors
+    for (const colony of sim.colonies) {
+      rendererRef.current.addColony(colony);
+    }
     rendererRef.current.worldRenderer.coloniesColor = sim.colonies.map(
       (c, i) => Config.COLONY_COLORS[i] || '#ffffff'
     );
@@ -42,11 +59,12 @@ export function useSimulation(canvasRef: RefObject<HTMLCanvasElement | null>) {
       if (canvas) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        // Center viewport on world
-        rendererRef.current!.viewport.offsetX =
-          (canvas.width - Config.WORLD_WIDTH) / 2;
-        rendererRef.current!.viewport.offsetY =
-          (canvas.height - Config.WORLD_HEIGHT) / 2;
+        if (rendererRef.current) {
+          rendererRef.current.viewport.offsetX =
+            (canvas.width - Config.WORLD_WIDTH) / 2;
+          rendererRef.current.viewport.offsetY =
+            (canvas.height - Config.WORLD_HEIGHT) / 2;
+        }
       }
     };
     resizeCanvas();
@@ -59,7 +77,7 @@ export function useSimulation(canvasRef: RefObject<HTMLCanvasElement | null>) {
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [started]);
 
   // Sync display options to renderer
   useEffect(() => {
@@ -129,6 +147,7 @@ export function useSimulation(canvasRef: RefObject<HTMLCanvasElement | null>) {
 
   // Start / stop loop
   useEffect(() => {
+    if (!started) return;
     lastTimeRef.current = 0;
     animFrameRef.current = requestAnimationFrame(loop);
     return () => {
@@ -136,7 +155,7 @@ export function useSimulation(canvasRef: RefObject<HTMLCanvasElement | null>) {
         cancelAnimationFrame(animFrameRef.current);
       }
     };
-  }, [loop]);
+  }, [loop, started]);
 
   // Keyboard shortcuts
   useEffect(() => {

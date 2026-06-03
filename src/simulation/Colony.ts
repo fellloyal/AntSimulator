@@ -27,13 +27,16 @@ export class Colony {
     this.antsColor = Config.ANT_COLOR;
   }
 
-  initialize(colonyId: number): void {
+  initialize(colonyId: number, workerCount: number = 1000, soldierCount: number = 0): void {
     this.id = colonyId;
     this.base.food = 0.0;
     this.antsColor = Config.COLONY_COLORS[colonyId] || '#ffffff';
-    const antsCount = 1000;
-    for (let i = antsCount; i-- > 0; ) {
+    for (let i = workerCount; i-- > 0; ) {
       this.createWorker();
+    }
+    for (let i = soldierCount; i-- > 0; ) {
+      const ant = this.createWorker();
+      this.specializeSoldier(ant);
     }
   }
 

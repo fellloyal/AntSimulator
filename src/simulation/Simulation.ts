@@ -21,10 +21,10 @@ export class Simulation {
     // Stub - map loading not implemented in web version
   }
 
-  createColony(colonyX: number, colonyY: number): Colony {
+  createColony(colonyX: number, colonyY: number, workerCount: number = 1000, soldierCount: number = 0): Colony {
     const colony = new Colony(colonyX, colonyY, Config.ANTS_COUNT);
     const colonyId = this.colonies.length;
-    colony.initialize(colonyId);
+    colony.initialize(colonyId, workerCount, soldierCount);
     this.colonies.push(colony);
     // Create colony markers
     this.createColonyMarkers(colony);

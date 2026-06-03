@@ -25,8 +25,7 @@ export class ColonyRenderer {
 
       // Wobble angle for organic movement
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
-      // Body is drawn along -Y axis (head up), so offset by -PI/2 to align with direction angle
-      const angle = ant.direction.angle - Math.PI / 2 + wobble;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
 
       const px = ant.position.x;
       const py = ant.position.y;

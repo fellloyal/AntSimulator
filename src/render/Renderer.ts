@@ -47,7 +47,7 @@ export class Renderer {
 
     // Render colonies (ants + bases)
     for (const cr of this.colonyRenderers) {
-      cr.render(ctx, this.renderAnts);
+      cr.render(ctx, this.renderAnts, this.viewport.zoom);
     }
 
     ctx.restore();

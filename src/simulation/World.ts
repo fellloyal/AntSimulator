@@ -8,7 +8,6 @@ export class World {
   size: { x: number; y: number };
   map: WorldGrid;
   renderer: WorldRenderer;
-  needsDistanceUpdate = false;
 
   constructor(width: number, height: number) {
     this.map = new WorldGrid(width, height, 4);
@@ -27,10 +26,6 @@ export class World {
   }
 
   update(dt: number): void {
-    if (this.needsDistanceUpdate) {
-      this.map.computeDistanceField();
-      this.needsDistanceUpdate = false;
-    }
     this.map.update(dt);
   }
 
@@ -67,14 +62,14 @@ export class World {
       for (const markers of cell.markers) {
         World.clearMarkersOfCell(markers);
       }
-      this.needsDistanceUpdate = true;
+      this.map.computeDistanceFieldAround(position.x, position.y);
     }
   }
 
   removeWall(position: { x: number; y: number }): void {
     if (this.map.checkCoords(position)) {
       this.map.get(position).wall = 0;
-      this.needsDistanceUpdate = true;
+      this.map.computeDistanceFieldAround(position.x, position.y);
     }
   }
 

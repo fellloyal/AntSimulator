@@ -2,6 +2,10 @@ import type { Colony } from '@/simulation/Colony';
 import { Mode, AntType } from '@/simulation/types';
 import { Ant } from '@/simulation/Ant';
 
+// LOD thresholds based on viewport zoom
+const LOD_DETAIL = 1.5;   // Full detail above this zoom
+const LOD_SIMPLE = 0.6;   // Simple rects below this zoom
+
 export class ColonyRenderer {
   colony: Colony;
 
@@ -9,136 +13,281 @@ export class ColonyRenderer {
     this.colony = colony;
   }
 
-  renderAnts(ctx: CanvasRenderingContext2D): void {
+  renderAnts(ctx: CanvasRenderingContext2D, zoom: number): void {
     const ants = this.colony.ants;
     const color = this.colony.antsColor;
 
+    // Parse color once
+    const cr = parseInt(color.slice(1, 3), 16);
+    const cg = parseInt(color.slice(3, 5), 16);
+    const cb = parseInt(color.slice(5, 7), 16);
+    const colorDark = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
+    const colorLight = `rgb(${Math.min(255, cr + ((255 - cr) >> 2))},${Math.min(255, cg + ((255 - cg) >> 2))},${Math.min(255, cb + ((255 - cb) >> 2))})`;
+
+    // Choose LOD level
+    if (zoom >= LOD_DETAIL) {
+      this.renderAntsDetailed(ctx, ants, color, colorDark, colorLight, cr, cg, cb);
+    } else if (zoom >= LOD_SIMPLE) {
+      this.renderAntsMedium(ctx, ants, color, cr, cg, cb);
+    } else {
+      this.renderAntsSimple(ctx, ants, color);
+    }
+  }
+
+  // LOD 0: Simple rectangles - fastest
+  private renderAntsSimple(ctx: CanvasRenderingContext2D, ants: Ant[], color: string): void {
+    ctx.fillStyle = color;
+    ctx.beginPath();
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase === Mode.Dead) continue;
-
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
-      const isDying = ant.phase === Mode.Dying;
-      const alpha = isDying
-        ? Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION)
-        : 1.0;
-
-      // Wobble angle for organic movement
-      const wobble = Math.sin(ant.wobblePhase) * 0.05;
-      const angle = ant.direction.angle + Math.PI / 2 + wobble;
-
+      const w = 2 * scale;
+      const h = 4 * scale;
+      const angle = ant.direction.angle + Math.PI / 2;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      const dx = cos * h * 0.5;
+      const dy = sin * h * 0.5;
       const px = ant.position.x;
       const py = ant.position.y;
+      // Draw as a simple line segment
+      ctx.moveTo(px - dx, py - dy);
+      ctx.lineTo(px + dx, py + dy);
+    }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
 
+  // LOD 1: Ovals - medium quality
+  private renderAntsMedium(
+    ctx: CanvasRenderingContext2D, ants: Ant[], color: string,
+    cr: number, cg: number, cb: number
+  ): void {
+    // Batch alive ants by fill
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase === Mode.Dying) continue;
+      if (ant.phase === Mode.Dead) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
       ctx.save();
-      ctx.translate(px, py);
+      ctx.translate(ant.position.x, ant.position.y);
       ctx.rotate(angle);
-      ctx.globalAlpha = alpha;
+      // Simple 3-segment body
+      ctx.moveTo(1.2 * scale, -3.5 * scale);
+      ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
+      ctx.restore();
+    }
+    ctx.fill();
 
-      // Body segments (from head to abdomen)
-      // Head
-      const headR = 1.2 * scale;
-      const headY = -3.5 * scale;
-      ctx.fillStyle = isDying ? this.darkenColor(color, 0.5) : color;
+    // Food dots
+    ctx.fillStyle = '#429942';
+    ctx.beginPath();
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase !== Mode.ToHome && ant.phase !== Mode.ToHomeNoFood) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
+      ctx.moveTo(1.2 * scale, -5.5 * scale);
+      ctx.arc(0, -5.5 * scale, 1.2 * scale, 0, Math.PI * 2);
+      ctx.restore();
+    }
+    ctx.fill();
+
+    // Dying ants (separate batch with alpha)
+    if (ants.some(a => a.phase === Mode.Dying)) {
+      for (let i = 0; i < ants.length; i++) {
+        const ant = ants[i];
+        if (ant.phase !== Mode.Dying) continue;
+        const alpha = Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
+        const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+        const angle = ant.direction.angle + Math.PI / 2;
+        ctx.save();
+        ctx.translate(ant.position.x, ant.position.y);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 1.6 * scale, 3 * scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.globalAlpha = 1.0;
+    }
+  }
+
+  // LOD 2: Full detail with legs and antennae
+  private renderAntsDetailed(
+    ctx: CanvasRenderingContext2D, ants: Ant[],
+    color: string, colorDark: string, colorLight: string,
+    cr: number, cg: number, cb: number
+  ): void {
+    // Batch 1: Body segments (alive, non-dying)
+    ctx.fillStyle = color;
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
       ctx.beginPath();
-      ctx.ellipse(0, headY, headR, headR * 1.1, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
       ctx.fill();
-
-      // Thorax
-      const thoraxR = 1.4 * scale;
-      const thoraxY = -1.2 * scale;
       ctx.beginPath();
-      ctx.ellipse(0, thoraxY, thoraxR * 0.85, thoraxR, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
       ctx.fill();
-
-      // Abdomen (gaster) - largest segment
-      const abdRx = 1.6 * scale;
-      const abdRy = 2.2 * scale;
-      const abdY = 1.8 * scale;
       ctx.beginPath();
-      ctx.ellipse(0, abdY, abdRx, abdRy, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
       ctx.fill();
-
-      // Petiole (narrow waist between thorax and abdomen)
-      ctx.fillStyle = isDying ? this.darkenColor(color, 0.4) : this.lightenColor(color, 0.2);
+      // Petiole
+      ctx.fillStyle = colorLight;
       ctx.beginPath();
       ctx.ellipse(0, 0.3 * scale, 0.6 * scale, 0.8 * scale, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillStyle = color;
+      ctx.restore();
+    }
 
-      // Antennae
-      const antLen = 3.0 * scale;
-      const antBaseY = headY - headR * 0.5;
-      const antSpread = 0.45; // radians from forward
+    // Batch 2: Antennae (all alive ants)
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 0.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
       const antWobble1 = Math.sin(ant.wobblePhase * 1.3) * 0.15;
       const antWobble2 = Math.sin(ant.wobblePhase * 1.3 + 1.0) * 0.15;
+      const headR = 1.2 * scale;
+      const headY = -3.5 * scale;
+      const antLen = 3.0 * scale;
+      const antBaseY = headY - headR * 0.5;
+      const antSpread = 0.45;
 
-      ctx.strokeStyle = isDying ? this.darkenColor(color, 0.3) : color;
-      ctx.lineWidth = 0.5 * scale;
-      ctx.lineCap = 'round';
-
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
       // Left antenna
-      ctx.beginPath();
       ctx.moveTo(-headR * 0.3, antBaseY);
       ctx.lineTo(
         -Math.sin(antSpread + antWobble1) * antLen,
         antBaseY - Math.cos(antSpread + antWobble1) * antLen
       );
-      ctx.stroke();
-
       // Right antenna
-      ctx.beginPath();
       ctx.moveTo(headR * 0.3, antBaseY);
       ctx.lineTo(
         Math.sin(antSpread + antWobble2) * antLen,
         antBaseY - Math.cos(antSpread + antWobble2) * antLen
       );
-      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.stroke();
 
-      // Legs (3 pairs from thorax)
+    // Batch 3: Legs (all alive ants)
+    ctx.lineWidth = 0.4;
+    ctx.beginPath();
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      const thoraxR = 1.4 * scale;
+      const thoraxY = -1.2 * scale;
       const legLen = 2.5 * scale;
       const legWobble = ant.wobblePhase;
-      ctx.lineWidth = 0.4 * scale;
+
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
 
       for (let li = 0; li < 3; li++) {
         const legBaseY = thoraxY - 0.3 * scale + li * 0.9 * scale;
-        const phase = li * 2.094; // 2π/3 offset
+        const phase = li * 2.094;
         const swingL = Math.sin(legWobble + phase) * 0.25;
         const swingR = Math.sin(legWobble + phase + Math.PI) * 0.25;
 
-        // Left leg (extends to -X)
         const lStartX = -thoraxR * 0.7;
         const lMidX = lStartX - legLen * 0.5;
         const lMidY = legBaseY + legLen * 0.15 + swingL * legLen;
         const lEndX = lMidX - legLen * 0.15;
         const lEndY = lMidY + legLen * 0.35;
-        ctx.beginPath();
         ctx.moveTo(lStartX, legBaseY);
         ctx.quadraticCurveTo(lMidX, lMidY, lEndX, lEndY);
-        ctx.stroke();
 
-        // Right leg (extends to +X)
         const rStartX = thoraxR * 0.7;
         const rMidX = rStartX + legLen * 0.5;
         const rMidY = legBaseY + legLen * 0.15 + swingR * legLen;
         const rEndX = rMidX + legLen * 0.15;
         const rEndY = rMidY + legLen * 0.35;
-        ctx.beginPath();
         ctx.moveTo(rStartX, legBaseY);
         ctx.quadraticCurveTo(rMidX, rMidY, rEndX, rEndY);
-        ctx.stroke();
       }
-
-      // Food particle if carrying
-      if (ant.phase === Mode.ToHome || ant.phase === Mode.ToHomeNoFood) {
-        ctx.fillStyle = '#429942';
-        ctx.beginPath();
-        ctx.arc(0, headY - headR - 1.0 * scale, 1.2 * scale, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = 1.0;
       ctx.restore();
     }
+    ctx.stroke();
+
+    // Batch 4: Food particles
+    ctx.fillStyle = '#429942';
+    ctx.beginPath();
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase !== Mode.ToHome && ant.phase !== Mode.ToHomeNoFood) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      const headR = 1.2 * scale;
+      const headY = -3.5 * scale;
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
+      ctx.moveTo(1.2 * scale, headY - headR - 1.0 * scale);
+      ctx.arc(0, headY - headR - 1.0 * scale, 1.2 * scale, 0, Math.PI * 2);
+      ctx.restore();
+    }
+    ctx.fill();
+
+    // Batch 5: Dying ants
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase !== Mode.Dying) continue;
+      const alpha = Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION);
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const angle = ant.direction.angle + Math.PI / 2;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = colorDark;
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1.0;
   }
 
   renderBase(ctx: CanvasRenderingContext2D): void {
@@ -173,7 +322,7 @@ export class ColonyRenderer {
     ctx.ellipse(x, y, radius * 0.35, radius * 0.25, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Scattered soil particles around mound
+    // Scattered soil particles
     ctx.fillStyle = '#6b4c3b';
     const seed = this.colony.id * 137;
     for (let i = 0; i < 12; i++) {
@@ -197,7 +346,7 @@ export class ColonyRenderer {
       ctx.globalAlpha = 1.0;
     }
 
-    // Food count text
+    // Food count
     ctx.fillStyle = '#e0e0e0';
     ctx.font = '9px monospace';
     ctx.textAlign = 'center';
@@ -205,22 +354,8 @@ export class ColonyRenderer {
     ctx.fillText(`${Math.floor(base.food)}`, x, y);
   }
 
-  render(ctx: CanvasRenderingContext2D, renderAnts: boolean): void {
-    if (renderAnts) this.renderAnts(ctx);
+  render(ctx: CanvasRenderingContext2D, renderAnts: boolean, zoom: number): void {
+    if (renderAnts) this.renderAnts(ctx, zoom);
     this.renderBase(ctx);
-  }
-
-  private darkenColor(hex: string, factor: number): string {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgb(${Math.floor(r * factor)},${Math.floor(g * factor)},${Math.floor(b * factor)})`;
-  }
-
-  private lightenColor(hex: string, factor: number): string {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgb(${Math.min(255, Math.floor(r + (255 - r) * factor))},${Math.min(255, Math.floor(g + (255 - g) * factor))},${Math.min(255, Math.floor(b + (255 - b) * factor))})`;
   }
 }

@@ -26,6 +26,32 @@ interface UpdateMapBody {
   thumbnail?: string;
 }
 
+// UI美化（task 22）：将老格式 gridData 升级为新格式
+// 老墙壁: [cx, cy]           → 新墙壁: [cx, cy, obstacleType=1]
+// 老食物:  [cx, cy, qty]      → 新食物:  [cx, cy, qty, foodType=0]
+// 新增 terrain 字段（空数组）
+function normalizeGridData(raw: string | undefined | null): string {
+  if (!raw) return '{}';
+  try {
+    const data = JSON.parse(raw);
+    const walls = (Array.isArray(data.walls) ? data.walls : []).map((w: any[]) =>
+      Array.isArray(w) && w.length === 2 ? [w[0], w[1], 1] : w
+    );
+    const foods = (Array.isArray(data.foods) ? data.foods : []).map((f: any[]) =>
+      Array.isArray(f) && f.length === 3 ? [f[0], f[1], f[2], 0] : f
+    );
+    const terrain = Array.isArray(data.terrain) ? data.terrain : [];
+    return JSON.stringify({
+      cellSize: data.cellSize || 4,
+      terrain,
+      walls,
+      foods,
+    });
+  } catch {
+    return raw;
+  }
+}
+
 export async function mapRoutes(app: FastifyInstance) {
   // GET /api/maps - list all maps (without grid_data for performance)
   app.get('/api/maps', async () => {
@@ -59,7 +85,7 @@ export async function mapRoutes(app: FastifyInstance) {
     }
     const result = db.prepare(
       'INSERT INTO maps (name, width, height, grid_data, thumbnail) VALUES (?, ?, ?, ?, ?)'
-    ).run(name, width, height, grid_data || '{}', thumbnail || null);
+    ).run(name, width, height, normalizeGridData(grid_data), thumbnail || null);
     return { id: result.lastInsertRowid };
   });
 
@@ -79,7 +105,7 @@ export async function mapRoutes(app: FastifyInstance) {
     const updates: string[] = [];
     const values: (string | number | null)[] = [];
     if (name !== undefined) { updates.push('name = ?'); values.push(name); }
-    if (grid_data !== undefined) { updates.push('grid_data = ?'); values.push(grid_data); }
+    if (grid_data !== undefined) { updates.push('grid_data = ?'); values.push(normalizeGridData(grid_data)); }
     if (thumbnail !== undefined) { updates.push('thumbnail = ?'); values.push(thumbnail); }
     if (updates.length === 0) {
       reply.code(400).send({ error: 'No fields to update' });

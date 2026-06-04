@@ -65,12 +65,9 @@ export class WorldRenderer {
         const cell = cells[cellIdx];
         let color = '';
 
-        if (cell.wall) {
-          color = '#726b6b';
-        } else if (cell.food > 0) {
-          const g = Math.min(255, 100 + cell.food * 10);
-          color = `rgb(0,${g},0)`;
-        } else if (drawMarkers && numColonies > 0) {
+        // UI美化：wall/food 已交给 ObstacleRenderer 和 FoodPileRenderer
+        // 这里只处理信息素 markers
+        if (!cell.wall && cell.food === 0 && drawMarkers && numColonies > 0) {
           let r = 0, g = 0, b = 0;
           for (let ci = 0; ci < numColonies; ci++) {
             const colonyCell = cell.markers[ci];

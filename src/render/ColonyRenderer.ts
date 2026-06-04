@@ -71,7 +71,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
       const px = ant.position.x;
@@ -88,6 +88,32 @@ export class ColonyRenderer {
       ctx.beginPath();
       ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
+    }
+
+    // UI美化（task 16）：中LOD身体暗色描边
+    ctx.strokeStyle = STROKE_COLOR;
+    ctx.lineWidth = STROKE_WIDTH_MEDIUM;
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      const px = ant.position.x;
+      const py = ant.position.y;
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
+      ctx.stroke();
       ctx.restore();
     }
 
@@ -118,7 +144,7 @@ export class ColonyRenderer {
       const alpha = Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const angle = ant.direction.angle + Math.PI / 2;
       ctx.save();
       ctx.translate(ant.position.x, ant.position.y);
@@ -166,6 +192,30 @@ export class ColonyRenderer {
       ctx.restore();
     }
 
+    // UI美化（task 16）：高LOD身体暗色描边
+    ctx.strokeStyle = STROKE_COLOR;
+    ctx.lineWidth = STROKE_WIDTH_DETAIL;
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
+      const wobble = Math.sin(ant.wobblePhase) * 0.05;
+      const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     // Batch 2: Antennae
     ctx.strokeStyle = color;
     ctx.lineWidth = 0.5;
@@ -174,7 +224,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
       const antWobble1 = Math.sin(ant.wobblePhase * 1.3) * 0.15;
@@ -208,7 +258,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
       const thoraxR = 1.4 * scale;
@@ -252,7 +302,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase !== Mode.ToHome && ant.phase !== Mode.ToHomeNoFood) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
       const headR = 1.2 * scale;
@@ -271,7 +321,7 @@ export class ColonyRenderer {
       const ant = ants[i];
       if (ant.phase !== Mode.Dying) continue;
       const alpha = Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION);
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const angle = ant.direction.angle + Math.PI / 2;
       ctx.globalAlpha = alpha;
       ctx.fillStyle = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;

@@ -115,15 +115,20 @@ interface InitConfig {
 
 ### 3.4 渲染流程（按 z-order）
 1. **清屏**：`ctx.clearRect()`
-2. **地形底图**：`TerrainRenderer` 按 cell 填充 4 种图案
-3. **磨损土路**：`TerrainRenderer` 用 wearLevel>threshold 的 cell 叠加土路图案
-4. **信息素**：蚁群色透明度叠加在格子上（保持现状逻辑）
+2. **地形底图**：`TerrainRenderer` 按 cell 填充 4 种图案（水地形与障碍物同层，因为蚂蚁不能通过水）
+3. **磨损土路**：`TerrainRenderer` 用 wearLevel > 0.3 的 cell 叠加土路图案
+4. **信息素**：蚁群色透明度叠加在格子上（保持现状逻辑，不在已变水/石头的 cell 上画）
 5. **障碍物**：`ObstacleRenderer` 绘制 4 种砖墙（z 高于地形，蚂蚁无法通过）
 6. **食物堆**：`FoodPileRenderer` 绘制 3 尺寸 SVG 堆（按 qty 决定大小+种类）
 7. **蚁窝**：`ColonyRenderer.renderBase()` 增强版本
 8. **蚂蚁**：`ColonyRenderer.renderAnts()`（已存在 LOD 逻辑不变）
 
-### 3.5 缓存策略
+### 3.5 通行规则（与地形系统绑定）
+- 草地、沙地：可通行，蚂蚁按 `Config.ANT_SPEED` 移动
+- 水：不可通行（视为墙），与 obstacle 行为一致
+- 石头：装饰性底图，本身不阻挡（地图作者可叠墙在上面）
+
+### 3.6 缓存策略
 - SVG 字符串 → 预解析为 `OffscreenCanvas`（24×12 障碍物、20×20 地形等）存入 `AssetRegistry`
 - Canvas API 渲染时 `ctx.drawImage(cache, x, y, cellSize*scale, cellSize*scale)`
 - 避免每帧 `new Path2D()` / `parseFloat()` 的开销

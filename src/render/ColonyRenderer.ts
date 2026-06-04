@@ -6,6 +6,13 @@ import { Ant } from '@/simulation/Ant';
 const LOD_DETAIL = 1.5;
 const LOD_SIMPLE = 0.6;
 
+// UI美化（task 16）：蚂蚁群聚可辨识性增强
+// 整体尺寸缩 0.7x（让群体中草地透出），加 0.5px 暗色描边（单只边界清晰）
+const ANT_SCALE = 0.7;
+const STROKE_COLOR = '#1a0808';
+const STROKE_WIDTH_DETAIL = 0.5;
+const STROKE_WIDTH_MEDIUM = 0.3;
+
 export class ColonyRenderer {
   colony: Colony;
 
@@ -39,7 +46,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase === Mode.Dead) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const h = 4 * scale;
       const angle = ant.direction.angle + Math.PI / 2;
       const cos = Math.cos(angle);
@@ -90,7 +97,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase !== Mode.ToHome && ant.phase !== Mode.ToHomeNoFood) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
       const px = ant.position.x;
@@ -135,7 +142,7 @@ export class ColonyRenderer {
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
       if (ant.phase === Mode.Dead || ant.phase === Mode.Dying) continue;
-      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const scale = (ant.type === AntType.Soldier ? 2.0 : 1.0) * ANT_SCALE;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
       ctx.save();
@@ -324,6 +331,64 @@ export class ColonyRenderer {
       ctx.arc(x + Math.cos(a) * r, y + Math.sin(a) * r, dotR, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    // UI美化：蚁群色脉冲光晕（task 15）
+    ctx.strokeStyle = this.colony.antsColor;
+    ctx.lineWidth = 0.8;
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    ctx.arc(x, y, radius + 4, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.globalAlpha = 1.0;
+
+    // UI美化：顶部小草（3 株，伪随机角度）
+    ctx.strokeStyle = '#3a5a20';
+    ctx.lineWidth = 1.4;
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 3; i++) {
+      const angle = (seed + i * 2.094) % (2 * Math.PI);
+      const gr = radius * 0.85;
+      const gx = x + Math.cos(angle) * gr;
+      const gy = y + Math.sin(angle) * gr * 0.5;
+      const grassH = 4 + ((seed + i * 31) % 100) / 25;
+      ctx.beginPath();
+      ctx.moveTo(gx - 1, gy);
+      ctx.quadraticCurveTo(gx, gy - grassH * 0.6, gx + 0.5, gy - grassH);
+      ctx.stroke();
+    }
+
+    // UI美化：周围 3 只装饰蚂蚁
+    ctx.fillStyle = this.colony.antsColor;
+    for (let i = 0; i < 3; i++) {
+      const angle = (seed + i * 1.7 + 0.5) % (2 * Math.PI);
+      const ar = radius * (0.9 + ((seed + i * 23) % 100) / 500);
+      const ax = x + Math.cos(angle) * ar;
+      const ay = y + Math.sin(angle) * ar * 0.7;
+      ctx.save();
+      ctx.translate(ax, ay);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 1.5, 0.8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // UI美化：4 个方向的蚁道痕迹
+    ctx.strokeStyle = '#5a4020';
+    ctx.lineWidth = 2.5;
+    ctx.globalAlpha = 0.4;
+    for (let i = 0; i < 4; i++) {
+      const angle = (seed + i * 1.57) % (2 * Math.PI);
+      const sx2 = x + Math.cos(angle) * radius * 0.6;
+      const sy2 = y + Math.sin(angle) * radius * 0.5;
+      const ex = x + Math.cos(angle) * radius * 1.6;
+      const ey = y + Math.sin(angle) * radius * 1.3;
+      ctx.beginPath();
+      ctx.moveTo(sx2, sy2);
+      ctx.lineTo(ex, ey);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1.0;
 
     const foodRatio = base.food / base.maxFood;
     if (foodRatio > 0.01) {

@@ -119,7 +119,7 @@ export function useSimulation(
 
         worker.postMessage({
           type: 'init',
-          config: setupConfig,
+          config: { ...setupConfig, enableVisualTheme: true },
         } satisfies WorkerCommand);
 
         return () => {
@@ -143,13 +143,26 @@ export function useSimulation(
         try {
           const data = JSON.parse(setupConfig.gridData);
           const cs = data.cellSize || 4;
-          for (const [cx, cy] of data.walls || []) {
-            sim.world.addWallByCoords({ x: cx as number, y: cy as number });
+          // UI美化：兼容 [cx,cy,obstacleType] 和 [cx,cy] 两种墙壁格式
+          for (const w of data.walls || []) {
+            const cx = w[0] as number, cy = w[1] as number;
+            sim.world.addWallByCoords({ x: cx, y: cy });
+            if (w.length >= 3) {
+              sim.world.setObstacle(cx, cy, w[2] as number);
+            }
           }
-          for (const [cx, cy, qty] of data.foods || []) {
-            const wx = (cx as number) * cs + cs / 2;
-            const wy = (cy as number) * cs + cs / 2;
-            sim.world.addFoodAt(wx, wy, qty as number);
+          for (const f of data.foods || []) {
+            const cx = f[0] as number, cy = f[1] as number, qty = f[2] as number;
+            const wx = cx * cs + cs / 2;
+            const wy = cy * cs + cs / 2;
+            sim.world.addFoodAt(wx, wy, qty);
+            if (f.length >= 4) {
+              sim.world.setFoodType(cx, cy, f[3] as number);
+            }
+          }
+          // UI美化：地形数组 [[cx, cy, terrainType], ...]
+          for (const t of data.terrain || []) {
+            sim.world.setTerrain(t[0] as number, t[1] as number, t[2] as number);
           }
         } catch (e) {
           console.error('Failed to parse gridData:', e);

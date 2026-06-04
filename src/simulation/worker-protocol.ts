@@ -5,7 +5,15 @@
 
 // Main → Worker commands
 export type WorkerCommand =
-  | { type: 'init'; config: { workerCount: number; soldierCount: number; colonyCount: number } }
+  | { type: 'init'; config: {
+      workerCount: number;
+      soldierCount: number;
+      colonyCount: number;
+      mapWidth?: number;
+      mapHeight?: number;
+      colonyPositions?: Array<{ x: number; y: number }>;
+      gridData?: string;
+    } }
   | { type: 'pause'; paused: boolean }
   | { type: 'speed'; speed: number; maxSpeed: boolean }
   | { type: 'addFood'; x: number; y: number; quantity: number }

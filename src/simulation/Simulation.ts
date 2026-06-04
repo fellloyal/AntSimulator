@@ -11,8 +11,8 @@ export class Simulation {
   fightSystem: FightSystem;
   paused = false;
 
-  constructor() {
-    this.world = new World(Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
+  constructor(width: number = Config.WORLD_WIDTH, height: number = Config.WORLD_HEIGHT) {
+    this.world = new World(width, height);
     this.colonies = [];
     this.fightSystem = new FightSystem();
   }

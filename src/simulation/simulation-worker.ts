@@ -243,12 +243,40 @@ self.onmessage = (e: MessageEvent<WorkerCommand>) => {
 
   switch (msg.type) {
     case 'init': {
-      const s = new Simulation();
+      const mapWidth = msg.config.mapWidth || Config.WORLD_WIDTH;
+      const mapHeight = msg.config.mapHeight || Config.WORLD_HEIGHT;
+      const s = new Simulation(mapWidth, mapHeight);
+
+      // Load map grid data if provided
+      if (msg.config.gridData) {
+        try {
+          const data = JSON.parse(msg.config.gridData);
+          const cs = data.cellSize || 4;
+          for (const [cx, cy] of data.walls || []) {
+            s.world.addWallByCoords({ x: cx as number, y: cy as number });
+          }
+          for (const [cx, cy, qty] of data.foods || []) {
+            const wx = (cx as number) * cs + cs / 2;
+            const wy = (cy as number) * cs + cs / 2;
+            s.world.addFoodAt(wx, wy, qty as number);
+          }
+        } catch (e) {
+          console.error('[Worker] Failed to parse gridData:', e);
+        }
+      }
+
       const { workerCount, soldierCount, colonyCount } = msg.config;
+      const positions = msg.config.colonyPositions;
       for (let i = 0; i < colonyCount; i++) {
-        const angle = (i / colonyCount) * 2 * Math.PI;
-        const cx = Config.WORLD_WIDTH / 2 + Math.cos(angle) * 300;
-        const cy = Config.WORLD_HEIGHT / 2 + Math.sin(angle) * 300;
+        let cx: number, cy: number;
+        if (positions && positions[i]) {
+          cx = positions[i].x;
+          cy = positions[i].y;
+        } else {
+          const angle = (i / colonyCount) * 2 * Math.PI;
+          cx = mapWidth / 2 + Math.cos(angle) * 300;
+          cy = mapHeight / 2 + Math.sin(angle) * 300;
+        }
         s.createColony(cx, cy, workerCount, soldierCount);
       }
       sim.current = s;

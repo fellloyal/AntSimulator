@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState } from 'react';
-import { ChevronRight, ChevronLeft, PlusCircle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, PlusCircle, ArrowLeft } from 'lucide-react';
 import useStore from '@/store/useStore';
 import ControlPanel from '@/components/ControlPanel';
 import EditToolbar from '@/components/EditToolbar';
@@ -29,6 +29,7 @@ export default function Simulator({
   const toggleShowAnts = useStore((s) => s.toggleShowAnts);
   const toggleMaxSpeed = useStore((s) => s.toggleMaxSpeed);
   const setActiveTool = useStore((s) => s.setActiveTool);
+  const resetSimulation = useStore((s) => s.resetSimulation);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -91,7 +92,15 @@ export default function Simulator({
       />
 
       {/* Control Panel - top left */}
-      <div className="absolute left-4 top-4 z-10">
+      <div className="absolute left-4 top-4 z-10 flex items-start gap-2">
+        <button
+          onClick={resetSimulation}
+          className="flex items-center gap-1 rounded-lg bg-white/5 px-3 py-2 text-xs text-[#8a9a8a] transition-colors hover:bg-white/10 hover:text-[#e0e8e0]"
+          title="返回主菜单"
+        >
+          <ArrowLeft size={14} />
+          菜单
+        </button>
         <ControlPanel />
       </div>
 

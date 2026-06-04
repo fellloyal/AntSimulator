@@ -96,20 +96,22 @@ export function useSimulation(
         worker.onmessage = handleWorkerMessage;
         workerRef.current = worker;
 
-        const tempSim = new Simulation();
+        const tempSim = new Simulation(setupConfig.mapWidth, setupConfig.mapHeight);
         const wr = new WorkerRenderer(tempSim.world.map.width, tempSim.world.map.height, tempSim.world.map.cellSize);
         workerRendererRef.current = wr;
 
         const colonyCount = setupConfig.colonyCount;
         wr.coloniesColor = Array.from({ length: colonyCount }, (_, i) => Config.COLONY_COLORS[i] || '#ffffff');
 
+        const worldW = setupConfig.mapWidth || Config.WORLD_WIDTH;
+        const worldH = setupConfig.mapHeight || Config.WORLD_HEIGHT;
         const resizeCanvas = () => {
           const canvas = canvasRef.current;
           if (canvas) {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            wr.viewport.offsetX = (canvas.width - Config.WORLD_WIDTH) / 2;
-            wr.viewport.offsetY = (canvas.height - Config.WORLD_HEIGHT) / 2;
+            wr.viewport.offsetX = (canvas.width - worldW) / 2;
+            wr.viewport.offsetY = (canvas.height - worldH) / 2;
           }
         };
         resizeCanvas();
@@ -132,12 +134,40 @@ export function useSimulation(
     }
 
     if (!useWorkerRef.current) {
-      const sim = new Simulation();
+      const mapW = setupConfig.mapWidth || Config.WORLD_WIDTH;
+      const mapH = setupConfig.mapHeight || Config.WORLD_HEIGHT;
+      const sim = new Simulation(mapW, mapH);
+
+      // Load map grid data if provided
+      if (setupConfig.gridData) {
+        try {
+          const data = JSON.parse(setupConfig.gridData);
+          const cs = data.cellSize || 4;
+          for (const [cx, cy] of data.walls || []) {
+            sim.world.addWallByCoords({ x: cx as number, y: cy as number });
+          }
+          for (const [cx, cy, qty] of data.foods || []) {
+            const wx = (cx as number) * cs + cs / 2;
+            const wy = (cy as number) * cs + cs / 2;
+            sim.world.addFoodAt(wx, wy, qty as number);
+          }
+        } catch (e) {
+          console.error('Failed to parse gridData:', e);
+        }
+      }
+
       const { workerCount, soldierCount, colonyCount } = setupConfig;
+      const positions = setupConfig.colonyPositions;
       for (let i = 0; i < colonyCount; i++) {
-        const angle = (i / colonyCount) * 2 * Math.PI;
-        const cx = Config.WORLD_WIDTH / 2 + Math.cos(angle) * 300;
-        const cy = Config.WORLD_HEIGHT / 2 + Math.sin(angle) * 300;
+        let cx: number, cy: number;
+        if (positions && positions[i]) {
+          cx = positions[i].x;
+          cy = positions[i].y;
+        } else {
+          const angle = (i / colonyCount) * 2 * Math.PI;
+          cx = mapW / 2 + Math.cos(angle) * 300;
+          cy = mapH / 2 + Math.sin(angle) * 300;
+        }
         sim.createColony(cx, cy, workerCount, soldierCount);
       }
 
@@ -157,8 +187,8 @@ export function useSimulation(
           canvas.width = window.innerWidth;
           canvas.height = window.innerHeight;
           if (rendererRef.current) {
-            rendererRef.current.viewport.offsetX = (canvas.width - Config.WORLD_WIDTH) / 2;
-            rendererRef.current.viewport.offsetY = (canvas.height - Config.WORLD_HEIGHT) / 2;
+            rendererRef.current.viewport.offsetX = (canvas.width - mapW) / 2;
+            rendererRef.current.viewport.offsetY = (canvas.height - mapH) / 2;
           }
         }
       };

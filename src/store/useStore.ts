@@ -1,18 +1,44 @@
 import { create } from 'zustand';
 
 export type EditTool = 'none' | 'food' | 'wall' | 'erase' | 'colony';
+export type EditorTool = 'none' | 'wall' | 'food' | 'erase';
+export type AppPage = 'menu' | 'editor' | 'setup' | 'simulator';
 
 export interface SetupConfig {
   workerCount: number;
   soldierCount: number;
   colonyCount: number;
+  mapId?: number;
+  mapWidth?: number;
+  mapHeight?: number;
+  colonyPositions?: Array<{ x: number; y: number }>;
+  gridData?: string;
 }
 
 interface SimulatorState {
+  // Page routing
+  page: AppPage;
+  setPage: (page: AppPage) => void;
+
+  // Map editor
+  editorMapId: number | null;
+  editorMapName: string;
+  editorMapWidth: number;
+  editorMapHeight: number;
+  editorGridData: string;
+  setEditorMap: (id: number | null, name: string, width: number, height: number, gridData?: string) => void;
+
+  // Game setup
+  selectedMapId: number | null;
+  setSelectedMapId: (id: number | null) => void;
+  colonyPositions: Array<{ x: number; y: number }>;
+  setColonyPositions: (positions: Array<{ x: number; y: number }>) => void;
+
   // Setup phase
   started: boolean;
   setupConfig: SetupConfig;
   startSimulation: (config: SetupConfig) => void;
+  resetSimulation: () => void;
 
   paused: boolean;
   speed: number;
@@ -44,9 +70,26 @@ interface SimulatorState {
 }
 
 const useStore = create<SimulatorState>((set) => ({
+  page: 'menu',
+  setPage: (page) => set({ page }),
+
+  editorMapId: null,
+  editorMapName: '',
+  editorMapWidth: 1920,
+  editorMapHeight: 1080,
+  editorGridData: '',
+  setEditorMap: (id, name, width, height, gridData) =>
+    set({ editorMapId: id, editorMapName: name, editorMapWidth: width, editorMapHeight: height, editorGridData: gridData || '' }),
+
+  selectedMapId: null,
+  setSelectedMapId: (id) => set({ selectedMapId: id }),
+  colonyPositions: [],
+  setColonyPositions: (positions) => set({ colonyPositions: positions }),
+
   started: false,
   setupConfig: { workerCount: 400, soldierCount: 50, colonyCount: 1 },
-  startSimulation: (config) => set({ started: true, setupConfig: config }),
+  startSimulation: (config) => set({ started: true, setupConfig: config, page: 'simulator' }),
+  resetSimulation: () => set({ started: false, page: 'menu', paused: false, speed: 1, maxSpeed: false }),
 
   paused: false,
   speed: 1,

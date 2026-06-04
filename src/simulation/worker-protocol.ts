@@ -13,6 +13,7 @@ export type WorkerCommand =
       mapHeight?: number;
       colonyPositions?: Array<{ x: number; y: number }>;
       gridData?: string;
+      enableVisualTheme?: boolean;  // UI美化（task 19）：true=启用信息素环境渲染，false=退回原#111黑底
     } }
   | { type: 'pause'; paused: boolean }
   | { type: 'speed'; speed: number; maxSpeed: boolean }

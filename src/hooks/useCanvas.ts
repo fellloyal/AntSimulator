@@ -200,6 +200,14 @@ export function useCanvas(
             const worker = workerRef?.current;
             if (worker) {
               worker.postMessage({ type: 'addColony', x: world.x, y: world.y } satisfies WorkerCommand);
+              // Update WorkerRenderer colors for the new colony
+              const wr = workerRendererRef?.current;
+              if (wr) {
+                const currentCount = wr.coloniesColor.length;
+                if (currentCount < Config.MAX_COLONIES_COUNT) {
+                  wr.coloniesColor.push(Config.COLONY_COLORS[currentCount] || '#ffffff');
+                }
+              }
             } else {
               const sim = simulationRef.current;
               const renderer = rendererRef.current;
@@ -218,7 +226,7 @@ export function useCanvas(
         isToolActiveRef.current = false;
       }
     },
-    [activeTool, screenToWorld, canvasRef, simulationRef, rendererRef, workerRef]
+    [activeTool, screenToWorld, canvasRef, simulationRef, rendererRef, workerRef, workerRendererRef]
   );
 
   const onWheel = useCallback(

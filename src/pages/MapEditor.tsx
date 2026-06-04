@@ -405,12 +405,91 @@ export default function MapEditor() {
     setSaving(false);
   }, [editorMapId, mapName, editorMapWidth, editorMapHeight, gridW, setEditorMap]);
 
-  // Size presets
-  const sizePresets = [
-    { label: '小 960×540', w: 960, h: 540 },
-    { label: '中 1920×1080', w: 1920, h: 1080 },
-    { label: '大 3840×2160', w: 3840, h: 2160 },
+  // Size presets - 4 档 × 2 比例 + 自定义（比例输入）
+  type Ratio = '1:1' | '4:3' | '16:9' | '9:16' | '21:9';
+  const RATIOS: { id: Ratio; label: string; w: number; h: number }[] = [
+    { id: '1:1', label: '1:1', w: 1, h: 1 },
+    { id: '4:3', label: '4:3', w: 4, h: 3 },
+    { id: '16:9', label: '16:9', w: 16, h: 9 },
+    { id: '9:16', label: '9:16', w: 9, h: 16 },
+    { id: '21:9', label: '21:9', w: 21, h: 9 },
   ];
+  // 按当前宽高推断比例
+  function detectRatio(w: number, h: number): Ratio {
+    const r = w / h;
+    let best: Ratio = '1:1';
+    let bestDiff = Infinity;
+    for (const x of RATIOS) {
+      const diff = Math.abs(x.w / x.h - r);
+      if (diff < bestDiff) { bestDiff = diff; best = x.id; }
+    }
+    return best;
+  }
+  const [ratio, setRatio] = useState<Ratio>(detectRatio(editorMapWidth, editorMapHeight));
+  const [customW, setCustomW] = useState<number>(editorMapWidth);
+  const [customH, setCustomH] = useState<number>(editorMapHeight);
+  // 同步 editorMap 变化
+  useEffect(() => {
+    setRatio(detectRatio(editorMapWidth, editorMapHeight));
+    setCustomW(editorMapWidth);
+    setCustomH(editorMapHeight);
+  }, [editorMapWidth, editorMapHeight]);
+
+  const SIZE_PRESETS: { tier: string; items: { label: string; w: number; h: number }[] }[] = [
+    {
+      tier: '极小', items: [
+        { label: '240×135', w: 240, h: 135 },
+        { label: '240×426', w: 240, h: 426 },
+      ],
+    },
+    {
+      tier: '小', items: [
+        { label: '480×270', w: 480, h: 270 },
+        { label: '480×854', w: 480, h: 854 },
+      ],
+    },
+    {
+      tier: '中', items: [
+        { label: '960×540', w: 960, h: 540 },
+        { label: '960×1706', w: 960, h: 1706 },
+      ],
+    },
+    {
+      tier: '大', items: [
+        { label: '1920×1080', w: 1920, h: 1080 },
+        { label: '1920×3408', w: 1920, h: 3408 },
+      ],
+    },
+  ];
+
+  // 按当前比例计算对应高
+  function calcHeightByRatio(r: Ratio, w: number): number {
+    const found = RATIOS.find((x) => x.id === r)!;
+    return Math.round(w * found.h / found.w);
+  }
+  // 比例变更时同步
+  function handleRatioChange(r: Ratio) {
+    setRatio(r);
+    const newH = calcHeightByRatio(r, customW);
+    setCustomH(newH);
+  }
+  // 宽变更时按比例更新高
+  function handleWidthChange(w: number) {
+    setCustomW(w);
+    setCustomH(calcHeightByRatio(ratio, w));
+  }
+  // 高变更时按比例更新宽
+  function handleHeightChange(h: number) {
+    setCustomH(h);
+    const found = RATIOS.find((x) => x.id === ratio)!;
+    setCustomW(Math.round(h * found.w / found.h));
+  }
+  // 应用自定义尺寸
+  function applyCustomSize() {
+    if (customW < 100 || customH < 100) return;
+    if (customW > 6000 || customH > 6000) return;
+    setEditorMap(null, mapName, customW, customH);
+  }
 
   const tools: { id: EditorTool; icon: React.ReactNode; label: string }[] = [
     { id: 'wall', icon: <Square size={16} />, label: '墙壁(W)' },
@@ -451,22 +530,6 @@ export default function MapEditor() {
           style={{ width: 160 }}
           placeholder="地图名称"
         />
-
-        <div className="flex gap-1">
-          {sizePresets.map((p) => (
-            <button
-              key={p.w}
-              onClick={() => setEditorMap(null, mapName, p.w, p.h)}
-              className="rounded-lg px-2 py-1 text-xs transition-colors"
-              style={{
-                background: editorMapWidth === p.w ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
-                color: editorMapWidth === p.w ? '#000' : 'var(--text-secondary)',
-              }}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
 
         <div className="flex-1" />
 
@@ -582,6 +645,97 @@ export default function MapEditor() {
           onChange={(e) => setBrushSize(Number(e.target.value))}
           className="w-full custom-range"
         />
+      </div>
+
+      {/* Right: size panel */}
+      <div className="absolute right-4 top-20 z-10 glass-panel p-3 w-52 flex flex-col gap-3">
+        <div className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>地图尺寸</div>
+
+        {/* 比例选择 */}
+        <div className="flex flex-col gap-1">
+          <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>比例</div>
+          <div className="grid grid-cols-5 gap-1">
+            {RATIOS.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => handleRatioChange(r.id)}
+                className="rounded px-1 py-1 text-[10px] transition-colors"
+                style={{
+                  background: ratio === r.id ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                  color: ratio === r.id ? '#000' : 'var(--text-secondary)',
+                }}
+                title={r.id}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 自定义宽高 */}
+        <div className="flex flex-col gap-1">
+          <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>自定义（按比例）</div>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>宽</span>
+            <input
+              type="number"
+              min={100}
+              max={6000}
+              value={customW}
+              onChange={(e) => handleWidthChange(Math.max(100, Math.min(6000, Number(e.target.value) || 0)))}
+              className="flex-1 rounded bg-white/5 px-2 py-1 text-xs text-[#e0e8e0] outline-none border border-white/10 focus:border-[#429942]/50 w-0"
+            />
+            <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>高</span>
+            <input
+              type="number"
+              min={100}
+              max={6000}
+              value={customH}
+              onChange={(e) => handleHeightChange(Math.max(100, Math.min(6000, Number(e.target.value) || 0)))}
+              className="flex-1 rounded bg-white/5 px-2 py-1 text-xs text-[#e0e8e0] outline-none border border-white/10 focus:border-[#429942]/50 w-0"
+            />
+          </div>
+          <button
+            onClick={applyCustomSize}
+            className="rounded-lg py-1 text-xs font-bold transition-colors"
+            style={{
+              background: 'var(--accent-green)',
+              color: '#000',
+            }}
+          >
+            应用尺寸
+          </button>
+        </div>
+
+        <div className="border-t border-white/5" />
+
+        {/* 预设分组 */}
+        <div className="flex flex-col gap-2">
+          <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>预设（16:9 / 9:16）</div>
+          {SIZE_PRESETS.map((g) => (
+            <div key={g.tier} className="flex flex-col gap-1">
+              <div className="text-[10px] opacity-70" style={{ color: 'var(--text-secondary)' }}>{g.tier}</div>
+              <div className="grid grid-cols-2 gap-1">
+                {g.items.map((p) => {
+                  const active = editorMapWidth === p.w && editorMapHeight === p.h;
+                  return (
+                    <button
+                      key={p.w + 'x' + p.h}
+                      onClick={() => setEditorMap(null, mapName, p.w, p.h)}
+                      className="rounded px-1 py-1 text-[10px] transition-colors"
+                      style={{
+                        background: active ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                        color: active ? '#000' : 'var(--text-secondary)',
+                      }}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Keyboard shortcuts */}

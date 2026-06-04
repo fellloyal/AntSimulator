@@ -16,23 +16,25 @@ export class WorldRenderer {
 
   private static readonly INTENSITY_FACTOR = 255.0 / Config.MARKER_INTENSITY;
 
-  // Offscreen canvas for ImageData rendering
+  // Reusable offscreen canvas and ImageData buffer
   private offscreenCanvas: OffscreenCanvas | null = null;
   private offscreenCtx: OffscreenCanvasRenderingContext2D | null = null;
+  private imageData: ImageData | null = null;
   private lastGridWidth = 0;
   private lastGridHeight = 0;
 
-  // Cached colony RGB values to avoid re-parsing hex every frame
+  // Cached colony RGB values
   private colonyRgbCache: Array<{ r: number; g: number; b: number }> = [];
 
   constructor(map: WorldGrid) {
     this.map = map;
   }
 
-  private ensureOffscreen(width: number, height: number): void {
+  private ensureBuffers(width: number, height: number): void {
     if (this.lastGridWidth !== width || this.lastGridHeight !== height) {
       this.offscreenCanvas = new OffscreenCanvas(width, height);
-      this.offscreenCtx = this.offscreenCanvas.getContext('2d');
+      this.offscreenCtx = this.offscreenCanvas.getContext('2d')!;
+      this.imageData = this.offscreenCtx.createImageData(width, height);
       this.lastGridWidth = width;
       this.lastGridHeight = height;
     }
@@ -53,12 +55,12 @@ export class WorldRenderer {
   render(ctx: CanvasRenderingContext2D, _viewport: ViewportState): void {
     const { width, height, cellSize, cells } = this.map;
 
-    // Use ImageData for the world grid rendering (1 pixel per cell)
-    this.ensureOffscreen(width, height);
-    if (!this.offscreenCtx) return;
+    this.ensureBuffers(width, height);
+    if (!this.offscreenCtx || !this.imageData) return;
 
-    const imageData = this.offscreenCtx.createImageData(width, height);
-    const data = imageData.data;
+    // Reuse the same ImageData buffer — just zero it out
+    const data = this.imageData.data;
+    data.fill(0);
 
     const numColonies = this.coloniesColor.length;
     this.updateColonyRgbCache();
@@ -73,7 +75,6 @@ export class WorldRenderer {
         const cell = cells[cellIdx];
         const pixIdx = cellIdx * 4;
 
-        // Background is transparent (world bg drawn by Renderer)
         let r = 0, g = 0, b = 0, a = 0;
 
         // 1. Walls
@@ -86,7 +87,7 @@ export class WorldRenderer {
           a = 255;
         }
         // 3. Markers
-        else if (drawMarkers) {
+        else if (drawMarkers && numColonies > 0) {
           for (let ci = 0; ci < numColonies; ci++) {
             const colonyCell = cell.markers[ci];
             const toHomeI = colonyCell.intensity[Mode.ToHome];
@@ -96,27 +97,23 @@ export class WorldRenderer {
 
             if (toHomeI > 0.1 || toFoodI > 0.1 || toEnemyI > 0.1 || repellent > 0.1) {
               const rgb = colonyRgb[ci] || colonyRgb[0];
-              // ToHome: colony color (dimmed)
               if (toHomeI > 0.1) {
                 const f = intensityFactor * toHomeI;
                 r += rgb.r * 0.8 * f;
                 g += rgb.g * 0.3 * f;
                 b += rgb.b * 0.3 * f;
               }
-              // ToFood: green tint
               if (toFoodI > 0.1) {
                 const f = intensityFactor * toFoodI;
                 r += rgb.r * 0.3 * f;
                 g += rgb.g * 0.8 * f;
                 b += rgb.b * 0.3 * f;
               }
-              // ToEnemy: purple tint
               if (toEnemyI > 0.1) {
                 const f = intensityFactor * toEnemyI;
                 r += 200 * f;
                 b += 200 * f;
               }
-              // Repellent: blue tint
               if (repellent > 0.1) {
                 const f = intensityFactor * repellent;
                 b += 255 * f;
@@ -132,12 +129,11 @@ export class WorldRenderer {
           }
         }
 
-        // 4. Density overlay (blended on top)
+        // 4. Density overlay
         if (drawDensity && !cell.wall && cell.density > 0.01) {
           const dr = Math.min(255, 4.0 * cell.density * 255) | 0;
           const dg = Math.min(255, cell.density * 255) | 0;
           const db = Math.min(255, cell.density * 255) | 0;
-          // Alpha blend density at 50% over existing color
           if (a > 0) {
             r = (r * 0.5 + dr * 0.5) | 0;
             g = (g * 0.5 + dg * 0.5) | 0;
@@ -154,7 +150,7 @@ export class WorldRenderer {
       }
     }
 
-    this.offscreenCtx.putImageData(imageData, 0, 0);
+    this.offscreenCtx.putImageData(this.imageData, 0, 0);
 
     // Draw the offscreen canvas scaled up to world coordinates
     ctx.imageSmoothingEnabled = false;

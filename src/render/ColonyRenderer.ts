@@ -3,8 +3,8 @@ import { Mode, AntType } from '@/simulation/types';
 import { Ant } from '@/simulation/Ant';
 
 // LOD thresholds based on viewport zoom
-const LOD_DETAIL = 1.5;   // Full detail above this zoom
-const LOD_SIMPLE = 0.6;   // Simple rects below this zoom
+const LOD_DETAIL = 1.5;
+const LOD_SIMPLE = 0.6;
 
 export class ColonyRenderer {
   colony: Colony;
@@ -17,13 +17,11 @@ export class ColonyRenderer {
     const ants = this.colony.ants;
     const color = this.colony.antsColor;
 
-    // Parse color once
     const cr = parseInt(color.slice(1, 3), 16);
     const cg = parseInt(color.slice(3, 5), 16);
     const cb = parseInt(color.slice(5, 7), 16);
     const colorLight = `rgb(${Math.min(255, cr + ((255 - cr) >> 2))},${Math.min(255, cg + ((255 - cg) >> 2))},${Math.min(255, cb + ((255 - cb) >> 2))})`;
 
-    // Choose LOD level
     if (zoom >= LOD_DETAIL) {
       this.renderAntsDetailed(ctx, ants, color, colorLight, cr, cg, cb);
     } else if (zoom >= LOD_SIMPLE) {
@@ -33,9 +31,10 @@ export class ColonyRenderer {
     }
   }
 
-  // LOD 0: Simple rectangles - fastest
+  // LOD 0: Simple line segments - fastest
   private renderAntsSimple(ctx: CanvasRenderingContext2D, ants: Ant[], color: string): void {
-    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
@@ -49,41 +48,41 @@ export class ColonyRenderer {
       const dy = sin * h * 0.5;
       const px = ant.position.x;
       const py = ant.position.y;
-      // Draw as a simple line segment
       ctx.moveTo(px - dx, py - dy);
       ctx.lineTo(px + dx, py + dy);
     }
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
     ctx.stroke();
   }
 
-  // LOD 1: Ovals - medium quality
+  // LOD 1: Ovals - medium quality, no save/restore
   private renderAntsMedium(
     ctx: CanvasRenderingContext2D, ants: Ant[], color: string,
     cr: number, cg: number, cb: number
   ): void {
-    // Batch alive ants by fill
+    // Alive ants body batch
     ctx.fillStyle = color;
-    ctx.beginPath();
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
-      if (ant.phase === Mode.Dying) continue;
-      if (ant.phase === Mode.Dead) continue;
+      if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      const px = ant.position.x;
+      const py = ant.position.y;
       ctx.save();
-      ctx.translate(ant.position.x, ant.position.y);
+      ctx.translate(px, py);
       ctx.rotate(angle);
-      // Simple 3-segment body
-      ctx.moveTo(1.2 * scale, -3.5 * scale);
+      ctx.beginPath();
       ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
       ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
       ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
-    ctx.fill();
 
     // Food dots
     ctx.fillStyle = '#429942';
@@ -94,8 +93,10 @@ export class ColonyRenderer {
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
       const wobble = Math.sin(ant.wobblePhase) * 0.05;
       const angle = ant.direction.angle + Math.PI / 2 + wobble;
+      const px = ant.position.x;
+      const py = ant.position.y;
       ctx.save();
-      ctx.translate(ant.position.x, ant.position.y);
+      ctx.translate(px, py);
       ctx.rotate(angle);
       ctx.moveTo(1.2 * scale, -5.5 * scale);
       ctx.arc(0, -5.5 * scale, 1.2 * scale, 0, Math.PI * 2);
@@ -103,26 +104,24 @@ export class ColonyRenderer {
     }
     ctx.fill();
 
-    // Dying ants (separate batch with alpha)
-    if (ants.some(a => a.phase === Mode.Dying)) {
-      for (let i = 0; i < ants.length; i++) {
-        const ant = ants[i];
-        if (ant.phase !== Mode.Dying) continue;
-        const alpha = Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION);
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
-        const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
-        const angle = ant.direction.angle + Math.PI / 2;
-        ctx.save();
-        ctx.translate(ant.position.x, ant.position.y);
-        ctx.rotate(angle);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 1.6 * scale, 3 * scale, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      ctx.globalAlpha = 1.0;
+    // Dying ants
+    for (let i = 0; i < ants.length; i++) {
+      const ant = ants[i];
+      if (ant.phase !== Mode.Dying) continue;
+      const alpha = Math.max(0, 1.0 - ant.dyingTimer / Ant.DYING_DURATION);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const angle = ant.direction.angle + Math.PI / 2;
+      ctx.save();
+      ctx.translate(ant.position.x, ant.position.y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 1.6 * scale, 3 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
+    ctx.globalAlpha = 1.0;
   }
 
   // LOD 2: Full detail with legs and antennae
@@ -131,7 +130,7 @@ export class ColonyRenderer {
     color: string, colorLight: string,
     cr: number, cg: number, cb: number
   ): void {
-    // Batch 1: Body segments (alive, non-dying)
+    // Batch 1: Body segments
     ctx.fillStyle = color;
     for (let i = 0; i < ants.length; i++) {
       const ant = ants[i];
@@ -160,7 +159,7 @@ export class ColonyRenderer {
       ctx.restore();
     }
 
-    // Batch 2: Antennae (all alive ants)
+    // Batch 2: Antennae
     ctx.strokeStyle = color;
     ctx.lineWidth = 0.5;
     ctx.lineCap = 'round';
@@ -182,13 +181,11 @@ export class ColonyRenderer {
       ctx.save();
       ctx.translate(ant.position.x, ant.position.y);
       ctx.rotate(angle);
-      // Left antenna
       ctx.moveTo(-headR * 0.3, antBaseY);
       ctx.lineTo(
         -Math.sin(antSpread + antWobble1) * antLen,
         antBaseY - Math.cos(antSpread + antWobble1) * antLen
       );
-      // Right antenna
       ctx.moveTo(headR * 0.3, antBaseY);
       ctx.lineTo(
         Math.sin(antSpread + antWobble2) * antLen,
@@ -198,7 +195,7 @@ export class ColonyRenderer {
     }
     ctx.stroke();
 
-    // Batch 3: Legs (all alive ants)
+    // Batch 3: Legs
     ctx.lineWidth = 0.4;
     ctx.beginPath();
     for (let i = 0; i < ants.length; i++) {
@@ -293,7 +290,6 @@ export class ColonyRenderer {
     const { x, y } = base.position;
     const radius = base.radius;
 
-    // Mound gradient
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.5);
     gradient.addColorStop(0, '#3d2b1f');
     gradient.addColorStop(0.3, '#5c3d2e');
@@ -305,7 +301,6 @@ export class ColonyRenderer {
     ctx.ellipse(x, y, radius * 1.5, radius * 1.2, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Colony color ring
     ctx.strokeStyle = this.colony.antsColor;
     ctx.lineWidth = 2;
     ctx.globalAlpha = 0.6;
@@ -314,13 +309,11 @@ export class ColonyRenderer {
     ctx.stroke();
     ctx.globalAlpha = 1.0;
 
-    // Dark entrance hole
     ctx.fillStyle = '#1a0f0a';
     ctx.beginPath();
     ctx.ellipse(x, y, radius * 0.35, radius * 0.25, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Scattered soil particles
     ctx.fillStyle = '#6b4c3b';
     const seed = this.colony.id * 137;
     for (let i = 0; i < 12; i++) {
@@ -332,7 +325,6 @@ export class ColonyRenderer {
       ctx.fill();
     }
 
-    // Food gauge ring
     const foodRatio = base.food / base.maxFood;
     if (foodRatio > 0.01) {
       ctx.strokeStyle = '#429942';
@@ -344,7 +336,6 @@ export class ColonyRenderer {
       ctx.globalAlpha = 1.0;
     }
 
-    // Food count
     ctx.fillStyle = '#e0e0e0';
     ctx.font = '9px monospace';
     ctx.textAlign = 'center';

@@ -8,7 +8,7 @@ import { Config } from '@/simulation/Config';
 import type { WorkerCommand, WorkerResponse } from '@/simulation/worker-protocol';
 
 // Set to true to use Web Worker for simulation
-const USE_WORKER = true;
+const USE_WORKER = false;
 
 export function useSimulation(
   canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -28,7 +28,11 @@ export function useSimulation(
   // Latest data from worker
   const antDataRef = useRef<Float32Array | null>(null);
   const worldDataRef = useRef<Float32Array | null>(null);
-  const worldDimsRef = useRef<{ width: number; height: number; cellSize: number } | null>(null);
+
+  // Use refs for values that change often, to avoid re-creating the loop
+  const pausedRef = useRef(false);
+  const speedRef = useRef(1);
+  const maxSpeedRef = useRef(false);
 
   const paused = useStore((s) => s.paused);
   const speed = useStore((s) => s.speed);
@@ -39,6 +43,11 @@ export function useSimulation(
   const togglePause = useStore((s) => s.togglePause);
   const setColonyStats = useStore((s) => s.setColonyStats);
   const setFps = useStore((s) => s.setFps);
+
+  // Keep refs in sync
+  pausedRef.current = paused;
+  speedRef.current = speed;
+  maxSpeedRef.current = maxSpeed;
 
   // === Worker mode: receive data from worker ===
   const handleWorkerMessage = useCallback(
@@ -59,7 +68,6 @@ export function useSimulation(
     if (!started) return;
 
     if (useWorkerRef.current) {
-      // Worker mode
       try {
         const worker = new Worker(
           new URL('@/simulation/simulation-worker.ts', import.meta.url),
@@ -68,22 +76,13 @@ export function useSimulation(
         worker.onmessage = handleWorkerMessage;
         workerRef.current = worker;
 
-        // Create a lightweight world for the worker renderer
         const tempSim = new Simulation();
-        worldDimsRef.current = {
-          width: tempSim.world.map.width,
-          height: tempSim.world.map.height,
-          cellSize: tempSim.world.map.cellSize,
-        };
-
         const wr = new WorkerRenderer(tempSim.world.map.width, tempSim.world.map.height, tempSim.world.map.cellSize);
         workerRendererRef.current = wr;
 
-        // Set colony colors
         const colonyCount = setupConfig.colonyCount;
         wr.coloniesColor = Array.from({ length: colonyCount }, (_, i) => Config.COLONY_COLORS[i] || '#ffffff');
 
-        // Resize canvas
         const resizeCanvas = () => {
           const canvas = canvasRef.current;
           if (canvas) {
@@ -96,7 +95,6 @@ export function useSimulation(
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Send init command
         worker.postMessage({
           type: 'init',
           config: setupConfig,
@@ -108,13 +106,11 @@ export function useSimulation(
           workerRef.current = null;
         };
       } catch {
-        // Fallback to main thread if Worker fails
         useWorkerRef.current = false;
       }
     }
 
     if (!useWorkerRef.current) {
-      // Main thread mode (fallback)
       const sim = new Simulation();
       const { workerCount, soldierCount, colonyCount } = setupConfig;
       for (let i = 0; i < colonyCount; i++) {
@@ -192,25 +188,7 @@ export function useSimulation(
     }
   }, [speed, maxSpeed]);
 
-  // === Worker render loop ===
-  const workerLoop = useCallback(
-    () => {
-      const wr = workerRendererRef.current;
-      const canvas = canvasRef.current;
-      if (!wr || !canvas) return;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Render with latest data from worker
-      wr.render(ctx, canvas.width, canvas.height, antDataRef.current, worldDataRef.current);
-
-      animFrameRef.current = requestAnimationFrame(workerLoop);
-    },
-    [canvasRef]
-  );
-
-  // === Main thread render loop ===
+  // === Main thread render loop (stable, reads from refs) ===
   const loop = useCallback(
     (time: number) => {
       const sim = simulationRef.current;
@@ -236,8 +214,8 @@ export function useSimulation(
         fpsTimeRef.current = 0;
       }
 
-      if (!paused) {
-        const steps = maxSpeed ? 5 : speed;
+      if (!pausedRef.current) {
+        const steps = maxSpeedRef.current ? 5 : speedRef.current;
         const stepDt = dt / steps;
         for (let i = 0; i < steps; i++) {
           sim.update(stepDt);
@@ -257,7 +235,24 @@ export function useSimulation(
 
       animFrameRef.current = requestAnimationFrame(loop);
     },
-    [paused, speed, maxSpeed, setColonyStats, setFps, canvasRef]
+    [setColonyStats, setFps, canvasRef]
+  );
+
+  // === Worker render loop ===
+  const workerLoop = useCallback(
+    () => {
+      const wr = workerRendererRef.current;
+      const canvas = canvasRef.current;
+      if (!wr || !canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      wr.render(ctx, canvas.width, canvas.height, antDataRef.current, worldDataRef.current);
+
+      animFrameRef.current = requestAnimationFrame(workerLoop);
+    },
+    [canvasRef]
   );
 
   // Start render loop
@@ -267,19 +262,15 @@ export function useSimulation(
 
     if (useWorkerRef.current) {
       animFrameRef.current = requestAnimationFrame(workerLoop);
-      return () => {
-        if (animFrameRef.current) {
-          cancelAnimationFrame(animFrameRef.current);
-        }
-      };
     } else {
       animFrameRef.current = requestAnimationFrame(loop);
-      return () => {
-        if (animFrameRef.current) {
-          cancelAnimationFrame(animFrameRef.current);
-        }
-      };
     }
+
+    return () => {
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current);
+      }
+    };
   }, [loop, workerLoop, started]);
 
   // Keyboard shortcuts

@@ -1,6 +1,7 @@
 import type { Colony } from '@/simulation/Colony';
 import { Mode, AntType } from '@/simulation/types';
 import { Ant } from '@/simulation/Ant';
+import { Queen } from '@/simulation/Queen';
 
 // LOD thresholds based on viewport zoom
 const LOD_DETAIL = 1.5;   // Full detail above this zoom
@@ -357,5 +358,144 @@ export class ColonyRenderer {
   render(ctx: CanvasRenderingContext2D, renderAnts: boolean, zoom: number): void {
     if (renderAnts) this.renderAnts(ctx, zoom);
     this.renderBase(ctx);
+    this.renderQueen(ctx, zoom);
+  }
+
+  private renderQueen(ctx: CanvasRenderingContext2D, zoom: number): void {
+    const queen = this.colony.queen;
+    if (!queen.isAlive) return;
+
+    const { x, y } = queen.position;
+    const size = Queen.SIZE; // 普通蚂蚁的 4 倍
+    const color = this.colony.antsColor;
+
+    // Parse color
+    const cr = parseInt(color.slice(1, 3), 16);
+    const cg = parseInt(color.slice(3, 5), 16);
+    const cb = parseInt(color.slice(5, 7), 16);
+    const colorDark = `rgb(${cr >> 1},${cg >> 1},${cb >> 1})`;
+    const colorLight = `rgb(${Math.min(255, cr + ((255 - cr) >> 2))},${Math.min(255, cg + ((255 - cg) >> 2))},${Math.min(255, cb + ((255 - cb) >> 2))})`;
+
+    // 蚁后身体段比例调整，腹部更大
+    const headR = 1.2 * size;
+    const thoraxR = 1.6 * size;
+    const abdomenW = 2.2 * size;
+    const abdomenH = 3.5 * size;
+
+    ctx.save();
+    ctx.translate(x, y);
+
+    // 轻微摆动效果
+    const wobble = Math.sin(queen.wobblePhase) * 0.03;
+    ctx.rotate(wobble);
+
+    // LOD 选择
+    if (zoom >= LOD_DETAIL) {
+      // 完整细节
+      ctx.fillStyle = color;
+      // 头部
+      ctx.beginPath();
+      ctx.ellipse(0, -3.5 * size, headR, headR * 1.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 胸部
+      ctx.beginPath();
+      ctx.ellipse(0, -1.0 * size, thoraxR * 0.85, thoraxR, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 腹部（更大）
+      ctx.beginPath();
+      ctx.ellipse(0, 2.5 * size, abdomenW, abdomenH, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 腹柄
+      ctx.fillStyle = colorLight;
+      ctx.beginPath();
+      ctx.ellipse(0, 0.5 * size, 0.8 * size, 1.2 * size, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = color;
+
+      // 触角
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 0.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      const antLen = 3.5 * size;
+      const antSpread = 0.45;
+      const antWobble1 = Math.sin(queen.wobblePhase * 1.3) * 0.1;
+      const antWobble2 = Math.sin(queen.wobblePhase * 1.3 + 1.0) * 0.1;
+      const antBaseY = -3.5 * size - headR * 0.5;
+      
+      // 左触角
+      ctx.moveTo(-headR * 0.3, antBaseY);
+      ctx.lineTo(
+        -Math.sin(antSpread + antWobble1) * antLen,
+        antBaseY - Math.cos(antSpread + antWobble1) * antLen
+      );
+      // 右触角
+      ctx.moveTo(headR * 0.3, antBaseY);
+      ctx.lineTo(
+        Math.sin(antSpread + antWobble2) * antLen,
+        antBaseY - Math.cos(antSpread + antWobble2) * antLen
+      );
+      ctx.stroke();
+
+      // 腿（更短，因为蚁后不怎么动）
+      ctx.lineWidth = 0.4;
+      ctx.beginPath();
+      const legLen = 2.0 * size;
+      const legWobble = queen.wobblePhase;
+      for (let li = 0; li < 3; li++) {
+        const legBaseY = -1.0 * size - 0.3 * size + li * 0.9 * size;
+        const phase = li * 2.094;
+        const swingL = Math.sin(legWobble + phase) * 0.15;
+        const swingR = Math.sin(legWobble + phase + Math.PI) * 0.15;
+
+        // 左腿
+        const lStartX = -thoraxR * 0.6;
+        const lMidX = lStartX - legLen * 0.4;
+        const lMidY = legBaseY + legLen * 0.1 + swingL * legLen;
+        const lEndX = lMidX - legLen * 0.1;
+        const lEndY = lMidY + legLen * 0.2;
+        ctx.moveTo(lStartX, legBaseY);
+        ctx.quadraticCurveTo(lMidX, lMidY, lEndX, lEndY);
+
+        // 右腿
+        const rStartX = thoraxR * 0.6;
+        const rMidX = rStartX + legLen * 0.4;
+        const rMidY = legBaseY + legLen * 0.1 + swingR * legLen;
+        const rEndX = rMidX + legLen * 0.1;
+        const rEndY = rMidY + legLen * 0.2;
+        ctx.moveTo(rStartX, legBaseY);
+        ctx.quadraticCurveTo(rMidX, rMidY, rEndX, rEndY);
+      }
+      ctx.stroke();
+    } else if (zoom >= LOD_SIMPLE) {
+      // 中等细节
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.ellipse(0, -3.5 * size, headR, headR * 1.1, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -1.0 * size, thoraxR * 0.85, thoraxR, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 2.5 * size, abdomenW, abdomenH, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // 简单渲染
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, abdomenW, abdomenH, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 生命值条
+    const healthRatio = queen.health / Queen.MAX_HEALTH;
+    const barWidth = 6 * size;
+    const barHeight = 0.6;
+    const barY = -6 * size;
+    ctx.fillStyle = '#333';
+    ctx.fillRect(-barWidth / 2, barY, barWidth, barHeight);
+    ctx.fillStyle = healthRatio > 0.5 ? '#429942' : healthRatio > 0.25 ? '#ff9800' : '#f44336';
+    ctx.fillRect(-barWidth / 2, barY, barWidth * healthRatio, barHeight);
+
+    ctx.restore();
   }
 }

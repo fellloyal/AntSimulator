@@ -107,8 +107,19 @@ export function addPresence(cell: WorldCell): void {
 }
 
 export class WorldGrid extends Grid<WorldCell> {
+  // Dirty tracking: only update cells with active content
+  dirtyCells: Set<number> = new Set();
+  private dirtyFrameCounter = 0;
+  private static readonly FULL_UPDATE_INTERVAL = 60; // Full update every N frames
+
   constructor(width: number, height: number, cellSize: number) {
     super(width, height, cellSize, createWorldCell);
+  }
+
+  private markDirty(coords: { x: number; y: number }): void {
+    if (this.checkCoords(coords)) {
+      this.dirtyCells.add(coords.y * this.width + coords.x);
+    }
   }
 
   addMarker(
@@ -138,6 +149,7 @@ export class WorldGrid extends Grid<WorldCell> {
     const modeIndex = type as number;
     colonyCell.intensity[modeIndex] = Math.max(colonyCell.intensity[modeIndex], intensity);
     colonyCell.permanent = colonyCell.permanent || permanent;
+    this.markDirty(coords);
   }
 
   addFood(pos: { x: number; y: number }, quantity: number): void {
@@ -150,6 +162,7 @@ export class WorldGrid extends Grid<WorldCell> {
     const cell = this.getByCoords(coords);
     if (!cell.wall) {
       cell.food += quantity;
+      this.markDirty(coords);
     }
   }
 
@@ -194,6 +207,23 @@ export class WorldGrid extends Grid<WorldCell> {
     }
   }
 
+  // Partial update: only recompute cells near changed walls
+  computeDistanceFieldAround(cx: number, cy: number, radius: number = 4): void {
+    for (let dy = -radius; dy <= radius; dy++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        const x = cx + dx;
+        const y = cy + dy;
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) continue;
+        const cell = this.getByCoords({ x, y });
+        if (cell.wall) {
+          cell.wallDist = this.getMinDist(x, y, false, 3);
+        } else {
+          cell.wallDist = this.getMinDist(x, y, true, 3);
+        }
+      }
+    }
+  }
+
   private getMinDist(x: number, y: number, distToWall: boolean, maxIter: number): number {
     let minDist = maxIter;
     for (let dx = -maxIter; dx <= maxIter; dx++) {
@@ -213,9 +243,43 @@ export class WorldGrid extends Grid<WorldCell> {
   }
 
   update(dt: number): void {
-    for (let i = 0; i < this.cells.length; i++) {
-      updateWorldCell(this.cells[i], dt);
+    this.dirtyFrameCounter++;
+    // Periodically do a full update to catch decayed cells
+    if (this.dirtyFrameCounter >= WorldGrid.FULL_UPDATE_INTERVAL) {
+      this.dirtyFrameCounter = 0;
+      for (let i = 0; i < this.cells.length; i++) {
+        updateWorldCell(this.cells[i], dt);
+      }
+      // Rebuild dirty set: only cells with active content
+      this.dirtyCells.clear();
+      for (let i = 0; i < this.cells.length; i++) {
+        const cell = this.cells[i];
+        if (this.cellHasActiveContent(cell)) {
+          this.dirtyCells.add(i);
+        }
+      }
+    } else {
+      // Only update dirty cells
+      for (const idx of this.dirtyCells) {
+        updateWorldCell(this.cells[idx], dt);
+        // Remove from dirty set if no longer active
+        if (!this.cellHasActiveContent(this.cells[idx])) {
+          this.dirtyCells.delete(idx);
+        }
+      }
     }
+  }
+
+  private cellHasActiveContent(cell: WorldCell): boolean {
+    if (cell.food > 0 || cell.density > 0.5) return true;
+    for (let i = 0; i < Config.MAX_COLONIES_COUNT; i++) {
+      const mc = cell.markers[i];
+      if (mc.intensity[0] > 0.1 || mc.intensity[1] > 0.1 || mc.intensity[2] > 0.1 ||
+          mc.repellent > 0.1 || mc.currentAnt > -1 || mc.fighting) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getFirstHit(

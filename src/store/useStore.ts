@@ -28,6 +28,8 @@ interface SimulatorState {
     antCount: number;
     soldierCount: number;
     food: number;
+    queenAlive: boolean;
+    queenHealth: number;
   }>;
   fps: number;
 

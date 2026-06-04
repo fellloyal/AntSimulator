@@ -137,6 +137,8 @@ export function useSimulation(
         antCount: colony.ants.length,
         soldierCount: colony.soldiersCount(),
         food: Math.floor(colony.base.food),
+        queenAlive: colony.queen.isAlive,
+        queenHealth: colony.queen.health,
       }));
       setColonyStats(stats);
 

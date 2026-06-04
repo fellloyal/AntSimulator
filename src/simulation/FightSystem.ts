@@ -34,6 +34,37 @@ export class FightSystem {
         }
       }
     }
+    
+    // 检查其他蚁群的蚁后是否被攻击
+    for (let i = 0; i < colonies.length; i++) {
+      if (i !== colony.id) {
+        this.checkAttackOnQueen(colony, colonies[i], world);
+      }
+    }
+  }
+
+  /**
+   * 检查蚁后攻击检测
+   * 兵蚁会优先攻击敌方蚁后
+   */
+  private checkAttackOnQueen(attackerColony: Colony, targetColony: Colony, world: World): void {
+    for (const ant of attackerColony.ants) {
+      if (ant.type === AntType.Soldier && !ant.isFighting() && targetColony.queen.isAlive) {
+        const dx = targetColony.queen.position.x - ant.position.x;
+        const dy = targetColony.queen.position.y - ant.position.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        const attackRange = 15.0;
+        if (dist < attackRange) {
+          // 兵蚁攻击蚁后
+          targetColony.queen.takeDamage(ant.damage * 0.5, world);
+          ant.fightMode = FightMode.Fighting;
+        } else if (dist < 40.0) {
+          // 兵蚁向蚁后移动
+          ant.direction.angle = Math.atan2(dy, dx);
+        }
+      }
+    }
   }
 
   private checkForFight(ant: Ant, colonies: Colony[], world: World): void {

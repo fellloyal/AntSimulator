@@ -6,11 +6,13 @@ import { FightMode, AntType } from '@/simulation/types';
 import { ColonyBase } from '@/simulation/ColonyBase';
 import { Ant, type WorldLike } from '@/simulation/Ant';
 import { AntUpdater } from '@/simulation/AntUpdater';
+import { Queen } from '@/simulation/Queen';
 
 export class Colony {
   base: ColonyBase;
   maxAntsCount: number;
   ants: Ant[];
+  queen: Queen;
   antsCreationCooldown: Cooldown;
   id: number;
   antsColor: string;
@@ -22,6 +24,7 @@ export class Colony {
     this.base = new ColonyBase({ x, y }, Config.COLONY_SIZE);
     this.maxAntsCount = maxAnts;
     this.ants = [];
+    this.queen = new Queen(x, y, 0);
     this.antsCreationCooldown = new Cooldown(0.125);
     this.id = 0;
     this.antsColor = Config.ANT_COLOR;
@@ -29,6 +32,7 @@ export class Colony {
 
   initialize(colonyId: number, workerCount: number = 1000, soldierCount: number = 0): void {
     this.id = colonyId;
+    this.queen = new Queen(this.base.position.x, this.base.position.y, colonyId);
     this.base.food = 0.0;
     this.antsColor = Config.COLONY_COLORS[colonyId] || '#ffffff';
     for (let i = workerCount; i-- > 0; ) {
@@ -101,11 +105,41 @@ export class Colony {
   }
 
   update(dt: number, world: WorldLike): void {
-    this.createNewAnts(dt);
+    // 更新蚁后
+    this.queen.update(dt, world);
+    
+    // 蚁后存活才能繁殖
+    if (this.queen.isAlive) {
+      this.createNewAnts(dt);
+    }
+    
     // Update ants and check if collision with colony
     for (const ant of this.ants) {
       AntUpdater.update(ant, world, dt);
       ant.checkColony(this.base);
+      
+      // 兵蚁保护蚁后：检测是否有敌人靠近蚁后
+      if (ant.type === AntType.Soldier) {
+        this.soldierProtectsQueen(ant, world);
+      }
+    }
+  }
+  
+  private soldierProtectsQueen(soldier: Ant, world: WorldLike): void {
+    const dx = this.queen.position.x - soldier.position.x;
+    const dy = this.queen.position.y - soldier.position.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    // 兵蚁保持在蚁后附近巡逻
+    const patrolRadius = 30.0;
+    if (dist > patrolRadius) {
+      const angle = Math.atan2(dy, dx);
+      soldier.direction.angle = angle;
+    }
+    
+    // 如果蚁后受伤，增加敌人发现计数，鼓励生成更多兵蚁
+    if (this.queen.health < Queen.MAX_HEALTH * 0.8) {
+      this.base.enemiesFoundCount += 0.1;
     }
   }
 

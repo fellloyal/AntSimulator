@@ -16,6 +16,7 @@ export default function ColonyInfo() {
       {colonyStats.map((colony) => {
         const soldierRatio =
           colony.antCount > 0 ? colony.soldierCount / colony.antCount : 0;
+        const healthRatio = colony.queenAlive ? colony.queenHealth / 100.0 : 0;
 
         return (
           <div
@@ -50,9 +51,37 @@ export default function ColonyInfo() {
               <div>
                 <span className="text-[#8a9a8a] font-sans">Food</span>
                 <p className="font-mono tabular-nums text-[#e0e8e0]">
-                  {colony.food.toFixed(1)}
+                  {colony.food}
                 </p>
               </div>
+            </div>
+
+            {/* Queen status */}
+            <div className="mt-2">
+              <div className="flex items-center gap-2 text-[10px]">
+                <span className="text-[#8a9a8a] font-sans">Queen:</span>
+                <span
+                  className={`font-sans font-medium ${
+                    colony.queenAlive ? 'text-[#4ade80]' : 'text-[#f87171]'
+                  }`}
+                >
+                  {colony.queenAlive ? 'Alive' : 'Dead'}
+                </span>
+              </div>
+              
+              {/* Queen health bar */}
+              {colony.queenAlive && (
+                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                  <div
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${healthRatio * 100}%`,
+                      backgroundColor:
+                        healthRatio > 0.5 ? '#4ade80' : healthRatio > 0.25 ? '#fbbf24' : '#f87171',
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Soldier ratio bar */}

@@ -2,8 +2,30 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, Save, Square, Apple, Eraser, Mountain, Layers } from 'lucide-react';
 import useStore, { type EditorTool } from '@/store/useStore';
 import { createMap, updateMap } from '@/api/maps';
+import { AssetRegistry } from '@/render/AssetRegistry';
+import { TERRAIN_TILES } from '@/render/assets/TerrainTiles';
+import { OBSTACLE_TILES } from '@/render/assets/ObstacleTiles';
+import { FOOD_SPRITES, foodSizeFromQty } from '@/render/assets/FoodSprites';
 
 const CELL_SIZE = 4;
+
+// 纹理 key 映射
+const TERRAIN_KEY: Record<TerrainType, string> = {
+  0: 'terrain_grass',
+  1: 'terrain_sand',
+  2: 'terrain_water',
+  3: 'terrain_rock',
+};
+const OBSTACLE_KEY: Record<ObstacleType, string> = {
+  0: '',
+  1: 'obstacle_brick',
+  2: 'obstacle_ice',
+  3: 'obstacle_wood',
+  4: 'obstacle_fence',
+};
+function foodKey(type: FoodType, size: 'small' | 'medium' | 'large'): string {
+  return `food_${type}_${size}`;
+}
 
 // UI美化（task 21）：地形/障碍物/食物类型枚举
 type TerrainType = 0 | 1 | 2 | 3;  // 0=grass 1=sand 2=water 3=rock
@@ -102,6 +124,28 @@ export default function MapEditor() {
     dirtyRef.current = new Set();
   }, [gridW, gridH, editorGridData]);
 
+  // 纹理预加载 + 等首帧完成后再渲染
+  const [texturesReady, setTexturesReady] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    AssetRegistry.setCellSize(CELL_SIZE);
+    for (const t of [0, 1, 2, 3] as TerrainType[]) {
+      AssetRegistry.preloadSVG(TERRAIN_TILES[t].svg, TERRAIN_KEY[t]);
+    }
+    for (const t of [1, 2, 3, 4] as ObstacleType[]) {
+      AssetRegistry.preloadSVG(OBSTACLE_TILES[t].svg, OBSTACLE_KEY[t]);
+    }
+    for (const t of [0, 1, 2, 3] as FoodType[]) {
+      for (const size of ['small', 'medium', 'large'] as const) {
+        AssetRegistry.preloadSVG(FOOD_SPRITES[t][size], foodKey(t, size));
+      }
+    }
+    AssetRegistry.waitForLoad().then(() => {
+      if (!cancelled) setTexturesReady(true);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
   // Render
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -136,23 +180,19 @@ export default function MapEditor() {
     const ex = Math.min(gridW - 1, Math.ceil(vr / CELL_SIZE));
     const ey = Math.min(gridH - 1, Math.ceil(vb / CELL_SIZE));
 
-    // UI美化（task 21）：按地形分组批量绘制底层
-    const terrainBuckets = new Map<TerrainType, Array<[number, number]>>();
+    // UI美化（bug fix）：用 SVG 纹理绘制地形（fallback 到纯色）
     for (let y = sy; y <= ey; y++) {
       for (let x = sx; x <= ex; x++) {
         const idx = y * gridW + x;
         const t = terrain.get(idx);
-        if (t !== undefined) {
-          let bucket = terrainBuckets.get(t);
-          if (!bucket) { bucket = []; terrainBuckets.set(t, bucket); }
-          bucket.push([x, y]);
+        if (t === undefined) continue;
+        const key = TERRAIN_KEY[t];
+        if (AssetRegistry.has(key)) {
+          AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+        } else {
+          ctx.fillStyle = TERRAIN_COLORS[t];
+          ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
-      }
-    }
-    for (const [type, cells] of terrainBuckets) {
-      ctx.fillStyle = TERRAIN_COLORS[type];
-      for (const [x, y] of cells) {
-        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
     }
 
@@ -171,31 +211,27 @@ export default function MapEditor() {
       }
     }
 
-    // 障碍物按类型分桶
-    const obsBuckets = new Map<ObstacleType, Array<[number, number]>>();
+    // 障碍物用 SVG 纹理绘制
     for (const [x, y, type] of wallCells) {
-      let bucket = obsBuckets.get(type);
-      if (!bucket) { bucket = []; obsBuckets.set(type, bucket); }
-      bucket.push([x, y]);
-    }
-    for (const [type, cells] of obsBuckets) {
-      ctx.fillStyle = OBSTACLE_COLORS[type];
-      for (const [x, y] of cells) {
+      const key = OBSTACLE_KEY[type];
+      if (key && AssetRegistry.has(key)) {
+        AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+      } else {
+        ctx.fillStyle = OBSTACLE_COLORS[type] || '#4a4a4a';
         ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
     }
 
-    // 食物
-    const foodBuckets = new Map<FoodType, Array<[number, number, number]>>();
-    for (const [x, y, qty, type] of foodCells) {
-      let bucket = foodBuckets.get(type);
-      if (!bucket) { bucket = []; foodBuckets.set(type, bucket); }
-      bucket.push([x, y, qty]);
-    }
-    for (const [type, cells] of foodBuckets) {
-      const g = Math.min(255, 100 + (type + 1) * 30) | 0;
-      ctx.fillStyle = `rgb(0,${g},0)`;
-      for (const [x, y, qty] of cells) {
+    // 食物用 SVG 纹理绘制（按 qty 决定尺寸）
+    for (const [x, y, val, type] of foodCells) {
+      const qty = val - 1;
+      const size = foodSizeFromQty(qty);
+      const key = foodKey(type, size);
+      if (AssetRegistry.has(key)) {
+        AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+      } else {
+        const g = Math.min(255, 100 + (type + 1) * 30) | 0;
+        ctx.fillStyle = `rgb(0,${g},0)`;
         ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
     }
@@ -219,7 +255,7 @@ export default function MapEditor() {
     resize();
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
-  }, [render]);
+  }, [render, texturesReady]);
 
   // Paint on grid
   const paint = useCallback((canvasX: number, canvasY: number) => {

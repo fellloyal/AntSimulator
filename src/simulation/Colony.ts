@@ -2,7 +2,7 @@ import { PI } from '@/common/math';
 import { RNG } from '@/common/RNG';
 import { Cooldown } from '@/common/Cooldown';
 import { Config } from '@/simulation/Config';
-import { FightMode, AntType } from '@/simulation/types';
+import { FightMode, AntType, Mode } from '@/simulation/types';
 import { ColonyBase } from '@/simulation/ColonyBase';
 import { Ant, type WorldLike } from '@/simulation/Ant';
 import { AntUpdater } from '@/simulation/AntUpdater';
@@ -130,7 +130,7 @@ export class Colony {
   killWeakAnts(world: WorldLike): number {
     let count = 0;
     for (const ant of this.ants) {
-      if (ant.isDone()) {
+      if (ant.isDone() && ant.phase !== Mode.Dying && ant.phase !== Mode.Dead) {
         ant.kill(world);
         count++;
       }
@@ -161,6 +161,13 @@ export class Colony {
   getAntById(id: number): Ant | null {
     if (id >= 0 && id < this.ants.length) {
       return this.ants[id];
+    }
+    return null;
+  }
+
+  getAntByUid(uid: number): Ant | null {
+    for (const ant of this.ants) {
+      if (ant.uid === uid) return ant;
     }
     return null;
   }

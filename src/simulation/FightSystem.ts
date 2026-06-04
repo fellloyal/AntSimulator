@@ -26,9 +26,9 @@ export class FightSystem {
     for (const ant of colony.ants) {
       if (ant.fightRequest.active) {
         const colId = ant.fightRequest.colId;
-        const antId = ant.fightRequest.antId;
+        const antUid = ant.fightRequest.antUid;
         if (colId < colonies.length) {
-          const otherAnt = colonies[colId].getAntById(antId);
+          const otherAnt = colonies[colId].getAntByUid(antUid);
           if (otherAnt) {
             ant.setTarget(otherAnt);
           }
@@ -46,9 +46,9 @@ export class FightSystem {
       // Process fight requests from marker sampling
       if (ant.fightRequest.active) {
         const colId = ant.fightRequest.colId;
-        const antId = ant.fightRequest.antId;
+        const antUid = ant.fightRequest.antUid;
         if (colId < colonies.length) {
-          const otherAnt = colonies[colId].getAntById(antId);
+          const otherAnt = colonies[colId].getAntByUid(antUid);
           if (otherAnt) {
             ant.setTarget(otherAnt);
           }

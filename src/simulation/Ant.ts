@@ -35,7 +35,7 @@ export class Ant {
 
   // Fight info
   fightMode: FightMode = FightMode.NoFight;
-  damage = 10.0;
+  damage = 30.0;
   fightDist = this.length * 0.25;
   target: Ant | null = null;
   fightPos: { x: number; y: number } = { x: 0, y: 0 };
@@ -44,7 +44,7 @@ export class Ant {
   enemyIntensity = 0.0;
   toFightTimeout = 1.0;
   toFightTime = 0.0;
-  fightRequest: AntRef = { active: false, colId: 0, antId: 0 };
+  fightRequest: AntRef = { active: false, colId: 0, antUid: 0 };
 
   // Cooldowns
   attackCooldown: Cooldown;
@@ -73,8 +73,10 @@ export class Ant {
 
   // Identity
   id = 0;
+  uid: number;  // Unique immutable ID, never changes after creation
   colId = 0;
   type: AntType = AntType.Worker;
+  private static nextUid = 0;
 
   constructor(x: number, y: number, angle: number, colonyId: number) {
     this.position = { x, y };
@@ -92,7 +94,8 @@ export class Ant {
     this.libertyCoef = RNG.getRange(0.009) + 0.001; // getRange(0.001, 0.01)
     this.fightMode = FightMode.NoFight;
     this.colId = colonyId;
-    this.attackCooldown = new Cooldown(1.5, 0.0);
+    this.uid = Ant.nextUid++;
+    this.attackCooldown = new Cooldown(1.0, 0.0);
     this.type = AntType.Worker;
     this.wobblePhase = RNG.getUnder(2 * PI);
   }
@@ -105,7 +108,7 @@ export class Ant {
     }
     const colonyCell = cell.markers[this.colId];
     if (!colonyCell.fighting) {
-      colonyCell.currentAnt = this.id;
+      colonyCell.currentAnt = this.uid;
       colonyCell.fighting = this.isFighting();
     }
   }
@@ -125,7 +128,7 @@ export class Ant {
   }
 
   attack(dt: number): void {
-    if (this.target) {
+    if (this.target && !this.target.isDead() && this.target.phase !== Mode.Dying) {
       const opponent = this.target;
       this.position = {
         x: this.fightPos.x - this.fightVec.x * (0.5 * this.length + this.attackCooldown.getRatio() * this.fightDist),
@@ -138,6 +141,7 @@ export class Ant {
       }
     } else {
       this.fightMode = FightMode.NoFight;
+      this.target = null;
       if (this.type === AntType.Soldier) {
         this.autonomy = Math.max(0.0, this.autonomy - 3.0);
       }
@@ -192,6 +196,8 @@ export class Ant {
     const dx = this.position.x - base.position.x;
     const dy = this.position.y - base.position.y;
     if (Math.sqrt(dx * dx + dy * dy) < base.radius) {
+      // Don't interfere with dying or fighting ants
+      if (this.phase === Mode.Dying || this.phase === Mode.Dead) return;
       this.markerAdd.target = Ant.markerPeriod;
       if (this.phase === Mode.ToHome || this.phase === Mode.ToHomeNoFood) {
         base.addFood(1.0);
@@ -200,14 +206,14 @@ export class Ant {
       }
       if (!this.isFighting()) {
         this.autonomy = 0.0;
-      }
-      this.enemyIntensity = 0.0;
-      this.resetMarkers();
-      this.enemyFound = false;
-      if (this.type === AntType.Soldier) {
-        this.phase = Mode.ToEnemy;
-      } else {
-        this.phase = Mode.ToFood;
+        this.enemyIntensity = 0.0;
+        this.resetMarkers();
+        this.enemyFound = false;
+        if (this.type === AntType.Soldier) {
+          this.phase = Mode.ToEnemy;
+        } else {
+          this.phase = Mode.ToFood;
+        }
       }
     }
   }

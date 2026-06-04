@@ -60,13 +60,13 @@ export function pickFoodFromCell(cell: WorldCell): boolean {
   return last;
 }
 
-export function getEnemyFromCell(cell: WorldCell, team: number): { active: boolean; colId: number; antId: number } {
+export function getEnemyFromCell(cell: WorldCell, team: number): { active: boolean; colId: number; antUid: number } {
   for (let i = Config.MAX_COLONIES_COUNT; i-- > 0; ) {
     if (i !== team && cell.markers[i].currentAnt > -1) {
-      return { active: true, antId: cell.markers[i].currentAnt, colId: i };
+      return { active: true, antUid: cell.markers[i].currentAnt, colId: i };
     }
   }
-  return { active: false, antId: 0, colId: 0 };
+  return { active: false, antUid: 0, colId: 0 };
 }
 
 export function checkEnemyPresence(cell: WorldCell, team: number): boolean {

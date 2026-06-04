@@ -46,7 +46,7 @@ export interface HitPoint {
 export interface AntRef {
   active: boolean;
   colId: number;
-  antId: number;
+  antUid: number;
 }
 
 export interface SamplingResult {

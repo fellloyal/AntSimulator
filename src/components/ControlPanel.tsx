@@ -19,7 +19,7 @@ export default function ControlPanel() {
         onClick={togglePause}
         className="flex h-8 w-8 items-center justify-center rounded-lg
                    bg-white/5 text-[#e0e8e0] transition-colors hover:bg-white/10"
-        title={paused ? 'Play (Space)' : 'Pause (Space)'}
+        title={paused ? '继续 (空格)' : '暂停 (空格)'}
       >
         {paused ? <Play size={16} /> : <Pause size={16} />}
       </button>
@@ -51,7 +51,7 @@ export default function ControlPanel() {
               ? 'bg-yellow-600/80 text-yellow-100'
               : 'bg-white/5 text-[#8a9a8a] hover:bg-white/10 hover:text-[#e0e8e0]'
           }`}
-        title="Max Speed (S)"
+        title="最大速度 (S)"
       >
         <Zap size={16} />
       </button>

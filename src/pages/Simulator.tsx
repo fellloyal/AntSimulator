@@ -105,7 +105,7 @@ export default function Simulator({
         onClick={() => setRightPanelOpen((v) => !v)}
         className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center
                    rounded-lg bg-white/5 text-[#8a9a8a] transition-colors hover:bg-white/10 hover:text-[#e0e8e0]"
-        title={rightPanelOpen ? 'Collapse panel' : 'Expand panel'}
+        title={rightPanelOpen ? '收起面板' : '展开面板'}
       >
         {rightPanelOpen ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
@@ -120,7 +120,7 @@ export default function Simulator({
         <div className="border-b border-white/5">
           <div className="px-3 pt-3 pb-1">
             <h3 className="text-[10px] font-sans font-semibold uppercase tracking-wider text-[#8a9a8a]">
-              Display
+              显示
             </h3>
           </div>
           <DisplayOptions />
@@ -130,7 +130,7 @@ export default function Simulator({
         <div className="flex-1 overflow-y-auto border-b border-white/5">
           <div className="px-3 pt-3 pb-1">
             <h3 className="text-[10px] font-sans font-semibold uppercase tracking-wider text-[#8a9a8a]">
-              Colonies
+              蚁群
             </h3>
           </div>
           <ColonyInfo />
@@ -145,7 +145,7 @@ export default function Simulator({
                        transition-colors hover:bg-[#429942]/30"
           >
             <PlusCircle size={14} />
-            Add Colony
+            添加蚁群
           </button>
         </div>
       </div>

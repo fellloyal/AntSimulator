@@ -37,9 +37,9 @@ export default function DisplayOptions() {
 
   return (
     <div className="flex flex-col gap-2.5 px-3 py-2">
-      <Toggle active={showAnts} onToggle={toggleShowAnts} label="Show Ants (A)" />
-      <Toggle active={showMarkers} onToggle={toggleShowMarkers} label="Show Markers (M)" />
-      <Toggle active={showDensity} onToggle={toggleShowDensity} label="Show Density" />
+      <Toggle active={showAnts} onToggle={toggleShowAnts} label="显示蚂蚁 (A)" />
+      <Toggle active={showMarkers} onToggle={toggleShowMarkers} label="显示标记 (M)" />
+      <Toggle active={showDensity} onToggle={toggleShowDensity} label="显示密度" />
     </div>
   );
 }

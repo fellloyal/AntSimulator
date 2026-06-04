@@ -6,7 +6,7 @@ export default function ColonyInfo() {
   if (colonyStats.length === 0) {
     return (
       <div className="px-3 py-2 text-xs text-[#8a9a8a] font-sans">
-        No colonies yet
+        暂无蚁群
       </div>
     );
   }
@@ -29,26 +29,26 @@ export default function ColonyInfo() {
                 style={{ backgroundColor: colony.color }}
               />
               <span className="text-xs font-sans font-medium text-[#e0e8e0]">
-                Colony {colony.id + 1}
+                蚁群 {colony.id + 1}
               </span>
             </div>
 
             {/* Stats grid */}
             <div className="grid grid-cols-3 gap-x-3 gap-y-1 text-[10px]">
               <div>
-                <span className="text-[#8a9a8a] font-sans">Ants</span>
+                <span className="text-[#8a9a8a] font-sans">蚂蚁</span>
                 <p className="font-mono tabular-nums text-[#e0e8e0]">
                   {colony.antCount}
                 </p>
               </div>
               <div>
-                <span className="text-[#8a9a8a] font-sans">Soldiers</span>
+                <span className="text-[#8a9a8a] font-sans">兵蚁</span>
                 <p className="font-mono tabular-nums text-[#e0e8e0]">
                   {colony.soldierCount}
                 </p>
               </div>
               <div>
-                <span className="text-[#8a9a8a] font-sans">Food</span>
+                <span className="text-[#8a9a8a] font-sans">食物</span>
                 <p className="font-mono tabular-nums text-[#e0e8e0]">
                   {colony.food.toFixed(1)}
                 </p>

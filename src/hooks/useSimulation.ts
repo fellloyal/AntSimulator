@@ -29,6 +29,7 @@ export function useSimulation(
   const antDataRef = useRef<Float32Array | null>(null);
   const worldDataRef = useRef<Float32Array | null>(null);
   const fullUpdateRef = useRef<boolean>(true);
+  const colonyBasesRef = useRef<Array<{ id: number; baseX: number; baseY: number; baseRadius: number; food: number; maxFood: number }>>([]);
 
   // Use refs for values that change often, to avoid re-creating the loop
   const pausedRef = useRef(false);
@@ -46,6 +47,12 @@ export function useSimulation(
   const setColonyStats = useStore((s) => s.setColonyStats);
   const setFps = useStore((s) => s.setFps);
 
+  // Stable refs for callbacks to avoid stale closure in Worker.onmessage
+  const setColonyStatsRef = useRef(setColonyStats);
+  const setFpsRef = useRef(setFps);
+  setColonyStatsRef.current = setColonyStats;
+  setFpsRef.current = setFps;
+
   // Keep refs in sync
   pausedRef.current = paused;
   speedRef.current = speed;
@@ -55,15 +62,21 @@ export function useSimulation(
   const handleWorkerMessage = useCallback(
     (e: MessageEvent<WorkerResponse>) => {
       const msg = e.data;
+      if (msg.type === 'ready') {
+        console.log('[Worker] Ready');
+      }
       if (msg.type === 'frame') {
         antDataRef.current = new Float32Array(msg.antData);
         worldDataRef.current = new Float32Array(msg.worldData);
         fullUpdateRef.current = msg.fullUpdate;
-        setColonyStats(msg.stats);
-        setFps(msg.fps);
+        colonyBasesRef.current = msg.stats.map((s) => ({
+          id: s.id, baseX: s.baseX, baseY: s.baseY, baseRadius: s.baseRadius, food: s.food, maxFood: s.maxFood,
+        }));
+        setColonyStatsRef.current(msg.stats);
+        setFpsRef.current(msg.fps);
       }
     },
-    [setColonyStats, setFps]
+    [] // No deps - uses refs internally for stability
   );
 
   // === Initialize ===
@@ -73,9 +86,13 @@ export function useSimulation(
     if (useWorkerRef.current) {
       try {
         const worker = new Worker(
-          new URL('@/simulation/simulation-worker.ts', import.meta.url),
+          new URL('../simulation/simulation-worker.ts', import.meta.url),
           { type: 'module' }
         );
+        worker.onerror = (e) => {
+          console.error('[Worker] Load error:', e.message, e.filename, e.lineno);
+          // Worker failed to load - this is fatal, can't recover
+        };
         worker.onmessage = handleWorkerMessage;
         workerRef.current = worker;
 
@@ -108,7 +125,8 @@ export function useSimulation(
           worker.terminate();
           workerRef.current = null;
         };
-      } catch {
+      } catch (err) {
+        console.error('[Worker] Failed to create, falling back to main thread:', err);
         useWorkerRef.current = false;
       }
     }
@@ -264,6 +282,11 @@ export function useSimulation(
       if (worldDataRef.current) {
         wr.updateWorldData(worldDataRef.current, fullUpdateRef.current);
         worldDataRef.current = null;
+      }
+
+      // Update colony bases
+      if (colonyBasesRef.current.length > 0) {
+        wr.colonyBases = colonyBasesRef.current;
       }
 
       wr.render(ctx, canvas.width, canvas.height, antDataRef.current);

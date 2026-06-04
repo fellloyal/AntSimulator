@@ -191,6 +191,10 @@ function getStats(): ColonyStatsPayload[] {
     antCount: colony.ants.length,
     soldierCount: colony.soldiersCount(),
     food: Math.floor(colony.base.food),
+    baseX: colony.base.position.x,
+    baseY: colony.base.position.y,
+    baseRadius: colony.base.radius,
+    maxFood: colony.base.maxFood,
   }));
 }
 

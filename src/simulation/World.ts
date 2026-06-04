@@ -44,8 +44,8 @@ export class World {
 
   addWall(position: { x: number; y: number }): void {
     const coords = {
-      x: toInt(position.x) / this.map.cellSize,
-      y: toInt(position.y) / this.map.cellSize,
+      x: toInt(position.x / this.map.cellSize),
+      y: toInt(position.y / this.map.cellSize),
     };
     this.addWallByCoords(coords);
   }
@@ -71,8 +71,8 @@ export class World {
 
   addFoodAt(x: number, y: number, quantity: number): void {
     const coords = {
-      x: toInt(x) / this.map.cellSize,
-      y: toInt(y) / this.map.cellSize,
+      x: toInt(x / this.map.cellSize),
+      y: toInt(y / this.map.cellSize),
     };
     if (this.map.checkCoords(coords)) {
       this.map.addMarkerByCoords(coords, Mode.ToFood, 1.0, 0, true);

@@ -24,6 +24,10 @@ export interface ColonyStatsPayload {
   antCount: number;
   soldierCount: number;
   food: number;
+  baseX: number;
+  baseY: number;
+  baseRadius: number;
+  maxFood: number;
 }
 
 // Ant data layout (per ant, 9 floats = 36 bytes):

@@ -12,6 +12,7 @@ export class WorkerRenderer {
   drawDensity: boolean = false;
   coloniesColor: string[] = [];
   viewport: ViewportState = { offsetX: 0, offsetY: 0, zoom: 1 };
+  colonyBases: Array<{ id: number; baseX: number; baseY: number; baseRadius: number; food: number; maxFood: number }> = [];
 
   private gridWidth: number;
   private gridHeight: number;
@@ -100,12 +101,83 @@ export class WorkerRenderer {
       this.renderWorld(ctx, this.worldState, canvasWidth, canvasHeight);
     }
 
-    // 2. Render ants
+    // 2. Render colony bases
+    this.renderBases(ctx);
+
+    // 3. Render ants
     if (antData && this.renderAnts) {
       this.renderAntsFromData(ctx, antData);
     }
 
     ctx.restore();
+  }
+
+  private renderBases(ctx: CanvasRenderingContext2D): void {
+    this.updateColonyRgb();
+
+    for (const base of this.colonyBases) {
+      const { baseX: x, baseY: y, baseRadius: radius, food, maxFood, id } = base;
+      const color = this.colonyRgb[id] || this.colonyRgb[0];
+      const hex = color?.hex || '#ff4944';
+
+      // Mound gradient
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.5);
+      gradient.addColorStop(0, '#3d2b1f');
+      gradient.addColorStop(0.3, '#5c3d2e');
+      gradient.addColorStop(0.7, '#4a3325');
+      gradient.addColorStop(1, 'rgba(74,51,37,0)');
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.ellipse(x, y, radius * 1.5, radius * 1.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Colony ring
+      ctx.strokeStyle = hex;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.8, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1.0;
+
+      // Entrance hole
+      ctx.fillStyle = '#1a0f0a';
+      ctx.beginPath();
+      ctx.ellipse(x, y, radius * 0.35, radius * 0.25, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Dirt dots
+      ctx.fillStyle = '#6b4c3b';
+      const seed = id * 137;
+      for (let i = 0; i < 12; i++) {
+        const a = (seed + i * 0.523) % (2 * Math.PI);
+        const r = radius * (0.9 + ((seed + i * 73) % 100) / 100 * 0.8);
+        const dotR = 0.5 + ((seed + i * 31) % 100) / 100 * 0.8;
+        ctx.beginPath();
+        ctx.arc(x + Math.cos(a) * r, y + Math.sin(a) * r, dotR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Food arc
+      const foodRatio = maxFood > 0 ? food / maxFood : 0;
+      if (foodRatio > 0.01) {
+        ctx.strokeStyle = '#429942';
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.arc(x, y, radius + 4, -Math.PI / 2, -Math.PI / 2 + foodRatio * Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
+      }
+
+      // Food text
+      ctx.fillStyle = '#e0e0e0';
+      ctx.font = '9px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${Math.floor(food)}`, x, y);
+    }
   }
 
   private renderWorld(ctx: CanvasRenderingContext2D, worldData: Float32Array, canvasWidth: number, canvasHeight: number): void {

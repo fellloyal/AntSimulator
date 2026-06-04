@@ -8,7 +8,7 @@ import { Config } from '@/simulation/Config';
 import type { WorkerCommand, WorkerResponse } from '@/simulation/worker-protocol';
 
 // Set to true to use Web Worker for simulation
-const USE_WORKER = false;
+const USE_WORKER = true;
 
 export function useSimulation(
   canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -28,6 +28,7 @@ export function useSimulation(
   // Latest data from worker
   const antDataRef = useRef<Float32Array | null>(null);
   const worldDataRef = useRef<Float32Array | null>(null);
+  const fullUpdateRef = useRef<boolean>(true);
 
   // Use refs for values that change often, to avoid re-creating the loop
   const pausedRef = useRef(false);
@@ -57,6 +58,7 @@ export function useSimulation(
       if (msg.type === 'frame') {
         antDataRef.current = new Float32Array(msg.antData);
         worldDataRef.current = new Float32Array(msg.worldData);
+        fullUpdateRef.current = msg.fullUpdate;
         setColonyStats(msg.stats);
         setFps(msg.fps);
       }
@@ -258,7 +260,13 @@ export function useSimulation(
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      wr.render(ctx, canvas.width, canvas.height, antDataRef.current, worldDataRef.current);
+      // Update world state incrementally
+      if (worldDataRef.current) {
+        wr.updateWorldData(worldDataRef.current, fullUpdateRef.current);
+        worldDataRef.current = null;
+      }
+
+      wr.render(ctx, canvas.width, canvas.height, antDataRef.current);
 
       animFrameRef.current = requestAnimationFrame(workerLoop);
     },

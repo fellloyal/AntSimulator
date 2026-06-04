@@ -1,17 +1,14 @@
 import { toInt } from '@/common/math';
 import { Mode, type ColonyCell } from '@/simulation/types';
 import { WorldGrid } from '@/simulation/WorldGrid';
-import { WorldRenderer } from '@/render/WorldRenderer';
 
 export class World {
   size: { x: number; y: number };
   map: WorldGrid;
-  renderer: WorldRenderer;
 
   constructor(width: number, height: number) {
     this.map = new WorldGrid(width, height, 4);
     this.size = { x: width, y: height };
-    this.renderer = new WorldRenderer(this.map);
 
     // Create walls around the map
     for (let x = 0; x < this.map.width; x++) {

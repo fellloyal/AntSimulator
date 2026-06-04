@@ -110,7 +110,7 @@ export class WorldGrid extends Grid<WorldCell> {
   // Dirty tracking using a flat boolean array (much faster than Set)
   dirtyFlags: Uint8Array;
   dirtyList: number[] = [];
-  private dirtyFrameCounter = 0;
+  dirtyFrameCounter = 0;
   private static readonly FULL_UPDATE_INTERVAL = 60;
 
   constructor(width: number, height: number, cellSize: number) {

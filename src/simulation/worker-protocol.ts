@@ -11,12 +11,11 @@ export type WorkerCommand =
   | { type: 'addFood'; x: number; y: number; quantity: number }
   | { type: 'addWall'; cx: number; cy: number }
   | { type: 'eraseCell'; cx: number; cy: number }
-  | { type: 'addColony'; x: number; y: number }
-  | { type: 'resize'; offsetX: number; offsetY: number };
+  | { type: 'addColony'; x: number; y: number };
 
 // Worker → Main responses
 export type WorkerResponse =
-  | { type: 'frame'; antData: ArrayBuffer; worldData: ArrayBuffer; stats: ColonyStatsPayload[]; fps: number }
+  | { type: 'frame'; antData: ArrayBuffer; worldData: ArrayBuffer; fullUpdate: boolean; stats: ColonyStatsPayload[]; fps: number }
   | { type: 'ready' };
 
 export interface ColonyStatsPayload {
@@ -27,12 +26,16 @@ export interface ColonyStatsPayload {
   food: number;
 }
 
-// Ant data layout (per ant, 8 floats = 32 bytes):
-// [x, y, angle, phase, type, wobblePhase, dyingTimer, isPaused]
-export const ANT_FLOATS_PER_ANT = 8;
+// Ant data layout (per ant, 9 floats = 36 bytes):
+// [x, y, angle, phase, type, colId, wobblePhase, dyingTimer, isPaused]
+export const ANT_FLOATS_PER_ANT = 9;
 
 // World data layout (per cell, 4 floats = 16 bytes):
-// [wall, food, r, g, b, a] — we pack into 4 floats for alignment
-// Actually: [wall|food_packed, markerR, markerG, markerB]
-// wall|food_packed: wall * 1000 + food (both small integers)
+// [wall|food_packed, markerR_norm, markerG_norm, markerB_norm]
 export const WORLD_FLOATS_PER_CELL = 4;
+
+// Dirty cell data layout (per dirty cell, 5 floats = 20 bytes):
+// [cellIndex, wall|food_packed, markerR_norm, markerG_norm, markerB_norm]
+// Dirty frame format: [dirtyCount, ...dirtyCells]
+// Total floats = 1 + dirtyCount * 5
+export const WORLD_DIRTY_FLOATS_PER_CELL = 5;

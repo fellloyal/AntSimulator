@@ -5,8 +5,9 @@
 import { Simulation } from './Simulation';
 import { Config } from './Config';
 import { Mode } from './types';
+import type { WorldCell } from './types';
 import { World } from './World';
-import { ANT_FLOATS_PER_ANT, WORLD_FLOATS_PER_CELL } from './worker-protocol';
+import { ANT_FLOATS_PER_ANT, WORLD_FLOATS_PER_CELL, WORLD_DIRTY_FLOATS_PER_CELL } from './worker-protocol';
 import type { WorkerCommand, ColonyStatsPayload } from './worker-protocol';
 
 const sim: { current: Simulation | null } = { current: null };
@@ -18,14 +19,15 @@ let fpsFrames = 0;
 let fpsTime = 0;
 let currentFps = 0;
 
-// Pre-allocated buffers (grown as needed)
+// Pre-allocated buffers
 let antBuffer: Float32Array = new Float32Array(0);
 let worldBuffer: Float32Array = new Float32Array(0);
+let dirtyWorldBuffer: Float32Array = new Float32Array(0);
 
 function ensureAntBuffer(antCount: number): void {
   const needed = antCount * ANT_FLOATS_PER_ANT;
   if (antBuffer.length < needed) {
-    antBuffer = new Float32Array(needed * 2); // over-allocate
+    antBuffer = new Float32Array(needed * 2);
   }
 }
 
@@ -33,6 +35,13 @@ function ensureWorldBuffer(cellCount: number): void {
   const needed = cellCount * WORLD_FLOATS_PER_CELL;
   if (worldBuffer.length < needed) {
     worldBuffer = new Float32Array(needed);
+  }
+}
+
+function ensureDirtyWorldBuffer(dirtyCount: number): void {
+  const needed = 1 + dirtyCount * WORLD_DIRTY_FLOATS_PER_CELL;
+  if (dirtyWorldBuffer.length < needed) {
+    dirtyWorldBuffer = new Float32Array(needed * 2);
   }
 }
 
@@ -49,12 +58,14 @@ function serializeAnts(): ArrayBuffer {
   let offset = 0;
 
   for (const colony of s.colonies) {
+    const colId = colony.id;
     for (const ant of colony.ants) {
       antBuffer[offset++] = ant.position.x;
       antBuffer[offset++] = ant.position.y;
       antBuffer[offset++] = ant.direction.angle;
       antBuffer[offset++] = ant.phase as number;
       antBuffer[offset++] = ant.type as number;
+      antBuffer[offset++] = colId;
       antBuffer[offset++] = ant.wobblePhase;
       antBuffer[offset++] = ant.dyingTimer;
       antBuffer[offset++] = ant.isPaused ? 1.0 : 0.0;
@@ -64,7 +75,33 @@ function serializeAnts(): ArrayBuffer {
   return antBuffer.buffer.slice(0, offset * 4);
 }
 
-function serializeWorld(): ArrayBuffer {
+function serializeCellData(cell: WorldCell, numColonies: number, colonyRgb: Array<{ r: number; g: number; b: number }>, intensityFactor: number): [number, number, number, number] {
+  const packed = cell.wall * 10000 + cell.food;
+
+  let r = 0, g = 0, b = 0;
+
+  if (!cell.wall && cell.food === 0) {
+    for (let ci = 0; ci < numColonies; ci++) {
+      const mc = cell.markers[ci];
+      const toHomeI = mc.intensity[Mode.ToHome];
+      const toFoodI = mc.intensity[Mode.ToFood];
+      const toEnemyI = mc.intensity[Mode.ToEnemy];
+      const repellent = mc.repellent;
+
+      if (toHomeI > 0.1 || toFoodI > 0.1 || toEnemyI > 0.1 || repellent > 0.1) {
+        const rgb = colonyRgb[ci];
+        if (toHomeI > 0.1) { const f = intensityFactor * toHomeI; r += rgb.r * 0.8 * f; g += rgb.g * 0.3 * f; b += rgb.b * 0.3 * f; }
+        if (toFoodI > 0.1) { const f = intensityFactor * toFoodI; r += rgb.r * 0.3 * f; g += rgb.g * 0.8 * f; b += rgb.b * 0.3 * f; }
+        if (toEnemyI > 0.1) { const f = intensityFactor * toEnemyI; r += 200 * f; b += 200 * f; }
+        if (repellent > 0.1) { const f = intensityFactor * repellent; b += 255 * f; }
+      }
+    }
+  }
+
+  return [packed, Math.min(255, r) / 255, Math.min(255, g) / 255, Math.min(255, b) / 255];
+}
+
+function serializeWorldFull(): ArrayBuffer {
   const s = sim.current;
   if (!s) return new ArrayBuffer(0);
 
@@ -75,7 +112,6 @@ function serializeWorld(): ArrayBuffer {
   const numColonies = s.colonies.length;
   const intensityFactor = 255.0 / Config.MARKER_INTENSITY;
 
-  // Pre-compute colony colors
   const colonyRgb: Array<{ r: number; g: number; b: number }> = [];
   for (let ci = 0; ci < numColonies; ci++) {
     const hex = Config.COLONY_COLORS[ci] || '#ffffff';
@@ -87,53 +123,64 @@ function serializeWorld(): ArrayBuffer {
 
   let offset = 0;
   for (let i = 0; i < cellCount; i++) {
-    const cell = map.cells[i];
-    // Pack wall and food into first float
-    worldBuffer[offset++] = cell.wall * 10000 + cell.food;
-
-    let r = 0, g = 0, b = 0;
-
-    if (!cell.wall && cell.food === 0) {
-      for (let ci = 0; ci < numColonies; ci++) {
-        const mc = cell.markers[ci];
-        const toHomeI = mc.intensity[Mode.ToHome];
-        const toFoodI = mc.intensity[Mode.ToFood];
-        const toEnemyI = mc.intensity[Mode.ToEnemy];
-        const repellent = mc.repellent;
-
-        if (toHomeI > 0.1 || toFoodI > 0.1 || toEnemyI > 0.1 || repellent > 0.1) {
-          const rgb = colonyRgb[ci];
-          if (toHomeI > 0.1) {
-            const f = intensityFactor * toHomeI;
-            r += rgb.r * 0.8 * f;
-            g += rgb.g * 0.3 * f;
-            b += rgb.b * 0.3 * f;
-          }
-          if (toFoodI > 0.1) {
-            const f = intensityFactor * toFoodI;
-            r += rgb.r * 0.3 * f;
-            g += rgb.g * 0.8 * f;
-            b += rgb.b * 0.3 * f;
-          }
-          if (toEnemyI > 0.1) {
-            const f = intensityFactor * toEnemyI;
-            r += 200 * f;
-            b += 200 * f;
-          }
-          if (repellent > 0.1) {
-            const f = intensityFactor * repellent;
-            b += 255 * f;
-          }
-        }
-      }
-    }
-
-    worldBuffer[offset++] = Math.min(255, r) / 255;
-    worldBuffer[offset++] = Math.min(255, g) / 255;
-    worldBuffer[offset++] = Math.min(255, b) / 255;
+    const [packed, r, g, b] = serializeCellData(map.cells[i], numColonies, colonyRgb, intensityFactor);
+    worldBuffer[offset++] = packed;
+    worldBuffer[offset++] = r;
+    worldBuffer[offset++] = g;
+    worldBuffer[offset++] = b;
   }
 
   return worldBuffer.buffer.slice(0, offset * 4);
+}
+
+function serializeWorldDirty(): ArrayBuffer {
+  const s = sim.current;
+  if (!s) return new ArrayBuffer(0);
+
+  const map = s.world.map;
+  const dirtyList = map.dirtyList;
+  const dirtyCount = dirtyList.length;
+
+  // If no dirty cells, send minimal frame
+  if (dirtyCount === 0) {
+    const buf = new Float32Array(1);
+    buf[0] = 0; // dirtyCount = 0
+    return buf.buffer;
+  }
+
+  ensureDirtyWorldBuffer(dirtyCount);
+
+  const numColonies = s.colonies.length;
+  const intensityFactor = 255.0 / Config.MARKER_INTENSITY;
+
+  const colonyRgb: Array<{ r: number; g: number; b: number }> = [];
+  for (let ci = 0; ci < numColonies; ci++) {
+    const hex = Config.COLONY_COLORS[ci] || '#ffffff';
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    colonyRgb.push(result
+      ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+      : { r: 255, g: 255, b: 255 });
+  }
+
+  let offset = 0;
+  dirtyWorldBuffer[offset++] = dirtyCount;
+
+  for (let j = 0; j < dirtyCount; j++) {
+    const cellIdx = dirtyList[j];
+    const cell = map.cells[cellIdx];
+    const [packed, r, g, b] = serializeCellData(cell, numColonies, colonyRgb, intensityFactor);
+    dirtyWorldBuffer[offset++] = cellIdx;
+    dirtyWorldBuffer[offset++] = packed;
+    dirtyWorldBuffer[offset++] = r;
+    dirtyWorldBuffer[offset++] = g;
+    dirtyWorldBuffer[offset++] = b;
+  }
+
+  // Clear dirty list after serialization
+  map.dirtyList.length = 0;
+  map.dirtyFlags.fill(0);
+
+  return dirtyWorldBuffer.buffer.slice(0, offset * 4);
 }
 
 function getStats(): ColonyStatsPayload[] {
@@ -147,16 +194,15 @@ function getStats(): ColonyStatsPayload[] {
   }));
 }
 
-function loop(time: number): void {
+function loop(): void {
   if (!sim.current) return;
 
-  // Calculate dt
-  if (lastTime === 0) lastTime = time;
-  let dt = (time - lastTime) / 1000;
-  lastTime = time;
+  const now = performance.now();
+  if (lastTime === 0) lastTime = now;
+  let dt = (now - lastTime) / 1000;
+  lastTime = now;
   dt = Math.min(dt, 0.05);
 
-  // FPS counter
   fpsFrames++;
   fpsTime += dt;
   if (fpsTime >= 1.0) {
@@ -165,7 +211,6 @@ function loop(time: number): void {
     fpsTime = 0;
   }
 
-  // Update simulation
   if (!paused) {
     const steps = maxSpeed ? 5 : speed;
     const stepDt = dt / steps;
@@ -174,21 +219,21 @@ function loop(time: number): void {
     }
   }
 
-  // Serialize and send data
+  const map = sim.current.world.map;
+  const fullUpdate = map.dirtyFrameCounter === 0;
+
   const antData = serializeAnts();
-  const worldData = serializeWorld();
+  const worldData = fullUpdate ? serializeWorldFull() : serializeWorldDirty();
   const stats = getStats();
 
   (self as unknown as Worker).postMessage(
-    { type: 'frame', antData, worldData, stats, fps: currentFps },
+    { type: 'frame', antData, worldData, fullUpdate, stats, fps: currentFps },
     [antData, worldData] as unknown as Transferable[]
   );
 
-  // Schedule next frame
-  requestAnimationFrame(loop);
+  setTimeout(loop, 16);
 }
 
-// Handle messages from main thread
 self.onmessage = (e: MessageEvent<WorkerCommand>) => {
   const msg = e.data;
 
@@ -205,7 +250,7 @@ self.onmessage = (e: MessageEvent<WorkerCommand>) => {
       sim.current = s;
       lastTime = 0;
       (self as unknown as Worker).postMessage({ type: 'ready' });
-      requestAnimationFrame(loop);
+      setTimeout(loop, 16);
       break;
     }
     case 'pause':
@@ -250,8 +295,5 @@ self.onmessage = (e: MessageEvent<WorkerCommand>) => {
       }
       break;
     }
-    case 'resize':
-      // Viewport offset handled in main thread
-      break;
   }
 };

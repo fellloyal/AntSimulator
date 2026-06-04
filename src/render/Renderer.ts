@@ -14,7 +14,7 @@ export class Renderer {
   private static readonly ZOOM_FACTOR = 0.1;
 
   constructor(world: World) {
-    this.worldRenderer = world.renderer;
+    this.worldRenderer = new WorldRenderer(world.map);
   }
 
   addColony(colony: Colony): void {

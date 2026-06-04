@@ -61,6 +61,8 @@ export default function MapEditor() {
   const [terrainType, setTerrainType] = useState<TerrainType>(0);
   const [obstacleType, setObstacleType] = useState<ObstacleType>(1);
   const [foodType, setFoodType] = useState<FoodType>(0);
+  // UI美化（任务25）：食物块大小 NxN（1-4），让食物纹理清晰可见
+  const [foodBlockSize, setFoodBlockSize] = useState(2);
   const [brushSize, setBrushSize] = useState(3);
   const [mapName, setMapName] = useState(editorMapName || '新地图');
   const [saving, setSaving] = useState(false);
@@ -222,17 +224,56 @@ export default function MapEditor() {
       }
     }
 
-    // 食物用 SVG 纹理绘制（按 qty 决定尺寸）
+    // 食物：找到 NxN 块的"锚点"（左上），画一个尺寸 = N×cellSize 的精灵
+    // 锚点 = 左方和上方均无同类型食物
+    const foodCellMap = new Map<number, [number, number, number, FoodType]>();  // idx → [x,y,val,type]
     for (const [x, y, val, type] of foodCells) {
-      const qty = val - 1;
+      foodCellMap.set(y * gridW + x, [x, y, val, type]);
+    }
+    const drawn = new Set<number>();
+    for (const [x, y, val, type] of foodCells) {
+      const idx = y * gridW + x;
+      if (drawn.has(idx)) continue;
+      // 检查上方
+      if (y > 0) {
+        const up = foodCellMap.get((y - 1) * gridW + x);
+        if (up && up[3] === type) continue;
+      }
+      // 检查左方
+      if (x > 0) {
+        const left = foodCellMap.get(y * gridW + (x - 1));
+        if (left && left[3] === type) continue;
+      }
+      // 找块大小 - 找连续同类型的最大尺寸
+      let blockSize = 1;
+      while (
+        x + blockSize < gridW &&
+        y + blockSize < gridH &&
+        foodCellMap.has((y + blockSize) * gridW + x) &&
+        foodCellMap.get((y + blockSize) * gridW + x)![3] === type
+      ) {
+        blockSize++;
+      }
+      // 标记这一块都被画了
+      for (let by = 0; by < blockSize; by++) {
+        for (let bx = 0; bx < blockSize; bx++) {
+          const dIdx = (y + by) * gridW + (x + bx);
+          if (foodCellMap.has(dIdx) && foodCellMap.get(dIdx)![3] === type) {
+            drawn.add(dIdx);
+          }
+        }
+      }
+      // 选 sprite：按块大小映射到 foodSizeFromQty
+      const qty = Math.max(1, blockSize * blockSize);
       const size = foodSizeFromQty(qty);
       const key = foodKey(type, size);
+      const drawSize = blockSize * CELL_SIZE;
       if (AssetRegistry.has(key)) {
-        AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+        AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, drawSize);
       } else {
         const g = Math.min(255, 100 + (type + 1) * 30) | 0;
         ctx.fillStyle = `rgb(0,${g},0)`;
-        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, drawSize, drawSize);
       }
     }
 
@@ -270,6 +311,24 @@ export default function MapEditor() {
     const cx = Math.floor(worldX / CELL_SIZE);
     const cy = Math.floor(worldY / CELL_SIZE);
 
+    // 食物工具用 NxN 块大小（独立于笔刷）
+    if (tool === 'food') {
+      const N = foodBlockSize;
+      for (let dy = 0; dy < N; dy++) {
+        for (let dx = 0; dx < N; dx++) {
+          const gx = cx + dx;
+          const gy = cy + dy;
+          if (gx < 0 || gx >= gridW || gy < 0 || gy >= gridH) continue;
+          const idx = gy * gridW + gx;
+          grid[idx] = Math.max(grid[idx], 2);
+          foodTypeRef.current.set(idx, foodType);
+          dirtyRef.current.add(idx);
+        }
+      }
+      render();
+      return;
+    }
+
     for (let dy = -brushSize + 1; dy < brushSize; dy++) {
       for (let dx = -brushSize + 1; dx < brushSize; dx++) {
         const gx = cx + dx;
@@ -280,9 +339,6 @@ export default function MapEditor() {
           grid[idx] = 1;
           obstacleRef.current.set(idx, obstacleType);
           terrainRef.current.delete(idx);
-        } else if (tool === 'food') {
-          grid[idx] = Math.max(grid[idx], 2);
-          foodTypeRef.current.set(idx, foodType);
         } else if (tool === 'erase') {
           grid[idx] = 0;
           terrainRef.current.delete(idx);
@@ -303,7 +359,7 @@ export default function MapEditor() {
       }
     }
     render();
-  }, [tool, brushSize, gridW, gridH, render, terrainType, obstacleType, foodType]);
+  }, [tool, brushSize, gridW, gridH, render, terrainType, obstacleType, foodType, foodBlockSize]);
 
   // Mouse handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -633,6 +689,24 @@ export default function MapEditor() {
                 {(['鸡腿', '苹果', '面包', '浆果'] as const)[v]}
               </button>
             ))}
+            {/* UI美化：食物块大小 NxN（1-4） */}
+            <div className="text-[10px] mt-1" style={{ color: 'var(--text-secondary)' }}>块大小</div>
+            <div className="grid grid-cols-4 gap-1">
+              {[1, 2, 3, 4].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setFoodBlockSize(n)}
+                  className="rounded px-1 py-1 text-[10px] transition-colors"
+                  style={{
+                    background: foodBlockSize === n ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                    color: foodBlockSize === n ? '#000' : 'var(--text-secondary)',
+                  }}
+                  title={`每次画 ${n}×${n} 格`}
+                >
+                  {n}×{n}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

@@ -34,6 +34,11 @@ function createWorldCell(): WorldCell {
     density: 0.0,
     wallDist: 0.0,
     discovered: 1.0,
+    // UI美化新增字段（task 7-9）
+    terrain: 0,
+    obstacle: 0,
+    foodType: 0,
+    wearLevel: 0,
   };
 }
 

@@ -14,6 +14,7 @@ export interface WorldLike {
   addMarker(pos: { x: number; y: number }, type: Mode, intensity: number, colonyId: number, permanent?: boolean): void;
   addMarkerRepellent(pos: { x: number; y: number }, colonyId: number, amount: number): void;
   addFoodAt(x: number, y: number, quantity: number): void;
+  bumpWear(cx: number, cy: number, amount?: number): void;
 }
 
 export class Ant {
@@ -166,6 +167,10 @@ export class Ant {
       this.hits = 0;
       this.position.x += dt * speed * v.x;
       this.position.y += dt * speed * v.y;
+      // UI美化：蚂蚁移动后累加 cell 磨损（task 9）
+      const cx = Math.floor(this.position.x / world.map.cellSize);
+      const cy = Math.floor(this.position.y / world.map.cellSize);
+      world.bumpWear(cx, cy, 0.001);
       if (
         this.position.x < 0.0 ||
         this.position.x > Config.WORLD_WIDTH ||

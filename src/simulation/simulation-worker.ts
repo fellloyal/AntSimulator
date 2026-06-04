@@ -252,13 +252,18 @@ self.onmessage = (e: MessageEvent<WorkerCommand>) => {
         try {
           const data = JSON.parse(msg.config.gridData);
           const cs = data.cellSize || 4;
-          for (const [cx, cy] of data.walls || []) {
-            s.world.addWallByCoords({ x: cx as number, y: cy as number });
+          for (const [cx, cy, obstacleType] of data.walls || []) {
+            s.world.setObstacle(cx as number, cy as number, (obstacleType ?? 1) as number);
           }
-          for (const [cx, cy, qty] of data.foods || []) {
+          for (const [cx, cy, qty, foodType] of data.foods || []) {
+            s.world.setFoodType(cx as number, cy as number, (foodType ?? 0) as number);
             const wx = (cx as number) * cs + cs / 2;
             const wy = (cy as number) * cs + cs / 2;
             s.world.addFoodAt(wx, wy, qty as number);
+          }
+          // UI美化：解析 terrain 数组 [[cx, cy, terrainType], ...]
+          for (const [cx, cy, terrain] of data.terrain || []) {
+            s.world.setTerrain(cx as number, cy as number, terrain as number);
           }
         } catch (e) {
           console.error('[Worker] Failed to parse gridData:', e);

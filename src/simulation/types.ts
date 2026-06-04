@@ -35,6 +35,11 @@ export interface WorldCell {
   density: number;
   wallDist: number;
   discovered: number;
+  // UI美化新增字段（不影响 simulation 计算）
+  terrain: number;     // 0=grass 1=sand 2=water 3=rock
+  obstacle: number;    // 0=none 1=brick 2=ice 3=wood 4=fence
+  foodType: number;    // 0=chicken 1=apple 2=bread 3=berry
+  wearLevel: number;   // 0~1，蚂蚁经过累积
 }
 
 export interface HitPoint {

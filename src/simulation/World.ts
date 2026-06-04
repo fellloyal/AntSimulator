@@ -62,6 +62,51 @@ export class World {
     }
   }
 
+  // UI美化新增：设置 cell 地形（task 8）
+  setTerrain(cx: number, cy: number, terrain: number): void {
+    if (this.map.checkCoords({ x: cx, y: cy })) {
+      const cell = this.map.getByCoords({ x: cx, y: cy });
+      cell.terrain = terrain;
+      // 水地形默认不可通过（视为墙）
+      if (terrain === 2 && !cell.wall) {
+        cell.wall = 1;
+        this.map.computeDistanceFieldAround(cx, cy);
+      } else if (terrain !== 2 && cell.obstacle === 0 && cell.wall) {
+        // 切换非水地形时，如果当前是墙但没有 obstacle，可能是水，降级
+        // 这里保守：不动 wall，由后续 setObstacle 处理
+      }
+    }
+  }
+
+  // UI美化新增：设置障碍物（task 8）
+  setObstacle(cx: number, cy: number, obstacle: number): void {
+    if (this.map.checkCoords({ x: cx, y: cy })) {
+      const cell = this.map.getByCoords({ x: cx, y: cy });
+      cell.obstacle = obstacle;
+      cell.wall = obstacle !== 0 ? 1 : 0;
+      if (obstacle === 0) cell.food = 0;
+      this.map.computeDistanceFieldAround(cx, cy);
+    }
+  }
+
+  // UI美化新增：设置食物种类（task 8）
+  setFoodType(cx: number, cy: number, foodType: number): void {
+    if (this.map.checkCoords({ x: cx, y: cy })) {
+      this.map.getByCoords({ x: cx, y: cy }).foodType = foodType;
+    }
+  }
+
+  // UI美化新增：累加 cell 磨损（task 9, 由 Ant.updatePosition 调用）
+  bumpWear(cx: number, cy: number, amount: number = 0.001): void {
+    if (this.map.checkCoords({ x: cx, y: cy })) {
+      const cell = this.map.getByCoords({ x: cx, y: cy });
+      if (cell.wall) return; // 墙不磨损
+      if (cell.wearLevel < 1) {
+        cell.wearLevel = Math.min(1, cell.wearLevel + amount);
+      }
+    }
+  }
+
   removeWall(position: { x: number; y: number }): void {
     if (this.map.checkCoords(position)) {
       this.map.get(position).wall = 0;

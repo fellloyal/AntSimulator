@@ -296,9 +296,10 @@ export class WorkerRenderer {
   }
 
   private renderAntsMedium(ctx: CanvasRenderingContext2D, ants: Array<{ x: number; y: number; angle: number; phase: number; type: number; wobble: number }>, color: string, rgb: { r: number; g: number; b: number }): void {
+    // Alive ants body
     ctx.fillStyle = color;
     for (const ant of ants) {
-      if (ant.phase === Mode.Dying) continue;
+      if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
       const a = ant.angle + Math.PI / 2 + Math.sin(ant.wobble) * 0.05;
       ctx.save();
@@ -315,6 +316,24 @@ export class WorkerRenderer {
       ctx.fill();
       ctx.restore();
     }
+
+    // Food dots
+    ctx.fillStyle = '#429942';
+    ctx.beginPath();
+    for (const ant of ants) {
+      if (ant.phase !== Mode.ToHome && ant.phase !== Mode.ToHomeNoFood) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const a = ant.angle + Math.PI / 2 + Math.sin(ant.wobble) * 0.05;
+      const headR = 1.2 * scale;
+      const headY = -3.5 * scale;
+      ctx.save();
+      ctx.translate(ant.x, ant.y);
+      ctx.rotate(a);
+      ctx.moveTo(1.2 * scale, headY - headR - 1.0 * scale);
+      ctx.arc(0, headY - headR - 1.0 * scale, 1.2 * scale, 0, Math.PI * 2);
+      ctx.restore();
+    }
+    ctx.fill();
 
     // Dying ants
     for (const ant of ants) {
@@ -337,6 +356,7 @@ export class WorkerRenderer {
   private renderAntsDetailed(ctx: CanvasRenderingContext2D, ants: Array<{ x: number; y: number; angle: number; phase: number; type: number; wobble: number }>, color: string, rgb: { r: number; g: number; b: number }): void {
     const colorLight = `rgb(${Math.min(255, rgb.r + ((255 - rgb.r) >> 2))},${Math.min(255, rgb.g + ((255 - rgb.g) >> 2))},${Math.min(255, rgb.b + ((255 - rgb.b) >> 2))})`;
 
+    // Batch 1: Body segments
     ctx.fillStyle = color;
     for (const ant of ants) {
       if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
@@ -354,6 +374,7 @@ export class WorkerRenderer {
       ctx.beginPath();
       ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
       ctx.fill();
+      // Petiole
       ctx.fillStyle = colorLight;
       ctx.beginPath();
       ctx.ellipse(0, 0.3 * scale, 0.6 * scale, 0.8 * scale, 0, 0, Math.PI * 2);
@@ -362,7 +383,101 @@ export class WorkerRenderer {
       ctx.restore();
     }
 
-    // Dying ants
+    // Batch 2: Antennae
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 0.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (const ant of ants) {
+      if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const a = ant.angle + Math.PI / 2 + Math.sin(ant.wobble) * 0.05;
+      const antWobble1 = Math.sin(ant.wobble * 1.3) * 0.15;
+      const antWobble2 = Math.sin(ant.wobble * 1.3 + 1.0) * 0.15;
+      const headR = 1.2 * scale;
+      const headY = -3.5 * scale;
+      const antLen = 3.0 * scale;
+      const antBaseY = headY - headR * 0.5;
+      const antSpread = 0.45;
+
+      ctx.save();
+      ctx.translate(ant.x, ant.y);
+      ctx.rotate(a);
+      ctx.moveTo(-headR * 0.3, antBaseY);
+      ctx.lineTo(
+        -Math.sin(antSpread + antWobble1) * antLen,
+        antBaseY - Math.cos(antSpread + antWobble1) * antLen
+      );
+      ctx.moveTo(headR * 0.3, antBaseY);
+      ctx.lineTo(
+        Math.sin(antSpread + antWobble2) * antLen,
+        antBaseY - Math.cos(antSpread + antWobble2) * antLen
+      );
+      ctx.restore();
+    }
+    ctx.stroke();
+
+    // Batch 3: Legs
+    ctx.lineWidth = 0.4;
+    ctx.beginPath();
+    for (const ant of ants) {
+      if (ant.phase === Mode.Dying || ant.phase === Mode.Dead) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const a = ant.angle + Math.PI / 2 + Math.sin(ant.wobble) * 0.05;
+      const thoraxR = 1.4 * scale;
+      const thoraxY = -1.2 * scale;
+      const legLen = 2.5 * scale;
+      const legWobble = ant.wobble;
+
+      ctx.save();
+      ctx.translate(ant.x, ant.y);
+      ctx.rotate(a);
+
+      for (let li = 0; li < 3; li++) {
+        const legBaseY = thoraxY - 0.3 * scale + li * 0.9 * scale;
+        const phase = li * 2.094;
+        const swingL = Math.sin(legWobble + phase) * 0.25;
+        const swingR = Math.sin(legWobble + phase + Math.PI) * 0.25;
+
+        const lStartX = -thoraxR * 0.7;
+        const lMidX = lStartX - legLen * 0.5;
+        const lMidY = legBaseY + legLen * 0.15 + swingL * legLen;
+        const lEndX = lMidX - legLen * 0.15;
+        const lEndY = lMidY + legLen * 0.35;
+        ctx.moveTo(lStartX, legBaseY);
+        ctx.quadraticCurveTo(lMidX, lMidY, lEndX, lEndY);
+
+        const rStartX = thoraxR * 0.7;
+        const rMidX = rStartX + legLen * 0.5;
+        const rMidY = legBaseY + legLen * 0.15 + swingR * legLen;
+        const rEndX = rMidX + legLen * 0.15;
+        const rEndY = rMidY + legLen * 0.35;
+        ctx.moveTo(rStartX, legBaseY);
+        ctx.quadraticCurveTo(rMidX, rMidY, rEndX, rEndY);
+      }
+      ctx.restore();
+    }
+    ctx.stroke();
+
+    // Batch 4: Food particles
+    ctx.fillStyle = '#429942';
+    ctx.beginPath();
+    for (const ant of ants) {
+      if (ant.phase !== Mode.ToHome && ant.phase !== Mode.ToHomeNoFood) continue;
+      const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
+      const a = ant.angle + Math.PI / 2 + Math.sin(ant.wobble) * 0.05;
+      const headR = 1.2 * scale;
+      const headY = -3.5 * scale;
+      ctx.save();
+      ctx.translate(ant.x, ant.y);
+      ctx.rotate(a);
+      ctx.moveTo(1.2 * scale, headY - headR - 1.0 * scale);
+      ctx.arc(0, headY - headR - 1.0 * scale, 1.2 * scale, 0, Math.PI * 2);
+      ctx.restore();
+    }
+    ctx.fill();
+
+    // Batch 5: Dying ants
     for (const ant of ants) {
       if (ant.phase !== Mode.Dying) continue;
       const scale = ant.type === AntType.Soldier ? 2.0 : 1.0;
@@ -373,7 +488,13 @@ export class WorkerRenderer {
       ctx.translate(ant.x, ant.y);
       ctx.rotate(a);
       ctx.beginPath();
-      ctx.ellipse(0, 0, 1.6 * scale, 3 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -3.5 * scale, 1.2 * scale, 1.2 * scale * 1.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, -1.2 * scale, 1.4 * scale * 0.85, 1.4 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, 1.8 * scale, 1.6 * scale, 2.2 * scale, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
       ctx.globalAlpha = 1.0;

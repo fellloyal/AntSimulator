@@ -37,6 +37,7 @@
 | 4 | 障碍物风格 | **多种可选（红砖/冰砖/木板/铁栅栏）** | 统一红砖/跟随地形 |
 | 5 | 蚁窝视觉 | **强化（草+光晕+蚁道+周围蚂蚁）** | 保持现状/仅加装饰 |
 | 6 | 信息素轨迹 | **磨损土路+蚁群色叠加** | 保持色块/发光带 |
+| 7 | 蚂蚁群聚可辨识性 | **缩小 0.7x + 0.5px 暗色描边（双保险）** | 仅描边/仅缩小/动态 alpha |
 
 ## 3. 架构
 
@@ -121,7 +122,7 @@ interface InitConfig {
 5. **障碍物**：`ObstacleRenderer` 绘制 4 种砖墙（z 高于地形，蚂蚁无法通过）
 6. **食物堆**：`FoodPileRenderer` 绘制 3 尺寸 SVG 堆（按 qty 决定大小+种类）
 7. **蚁窝**：`ColonyRenderer.renderBase()` 增强版本
-8. **蚂蚁**：`ColonyRenderer.renderAnts()`（已存在 LOD 逻辑不变）
+8. **蚂蚁**：`ColonyRenderer.renderAnts()`（已存在 LOD 逻辑不变，叠加 0.7x 缩小 + 0.5px 描边，见 3.7）
 
 ### 3.5 通行规则（与地形系统绑定）
 - 草地、沙地：可通行，蚂蚁按 `Config.ANT_SPEED` 移动
@@ -133,6 +134,30 @@ interface InitConfig {
 - Canvas API 渲染时 `ctx.drawImage(cache, x, y, cellSize*scale, cellSize*scale)`
 - 避免每帧 `new Path2D()` / `parseFloat()` 的开销
 - AssetRegistry 单例，按 cellSize 缓存；cellSize 不同时失效重建
+
+### 3.7 蚂蚁群聚可辨识性增强（backport）
+
+#### 3.7.1 问题
+多只同色蚂蚁在蚁窝附近、路径交叉、食物堆周围挤在一起时，三段椭圆身体相互重叠，形成大色块，无法识别单只个体。
+
+#### 3.7.2 解决方案：双保险
+1. **尺寸缩小**：所有 LOD 蚂蚁整体 scale 从 `1.0` 降至 `0.7`
+   - LOD_DETAIL（zoom≥1.5）：segment rx/ry 乘 0.7，腿/触角长度乘 0.7
+   - LOD_MEDIUM（0.6≤zoom<1.5）：同样乘 0.7
+   - LOD_SIMPLE（zoom<0.6）：保持现状（已经是简单线段，影响小）
+2. **暗色描边**：每只蚂蚁身体段（头/胸/腹）加 0.5px 描边，颜色为 `#1a0808`（比蚁群色暗 4 档）
+   - 描边仅在 LOD_DETAIL 模式下生效（性能考虑，LOD_MEDIUM 仍可生效但描边细到 0.3px）
+   - 描边在蚁群色之上绘制（顺序：先 fill，再 stroke）
+
+#### 3.7.3 影响范围
+- 主线程：`src/render/ColonyRenderer.ts`（renderAntsDetailed/Medium/Simple）
+- Worker 端：`src/render/WorkerRenderer.ts`（renderAntsFromData/Detailed/Medium/Simple）
+- 两端必须同步修改，保持视觉一致
+
+#### 3.7.4 性能影响
+- 描边增加 ~5% 渲染开销（每只蚂蚁多一次 stroke 调用，但批处理仍然生效）
+- 缩小不影响性能，反而让 batch 命中的 cell 区域更大
+- 预计单帧蚂蚁渲染从 5ms → 5.2ms，仍在预算内
 
 ## 4. 组件接口
 
@@ -287,7 +312,8 @@ class AssetRegistry {
 4. **食物层** — FoodPileRenderer + 3 尺寸阈值
 5. **蚁窝层** — ColonyRenderer.renderBase 增强
 6. **信息素磨损** — WornPath + Worker wearLevel 累加
-7. **集成测试** — 4 地形地图 + 4 蚁群 + 10 分钟稳定性
+7. **蚂蚁可辨识性 backport** — ColonyRenderer + WorkerRenderer 缩小 0.7x + 描边
+8. **集成测试** — 4 地形地图 + 4 蚁群 + 10 分钟稳定性
 
 ## 9. 风险与权衡
 
@@ -298,6 +324,7 @@ class AssetRegistry {
 | Worker/主线程代码重复 | assets/*.ts 共享常量，渲染逻辑按需在两端复制 |
 | 移动端 SVG 渲染慢 | 本设计不在范围内，下一轮再做 |
 | 老地图数据丢失 | 字段缺失全部给默认值，向后兼容 |
+| 蚂蚁描边后视觉太"卡通"失去写实感 | 描边仅 0.5px 暗色，远视图不可见，仅在 zoom≥0.6 时生效 |
 
 ## 10. 附录
 
@@ -309,5 +336,6 @@ class AssetRegistry {
 - 第 5 轮：蚁窝 → C 强化版
 - 第 6 轮：信息素 → C 磨损土路+蚁群色
 - 第 7 轮：完整预览 → 用户批准
+- 第 8 轮：蚂蚁群聚可辨识性（追加）→ C 缩小 0.7x + 0.5px 描边
 
-完整可视化对比见 `.superpowers/brainstorm/ui-beautify/content/01-07-*.html`
+完整可视化对比见 `.superpowers/brainstorm/ui-beautify/content/01-08-*.html`

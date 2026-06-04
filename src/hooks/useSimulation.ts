@@ -218,8 +218,12 @@ export function useSimulation(
       if (!pausedRef.current) {
         const steps = maxSpeedRef.current ? 5 : speedRef.current;
         const stepDt = dt / steps;
+        // Frame time budget: limit simulation to 12ms per frame to keep UI responsive
+        const budgetMs = 12;
+        const startTime = performance.now();
         for (let i = 0; i < steps; i++) {
           sim.update(stepDt);
+          if (performance.now() - startTime > budgetMs) break;
         }
       }
 

@@ -45,7 +45,7 @@ interface SimulatorState {
 
 const useStore = create<SimulatorState>((set) => ({
   started: false,
-  setupConfig: { workerCount: 800, soldierCount: 200, colonyCount: 1 },
+  setupConfig: { workerCount: 400, soldierCount: 50, colonyCount: 1 },
   startSimulation: (config) => set({ started: true, setupConfig: config }),
 
   paused: false,

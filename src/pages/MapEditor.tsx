@@ -236,9 +236,12 @@ export default function MapEditor() {
       }
     }
 
-    // Grid border
-    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-    ctx.lineWidth = 1;
+    // UI美化：地图区域明亮边线（双层：内亮外淡）
+    ctx.strokeStyle = 'rgba(66, 153, 66, 0.35)';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(0, 0, editorMapWidth, editorMapHeight);
+    ctx.strokeStyle = '#7fe07f';
+    ctx.lineWidth = 2;
     ctx.strokeRect(0, 0, editorMapWidth, editorMapHeight);
 
     ctx.restore();

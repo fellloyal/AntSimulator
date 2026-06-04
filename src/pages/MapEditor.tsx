@@ -1,9 +1,29 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Save, Square, Apple, Eraser } from 'lucide-react';
+import { ArrowLeft, Save, Square, Apple, Eraser, Mountain, Layers } from 'lucide-react';
 import useStore, { type EditorTool } from '@/store/useStore';
 import { createMap, updateMap } from '@/api/maps';
 
 const CELL_SIZE = 4;
+
+// UI美化（task 21）：地形/障碍物/食物类型枚举
+type TerrainType = 0 | 1 | 2 | 3;  // 0=grass 1=sand 2=water 3=rock
+type ObstacleType = 0 | 1 | 2 | 3 | 4;  // 0=none 1=brick 2=ice 3=wood 4=fence
+type FoodType = 0 | 1 | 2 | 3;  // 0=chicken 1=apple 2=bread 3=berry
+
+const TERRAIN_COLORS: Record<TerrainType, string> = {
+  0: '#4a7a2a',  // grass
+  1: '#c8a878',  // sand
+  2: '#3a5a8a',  // water
+  3: '#6a6a6a',  // rock
+};
+
+const OBSTACLE_COLORS: Record<ObstacleType, string> = {
+  0: '#4a4a4a',  // placeholder
+  1: '#a04030',  // red brick
+  2: '#9acfe0',  // ice
+  3: '#8a5a30',  // wood
+  4: '#7a7a82',  // fence
+};
 
 export default function MapEditor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,14 +36,20 @@ export default function MapEditor() {
   const setEditorMap = useStore((s) => s.setEditorMap);
 
   const [tool, setTool] = useState<EditorTool>('wall');
+  const [terrainType, setTerrainType] = useState<TerrainType>(0);
+  const [obstacleType, setObstacleType] = useState<ObstacleType>(1);
+  const [foodType, setFoodType] = useState<FoodType>(0);
   const [brushSize, setBrushSize] = useState(3);
   const [mapName, setMapName] = useState(editorMapName || '新地图');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
   const [drawing, setDrawing] = useState(false);
 
-  // Grid data: 0=empty, 1=wall, 2+=food
-  const gridRef = useRef<Uint8Array | null>(null);
+  // UI美化（task 21）：地形/障碍物并行 Map（cellIdx → type）
+  const gridRef = useRef<Uint8Array | null>(null);  // 0=empty 1=wall 2+=food(qty+1)
+  const terrainRef = useRef<Map<number, TerrainType>>(new Map());
+  const obstacleRef = useRef<Map<number, ObstacleType>>(new Map());
+  const foodTypeRef = useRef<Map<number, FoodType>>(new Map());
   const dirtyRef = useRef<Set<number>>(new Set());
 
   // Viewport
@@ -37,22 +63,32 @@ export default function MapEditor() {
   // Initialize grid
   useEffect(() => {
     const newGrid = new Uint8Array(gridW * gridH);
+    const newTerrain = new Map<number, TerrainType>();
+    const newObstacle = new Map<number, ObstacleType>();
+    const newFoodType = new Map<number, FoodType>();
+
     // Load existing grid data if editing an existing map
     if (editorGridData) {
       try {
         const data = JSON.parse(editorGridData);
-        for (const [cx, cy] of data.walls || []) {
-          const gx = cx as number;
-          const gy = cy as number;
-          if (gx >= 0 && gx < gridW && gy >= 0 && gy < gridH) {
-            newGrid[gy * gridW + gx] = 1;
+        for (const w of data.walls || []) {
+          const cx = w[0] as number, cy = w[1] as number;
+          if (cx >= 0 && cx < gridW && cy >= 0 && cy < gridH) {
+            newGrid[cy * gridW + cx] = 1;
+            if (w.length >= 3) newObstacle.set(cy * gridW + cx, w[2] as ObstacleType);
           }
         }
-        for (const [cx, cy, qty] of data.foods || []) {
-          const gx = cx as number;
-          const gy = cy as number;
-          if (gx >= 0 && gx < gridW && gy >= 0 && gy < gridH) {
-            newGrid[gy * gridW + gx] = Math.max(1, qty as number) + 1;
+        for (const f of data.foods || []) {
+          const cx = f[0] as number, cy = f[1] as number, qty = f[2] as number;
+          if (cx >= 0 && cx < gridW && cy >= 0 && cy < gridH) {
+            newGrid[cy * gridW + cx] = Math.max(1, qty) + 1;
+            if (f.length >= 4) newFoodType.set(cy * gridW + cx, f[3] as FoodType);
+          }
+        }
+        for (const t of data.terrain || []) {
+          const cx = t[0] as number, cy = t[1] as number, type = t[2] as TerrainType;
+          if (cx >= 0 && cx < gridW && cy >= 0 && cy < gridH) {
+            newTerrain.set(cy * gridW + cx, type);
           }
         }
       } catch (e) {
@@ -60,6 +96,9 @@ export default function MapEditor() {
       }
     }
     gridRef.current = newGrid;
+    terrainRef.current = newTerrain;
+    obstacleRef.current = newObstacle;
+    foodTypeRef.current = newFoodType;
     dirtyRef.current = new Set();
   }, [gridW, gridH, editorGridData]);
 
@@ -67,6 +106,8 @@ export default function MapEditor() {
   const render = useCallback(() => {
     const canvas = canvasRef.current;
     const grid = gridRef.current;
+    const terrain = terrainRef.current;
+    const obstacle = obstacleRef.current;
     if (!canvas || !grid) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -95,27 +136,68 @@ export default function MapEditor() {
     const ex = Math.min(gridW - 1, Math.ceil(vr / CELL_SIZE));
     const ey = Math.min(gridH - 1, Math.ceil(vb / CELL_SIZE));
 
-    // Batch by type
-    const wallCells: [number, number][] = [];
-    const foodCells: [number, number, number][] = [];
-
+    // UI美化（task 21）：按地形分组批量绘制底层
+    const terrainBuckets = new Map<TerrainType, Array<[number, number]>>();
     for (let y = sy; y <= ey; y++) {
       for (let x = sx; x <= ex; x++) {
-        const val = grid[y * gridW + x];
-        if (val === 1) wallCells.push([x, y]);
-        else if (val >= 2) foodCells.push([x, y, val]);
+        const idx = y * gridW + x;
+        const t = terrain.get(idx);
+        if (t !== undefined) {
+          let bucket = terrainBuckets.get(t);
+          if (!bucket) { bucket = []; terrainBuckets.set(t, bucket); }
+          bucket.push([x, y]);
+        }
+      }
+    }
+    for (const [type, cells] of terrainBuckets) {
+      ctx.fillStyle = TERRAIN_COLORS[type];
+      for (const [x, y] of cells) {
+        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
     }
 
-    ctx.fillStyle = '#726b6b';
-    for (const [x, y] of wallCells) {
-      ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    // 障碍物
+    const wallCells: Array<[number, number, ObstacleType]> = [];
+    const foodCells: Array<[number, number, number, FoodType]> = [];
+    for (let y = sy; y <= ey; y++) {
+      for (let x = sx; x <= ex; x++) {
+        const idx = y * gridW + x;
+        const val = grid[idx];
+        if (val === 1) {
+          wallCells.push([x, y, obstacle.get(idx) ?? 1]);
+        } else if (val >= 2) {
+          foodCells.push([x, y, val, foodTypeRef.current.get(idx) ?? 0]);
+        }
+      }
     }
 
-    for (const [x, y, qty] of foodCells) {
-      const g = Math.min(255, 100 + qty * 10) | 0;
+    // 障碍物按类型分桶
+    const obsBuckets = new Map<ObstacleType, Array<[number, number]>>();
+    for (const [x, y, type] of wallCells) {
+      let bucket = obsBuckets.get(type);
+      if (!bucket) { bucket = []; obsBuckets.set(type, bucket); }
+      bucket.push([x, y]);
+    }
+    for (const [type, cells] of obsBuckets) {
+      ctx.fillStyle = OBSTACLE_COLORS[type];
+      for (const [x, y] of cells) {
+        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
+    }
+
+    // 食物
+    const foodBuckets = new Map<FoodType, Array<[number, number, number]>>();
+    for (const [x, y, qty, type] of foodCells) {
+      let bucket = foodBuckets.get(type);
+      if (!bucket) { bucket = []; foodBuckets.set(type, bucket); }
+      bucket.push([x, y, qty]);
+    }
+    for (const [type, cells] of foodBuckets) {
+      const g = Math.min(255, 100 + (type + 1) * 30) | 0;
       ctx.fillStyle = `rgb(0,${g},0)`;
-      ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      for (const [x, y, qty] of cells) {
+        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
     }
 
     // Grid border
@@ -157,16 +239,32 @@ export default function MapEditor() {
         const idx = gy * gridW + gx;
         if (tool === 'wall') {
           grid[idx] = 1;
+          obstacleRef.current.set(idx, obstacleType);
+          terrainRef.current.delete(idx);
         } else if (tool === 'food') {
           grid[idx] = Math.max(grid[idx], 2);
+          foodTypeRef.current.set(idx, foodType);
         } else if (tool === 'erase') {
           grid[idx] = 0;
+          terrainRef.current.delete(idx);
+          obstacleRef.current.delete(idx);
+          foodTypeRef.current.delete(idx);
+        } else if (tool === 'terrain') {
+          // 地形不写入 grid（grid 仍为空），仅记录到 terrainRef
+          terrainRef.current.set(idx, terrainType);
+          // 地形为水时自动标记为墙
+          if (terrainType === 2) {
+            grid[idx] = 1;
+          }
+        } else if (tool === 'obstacle') {
+          grid[idx] = 1;
+          obstacleRef.current.set(idx, obstacleType);
         }
         dirtyRef.current.add(idx);
       }
     }
     render();
-  }, [tool, brushSize, gridW, gridH, render]);
+  }, [tool, brushSize, gridW, gridH, render, terrainType, obstacleType, foodType]);
 
   // Mouse handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -221,15 +319,26 @@ export default function MapEditor() {
     try {
       const walls: number[][] = [];
       const foods: number[][] = [];
+      const terrain: number[][] = [];
+      const seen = new Set<number>();
       for (let i = 0; i < grid.length; i++) {
+        if (seen.has(i)) continue;
         const val = grid[i];
+        const gx = i % gridW;
+        const gy = Math.floor(i / gridW);
+        // 地形（仅当非空）
+        const t = terrainRef.current.get(i);
+        if (t !== undefined) terrain.push([gx, gy, t]);
         if (val === 1) {
-          walls.push([i % gridW, Math.floor(i / gridW)]);
+          const o = obstacleRef.current.get(i) ?? 1;
+          walls.push([gx, gy, o]);
         } else if (val >= 2) {
-          foods.push([i % gridW, Math.floor(i / gridW), val - 1]);
+          const f = foodTypeRef.current.get(i) ?? 0;
+          foods.push([gx, gy, val - 1, f]);
         }
+        seen.add(i);
       }
-      const gridData = JSON.stringify({ cellSize: CELL_SIZE, walls, foods });
+      const gridData = JSON.stringify({ cellSize: CELL_SIZE, terrain, walls, foods });
 
       // Generate thumbnail
       const canvas = canvasRef.current;
@@ -269,7 +378,9 @@ export default function MapEditor() {
 
   const tools: { id: EditorTool; icon: React.ReactNode; label: string }[] = [
     { id: 'wall', icon: <Square size={16} />, label: '墙壁(W)' },
+    { id: 'obstacle', icon: <Layers size={16} />, label: '障碍(O)' },
     { id: 'food', icon: <Apple size={16} />, label: '食物(F)' },
+    { id: 'terrain', icon: <Mountain size={16} />, label: '地形(T)' },
     { id: 'erase', icon: <Eraser size={16} />, label: '擦除(E)' },
   ];
 
@@ -362,6 +473,67 @@ export default function MapEditor() {
             {t.icon}
           </button>
         ))}
+
+        {/* UI美化（task 21）：地形/障碍/食物类型二级选择 */}
+        {tool === 'terrain' && (
+          <div className="border-t border-white/5 mt-1 pt-2 px-1 flex flex-col gap-1">
+            <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>地形</div>
+            {([[0, '草地', '#4a7a2a'], [1, '沙地', '#c8a878'], [2, '水', '#3a5a8a'], [3, '石头', '#6a6a6a']] as [TerrainType, string, string][]).map(([v, label, color]) => (
+              <button
+                key={v}
+                onClick={() => setTerrainType(v)}
+                className="flex items-center gap-1 rounded px-2 py-1 text-[10px] transition-colors"
+                style={{
+                  background: terrainType === v ? color : 'transparent',
+                  color: terrainType === v ? '#fff' : 'var(--text-secondary)',
+                }}
+              >
+                <div className="w-3 h-3 rounded-sm" style={{ background: color }} />
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {tool === 'obstacle' && (
+          <div className="border-t border-white/5 mt-1 pt-2 px-1 flex flex-col gap-1">
+            <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>障碍</div>
+            {([1, 2, 3, 4] as ObstacleType[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setObstacleType(v)}
+                className="flex items-center gap-1 rounded px-2 py-1 text-[10px] transition-colors"
+                style={{
+                  background: obstacleType === v ? OBSTACLE_COLORS[v] : 'transparent',
+                  color: obstacleType === v ? '#fff' : 'var(--text-secondary)',
+                }}
+              >
+                <div className="w-3 h-3 rounded-sm" style={{ background: OBSTACLE_COLORS[v] }} />
+                {(['红砖', '冰砖', '木板', '铁栅'] as const)[v - 1]}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {tool === 'food' && (
+          <div className="border-t border-white/5 mt-1 pt-2 px-1 flex flex-col gap-1">
+            <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>食物</div>
+            {([0, 1, 2, 3] as FoodType[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setFoodType(v)}
+                className="flex items-center gap-1 rounded px-2 py-1 text-[10px] transition-colors"
+                style={{
+                  background: foodType === v ? 'var(--accent-green)' : 'transparent',
+                  color: foodType === v ? '#000' : 'var(--text-secondary)',
+                }}
+              >
+                {(['鸡腿', '苹果', '面包', '浆果'] as const)[v]}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="border-t border-white/5 my-1" />
         <div className="px-2 py-1 text-[10px]" style={{ color: 'var(--text-secondary)' }}>
           笔刷
@@ -378,7 +550,7 @@ export default function MapEditor() {
 
       {/* Keyboard shortcuts */}
       <div className="absolute bottom-4 left-4 z-10 text-[10px]" style={{ color: 'var(--text-secondary)' }}>
-        Alt+拖拽: 平移 | 滚轮: 缩放 | W: 墙壁 | F: 食物 | E: 擦除
+        Alt+拖拽: 平移 | 滚轮: 缩放 | W: 墙壁 | O: 障碍 | F: 食物 | T: 地形 | E: 擦除
       </div>
     </div>
   );

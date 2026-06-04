@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export type EditTool = 'none' | 'food' | 'wall' | 'erase' | 'colony';
-export type EditorTool = 'none' | 'wall' | 'food' | 'erase';
+export type EditorTool = 'none' | 'wall' | 'food' | 'erase' | 'terrain' | 'obstacle';
 export type AppPage = 'menu' | 'editor' | 'setup' | 'simulator';
 
 export interface SetupConfig {

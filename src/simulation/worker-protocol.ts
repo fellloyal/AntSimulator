@@ -11,7 +11,7 @@ export type WorkerCommand =
   | { type: 'addFood'; x: number; y: number; quantity: number }
   | { type: 'addWall'; cx: number; cy: number }
   | { type: 'eraseCell'; cx: number; cy: number }
-  | { type: 'addColony'; x: number; y: number };
+  | { type: 'addColony'; x: number; y: number; workerCount: number; soldierCount: number };
 
 // Worker → Main responses
 export type WorkerResponse =

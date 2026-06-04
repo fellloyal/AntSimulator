@@ -295,7 +295,7 @@ self.onmessage = (e: MessageEvent<WorkerCommand>) => {
     }
     case 'addColony': {
       if (sim.current && sim.current.colonies.length < Config.MAX_COLONIES_COUNT) {
-        sim.current.createColony(msg.x, msg.y);
+        sim.current.createColony(msg.x, msg.y, msg.workerCount, msg.soldierCount);
       }
       break;
     }

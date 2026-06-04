@@ -30,6 +30,9 @@ export function useCanvas(
 
   const activeTool = useStore((s) => s.activeTool);
   const brushSize = useStore((s) => s.brushSize);
+  const setupConfig = useStore((s) => s.setupConfig);
+  const setupConfigRef = useRef(setupConfig);
+  setupConfigRef.current = setupConfig;
 
   // Convert screen coordinates to world coordinates
   const screenToWorld = useCallback(
@@ -199,7 +202,7 @@ export function useCanvas(
             // Try worker mode
             const worker = workerRef?.current;
             if (worker) {
-              worker.postMessage({ type: 'addColony', x: world.x, y: world.y } satisfies WorkerCommand);
+              worker.postMessage({ type: 'addColony', x: world.x, y: world.y, workerCount: setupConfigRef.current.workerCount, soldierCount: setupConfigRef.current.soldierCount } satisfies WorkerCommand);
               // Update WorkerRenderer colors for the new colony
               const wr = workerRendererRef?.current;
               if (wr) {
@@ -213,7 +216,7 @@ export function useCanvas(
               const renderer = rendererRef.current;
               if (sim && renderer) {
                 if (sim.colonies.length < Config.MAX_COLONIES_COUNT) {
-                  const colony = sim.createColony(world.x, world.y);
+                  const colony = sim.createColony(world.x, world.y, setupConfigRef.current.workerCount, setupConfigRef.current.soldierCount);
                   renderer.addColony(colony);
                   renderer.worldRenderer.coloniesColor = sim.colonies.map(
                     (_, i) => Config.COLONY_COLORS[i] || '#ffffff'

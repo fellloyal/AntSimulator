@@ -107,18 +107,24 @@ export function addPresence(cell: WorldCell): void {
 }
 
 export class WorldGrid extends Grid<WorldCell> {
-  // Dirty tracking: only update cells with active content
-  dirtyCells: Set<number> = new Set();
+  // Dirty tracking using a flat boolean array (much faster than Set)
+  dirtyFlags: Uint8Array;
+  dirtyList: number[] = [];
   private dirtyFrameCounter = 0;
-  private static readonly FULL_UPDATE_INTERVAL = 60; // Full update every N frames
+  private static readonly FULL_UPDATE_INTERVAL = 60;
 
   constructor(width: number, height: number, cellSize: number) {
     super(width, height, cellSize, createWorldCell);
+    this.dirtyFlags = new Uint8Array(width * height);
   }
 
   private markDirty(coords: { x: number; y: number }): void {
     if (this.checkCoords(coords)) {
-      this.dirtyCells.add(coords.y * this.width + coords.x);
+      const idx = coords.y * this.width + coords.x;
+      if (!this.dirtyFlags[idx]) {
+        this.dirtyFlags[idx] = 1;
+        this.dirtyList.push(idx);
+      }
     }
   }
 
@@ -244,27 +250,29 @@ export class WorldGrid extends Grid<WorldCell> {
 
   update(dt: number): void {
     this.dirtyFrameCounter++;
-    // Periodically do a full update to catch decayed cells
     if (this.dirtyFrameCounter >= WorldGrid.FULL_UPDATE_INTERVAL) {
       this.dirtyFrameCounter = 0;
       for (let i = 0; i < this.cells.length; i++) {
         updateWorldCell(this.cells[i], dt);
       }
-      // Rebuild dirty set: only cells with active content
-      this.dirtyCells.clear();
+      // Rebuild dirty list: only cells with active content
+      this.dirtyList.length = 0;
+      this.dirtyFlags.fill(0);
       for (let i = 0; i < this.cells.length; i++) {
-        const cell = this.cells[i];
-        if (this.cellHasActiveContent(cell)) {
-          this.dirtyCells.add(i);
+        if (this.cellHasActiveContent(this.cells[i])) {
+          this.dirtyFlags[i] = 1;
+          this.dirtyList.push(i);
         }
       }
     } else {
       // Only update dirty cells
-      for (const idx of this.dirtyCells) {
+      for (let j = this.dirtyList.length - 1; j >= 0; j--) {
+        const idx = this.dirtyList[j];
         updateWorldCell(this.cells[idx], dt);
-        // Remove from dirty set if no longer active
         if (!this.cellHasActiveContent(this.cells[idx])) {
-          this.dirtyCells.delete(idx);
+          this.dirtyFlags[idx] = 0;
+          this.dirtyList[j] = this.dirtyList[this.dirtyList.length - 1];
+          this.dirtyList.pop();
         }
       }
     }

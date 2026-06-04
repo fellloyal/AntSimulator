@@ -33,6 +33,7 @@ export function useSimulation(
   const pausedRef = useRef(false);
   const speedRef = useRef(1);
   const maxSpeedRef = useRef(false);
+  const statsTimerRef = useRef(0);
 
   const paused = useStore((s) => s.paused);
   const speed = useStore((s) => s.speed);
@@ -224,14 +225,19 @@ export function useSimulation(
 
       renderer.render(ctx, canvas.width, canvas.height);
 
-      const stats = sim.colonies.map((colony) => ({
-        id: colony.id,
-        color: colony.antsColor,
-        antCount: colony.ants.length,
-        soldierCount: colony.soldiersCount(),
-        food: Math.floor(colony.base.food),
-      }));
-      setColonyStats(stats);
+      // Throttle stats updates to ~4Hz to avoid excessive React re-renders
+      statsTimerRef.current += dt;
+      if (statsTimerRef.current >= 0.25) {
+        statsTimerRef.current = 0;
+        const stats = sim.colonies.map((colony) => ({
+          id: colony.id,
+          color: colony.antsColor,
+          antCount: colony.ants.length,
+          soldierCount: colony.soldiersCount(),
+          food: Math.floor(colony.base.food),
+        }));
+        setColonyStats(stats);
+      }
 
       animFrameRef.current = requestAnimationFrame(loop);
     },

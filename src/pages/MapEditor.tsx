@@ -224,56 +224,57 @@ export default function MapEditor() {
       }
     }
 
-    // 食物：找到 NxN 块的"锚点"（左上），画一个尺寸 = N×cellSize 的精灵
-    // 锚点 = 左方和上方均无同类型食物
+    // 食物：按光栅顺序遍历未绘制的食物单元，每个都找最大 NxN 块，画一个尺寸 = N×cellSize 的精灵
+    // 修正：不再用"上方/左方无同类型食物"做锚点限制（否则相邻块会被漏掉），
+    //      也不再用对角线或同列扫描（会错误地把矩形/对角连通区识别为大方块）
     const foodCellMap = new Map<number, [number, number, number, FoodType]>();  // idx → [x,y,val,type]
     for (const [x, y, val, type] of foodCells) {
       foodCellMap.set(y * gridW + x, [x, y, val, type]);
     }
     const drawn = new Set<number>();
-    for (const [x, y, val, type] of foodCells) {
-      const idx = y * gridW + x;
-      if (drawn.has(idx)) continue;
-      // 检查上方
-      if (y > 0) {
-        const up = foodCellMap.get((y - 1) * gridW + x);
-        if (up && up[3] === type) continue;
-      }
-      // 检查左方
-      if (x > 0) {
-        const left = foodCellMap.get(y * gridW + (x - 1));
-        if (left && left[3] === type) continue;
-      }
-      // 找块大小 - 找连续同类型的最大尺寸
-      let blockSize = 1;
-      while (
-        x + blockSize < gridW &&
-        y + blockSize < gridH &&
-        foodCellMap.has((y + blockSize) * gridW + x) &&
-        foodCellMap.get((y + blockSize) * gridW + x)![3] === type
-      ) {
-        blockSize++;
-      }
-      // 标记这一块都被画了
-      for (let by = 0; by < blockSize; by++) {
-        for (let bx = 0; bx < blockSize; bx++) {
-          const dIdx = (y + by) * gridW + (x + bx);
-          if (foodCellMap.has(dIdx) && foodCellMap.get(dIdx)![3] === type) {
-            drawn.add(dIdx);
+    for (let y = sy; y <= ey; y++) {
+      for (let x = sx; x <= ex; x++) {
+        const idx = y * gridW + x;
+        if (drawn.has(idx)) continue;
+        const cell = foodCellMap.get(idx);
+        if (!cell) continue;
+        const type = cell[3];
+        // 找最大 NxN 块：从 N=1 扩展到 N+1 时，新行 y+N 和新列 x+N 都要全为同类型食物
+        let blockSize = 1;
+        while (x + blockSize < gridW && y + blockSize < gridH) {
+          let allFood = true;
+          // 检查新行
+          for (let bx = 0; bx <= blockSize; bx++) {
+            const c = foodCellMap.get((y + blockSize) * gridW + (x + bx));
+            if (!c || c[3] !== type) { allFood = false; break; }
+          }
+          if (!allFood) break;
+          // 检查新列
+          for (let by = 0; by <= blockSize; by++) {
+            const c = foodCellMap.get((y + by) * gridW + (x + blockSize));
+            if (!c || c[3] !== type) { allFood = false; break; }
+          }
+          if (!allFood) break;
+          blockSize++;
+        }
+        // 标记这一块都被画了
+        for (let by = 0; by < blockSize; by++) {
+          for (let bx = 0; bx < blockSize; bx++) {
+            drawn.add((y + by) * gridW + (x + bx));
           }
         }
-      }
-      // 选 sprite：按块大小映射到 foodSizeFromQty
-      const qty = Math.max(1, blockSize * blockSize);
-      const size = foodSizeFromQty(qty);
-      const key = foodKey(type, size);
-      const drawSize = blockSize * CELL_SIZE;
-      if (AssetRegistry.has(key)) {
-        AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, drawSize);
-      } else {
-        const g = Math.min(255, 100 + (type + 1) * 30) | 0;
-        ctx.fillStyle = `rgb(0,${g},0)`;
-        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, drawSize, drawSize);
+        // 选 sprite：按块大小映射到 foodSizeFromQty
+        const qty = Math.max(1, blockSize * blockSize);
+        const size = foodSizeFromQty(qty);
+        const key = foodKey(type, size);
+        const drawSize = blockSize * CELL_SIZE;
+        if (AssetRegistry.has(key)) {
+          AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, drawSize);
+        } else {
+          const g = Math.min(255, 100 + (type + 1) * 30) | 0;
+          ctx.fillStyle = `rgb(0,${g},0)`;
+          ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, drawSize, drawSize);
+        }
       }
     }
 

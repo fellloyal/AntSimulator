@@ -217,6 +217,8 @@ export default function MapEditor() {
 
     // 障碍物用 SVG 纹理绘制
     for (const [x, y, type] of wallCells) {
+      // 水地形（terrain=2）也标记为 wall（不可通过），但保留水纹不被砖块覆盖
+      if (terrain.get(y * gridW + x) === 2) continue;
       const key = OBSTACLE_KEY[type];
       if (key && AssetRegistry.has(key)) {
         AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);

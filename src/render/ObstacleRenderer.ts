@@ -31,7 +31,7 @@ export class ObstacleRenderer {
 
   drawObstacles(
     ctx: CanvasRenderingContext2D,
-    world: { map: { width: number; height: number; getByCoords: (c: { x: number; y: number }) => { wall: number; obstacle: number } } },
+    world: { map: { width: number; height: number; getByCoords: (c: { x: number; y: number }) => { wall: number; obstacle: number; terrain?: number } } },
     viewport: Viewport,
     canvasWidth: number,
     canvasHeight: number
@@ -51,6 +51,9 @@ export class ObstacleRenderer {
       for (let x = sx; x <= ex; x++) {
         const cell = world.map.getByCoords({ x, y });
         if (!cell.wall) continue;
+        // 水地形（terrain=2）也标记为 wall 用于游戏逻辑（不可通过），
+        // 但视觉上应保留水纹，不要被砖块纹理覆盖
+        if (cell.terrain === 2) continue;
         const o = cell.obstacle ?? 1;
         const key = this.obstacleKeys.get(o);
         if (key) {

@@ -302,6 +302,20 @@ export default function MapEditor() {
     return () => window.removeEventListener('resize', resize);
   }, [render, texturesReady]);
 
+  // 修改地图尺寸后，地图中心应对应页面中心（否则容易找不到地图）
+  // 公式：offsetX = canvasW/2 - mapW/2 * zoom，offsetY 同理
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    if (cw === 0 || ch === 0) return;  // 画布尚未布局
+    const vp = viewportRef.current;
+    vp.offsetX = cw / 2 - (editorMapWidth / 2) * vp.zoom;
+    vp.offsetY = ch / 2 - (editorMapHeight / 2) * vp.zoom;
+    render();
+  }, [editorMapWidth, editorMapHeight, render]);
+
   // Paint on grid
   const paint = useCallback((canvasX: number, canvasY: number) => {
     const grid = gridRef.current;

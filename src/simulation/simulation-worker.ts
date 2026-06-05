@@ -75,7 +75,7 @@ function serializeAnts(): ArrayBuffer {
   return antBuffer.buffer.slice(0, offset * 4);
 }
 
-function serializeCellData(cell: WorldCell, numColonies: number, colonyRgb: Array<{ r: number; g: number; b: number }>, intensityFactor: number): [number, number, number, number] {
+function serializeCellData(cell: WorldCell, numColonies: number, colonyRgb: Array<{ r: number; g: number; b: number }>, intensityFactor: number): [number, number, number, number, number, number, number, number] {
   const packed = cell.wall * 10000 + cell.food;
 
   let r = 0, g = 0, b = 0;
@@ -98,7 +98,17 @@ function serializeCellData(cell: WorldCell, numColonies: number, colonyRgb: Arra
     }
   }
 
-  return [packed, Math.min(255, r) / 255, Math.min(255, g) / 255, Math.min(255, b) / 255];
+  // UI美化（task 19）：新增 terrain/obstacle/foodType/wearLevel 字段
+  return [
+    packed,
+    Math.min(255, r) / 255,
+    Math.min(255, g) / 255,
+    Math.min(255, b) / 255,
+    cell.terrain ?? 0,
+    cell.obstacle ?? 0,
+    cell.foodType ?? 0,
+    cell.wearLevel ?? 0,
+  ];
 }
 
 function serializeWorldFull(): ArrayBuffer {
@@ -123,11 +133,15 @@ function serializeWorldFull(): ArrayBuffer {
 
   let offset = 0;
   for (let i = 0; i < cellCount; i++) {
-    const [packed, r, g, b] = serializeCellData(map.cells[i], numColonies, colonyRgb, intensityFactor);
+    const [packed, r, g, b, terrain, obstacle, foodType, wearLevel] = serializeCellData(map.cells[i], numColonies, colonyRgb, intensityFactor);
     worldBuffer[offset++] = packed;
     worldBuffer[offset++] = r;
     worldBuffer[offset++] = g;
     worldBuffer[offset++] = b;
+    worldBuffer[offset++] = terrain;
+    worldBuffer[offset++] = obstacle;
+    worldBuffer[offset++] = foodType;
+    worldBuffer[offset++] = wearLevel;
   }
 
   return worldBuffer.buffer.slice(0, offset * 4);
@@ -168,12 +182,16 @@ function serializeWorldDirty(): ArrayBuffer {
   for (let j = 0; j < dirtyCount; j++) {
     const cellIdx = dirtyList[j];
     const cell = map.cells[cellIdx];
-    const [packed, r, g, b] = serializeCellData(cell, numColonies, colonyRgb, intensityFactor);
+    const [packed, r, g, b, terrain, obstacle, foodType, wearLevel] = serializeCellData(cell, numColonies, colonyRgb, intensityFactor);
     dirtyWorldBuffer[offset++] = cellIdx;
     dirtyWorldBuffer[offset++] = packed;
     dirtyWorldBuffer[offset++] = r;
     dirtyWorldBuffer[offset++] = g;
     dirtyWorldBuffer[offset++] = b;
+    dirtyWorldBuffer[offset++] = terrain;
+    dirtyWorldBuffer[offset++] = obstacle;
+    dirtyWorldBuffer[offset++] = foodType;
+    dirtyWorldBuffer[offset++] = wearLevel;
   }
 
   // Clear dirty list after serialization

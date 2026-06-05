@@ -1,6 +1,11 @@
 import { Mode, AntType } from '@/simulation/types';
 import { ANT_FLOATS_PER_ANT, WORLD_FLOATS_PER_CELL, WORLD_DIRTY_FLOATS_PER_CELL } from '@/simulation/worker-protocol';
 import type { ViewportState } from './WorldRenderer';
+import { TERRAIN_TILES, type TerrainType } from './assets/TerrainTiles';
+import { OBSTACLE_TILES, type ObstacleType } from './assets/ObstacleTiles';
+import { foodSizeFromQty, preloadFoodSprite, type FoodType } from './assets/FoodSprites';
+import { WORN_PATH_SVG, WEAR_THRESHOLD } from './assets/WornPath';
+import { AssetRegistry } from './AssetRegistry';
 
 // LOD thresholds based on viewport zoom
 const LOD_DETAIL = 1.5;
@@ -12,6 +17,12 @@ const STROKE_COLOR = '#1a0808';
 const STROKE_WIDTH_DETAIL = 0.5;
 const STROKE_WIDTH_MEDIUM = 0.3;
 
+// UI美化（task 19）：cell 字段偏移（与 worker-protocol 一致）
+const TERRAIN_OFFSET = 4;
+const OBSTACLE_OFFSET = 5;
+const FOOD_TYPE_OFFSET = 6;
+const WEAR_OFFSET = 7;
+
 export class WorkerRenderer {
   renderAnts: boolean = true;
   drawMarkers: boolean = true;
@@ -19,6 +30,12 @@ export class WorkerRenderer {
   coloniesColor: string[] = [];
   viewport: ViewportState = { offsetX: 0, offsetY: 0, zoom: 1 };
   colonyBases: Array<{ id: number; baseX: number; baseY: number; baseRadius: number; food: number; maxFood: number }> = [];
+
+  // UI美化（task 19）：预加载所有 SVG 纹理键
+  private terrainKeys: Map<number, string> = new Map();
+  private obstacleKeys: Map<number, string> = new Map();
+  private foodKeys: Map<string, string> = new Map();
+  private wornKey: string = 'worn_path';
 
   private gridWidth: number;
   private gridHeight: number;
@@ -38,6 +55,30 @@ export class WorkerRenderer {
     this.gridWidth = gridWidth;
     this.gridHeight = gridHeight;
     this.cellSize = cellSize;
+    AssetRegistry.setCellSize(cellSize);
+    this.preloadTextures();
+  }
+
+  // UI美化（task 19）：预加载地形/障碍/食物/磨损土路 SVG
+  private preloadTextures(): void {
+    for (const t of [0, 1, 2, 3] as TerrainType[]) {
+      const key = `terrain_${TERRAIN_TILES[t].id}`;
+      AssetRegistry.preloadSVG(TERRAIN_TILES[t].svg, key);
+      this.terrainKeys.set(t, key);
+    }
+    for (const t of [1, 2, 3, 4] as ObstacleType[]) {
+      const key = `obstacle_${OBSTACLE_TILES[t].id}`;
+      AssetRegistry.preloadSVG(OBSTACLE_TILES[t].svg, key);
+      this.obstacleKeys.set(t, key);
+    }
+    for (const t of [0, 1, 2, 3] as FoodType[]) {
+      for (const size of ['small', 'medium', 'large'] as const) {
+        const key = `food_${t}_${size}`;
+        preloadFoodSprite(AssetRegistry, t, size, key);
+        this.foodKeys.set(`${t}_${size}`, key);
+      }
+    }
+    AssetRegistry.preloadSVG(WORN_PATH_SVG, this.wornKey);
   }
 
   private updateColonyRgb(): void {
@@ -74,16 +115,16 @@ export class WorkerRenderer {
       // Full update: replace entire world state
       this.worldState = worldData;
     } else if (this.worldState) {
-      // Incremental update: apply dirty cells
+      // Incremental update: apply dirty cells (9 floats per dirty cell)
       const dirtyCount = worldData[0];
       for (let j = 0; j < dirtyCount; j++) {
         const base = 1 + j * WORLD_DIRTY_FLOATS_PER_CELL;
         const cellIdx = worldData[base];
         const destBase = cellIdx * WORLD_FLOATS_PER_CELL;
-        this.worldState[destBase] = worldData[base + 1];     // packed
-        this.worldState[destBase + 1] = worldData[base + 2]; // r
-        this.worldState[destBase + 2] = worldData[base + 3]; // g
-        this.worldState[destBase + 3] = worldData[base + 4]; // b
+        // UI美化（task 19）：拷贝全部 8 个字段
+        for (let f = 0; f < WORLD_FLOATS_PER_CELL; f++) {
+          this.worldState[destBase + f] = worldData[base + 1 + f];
+        }
       }
     }
   }
@@ -260,8 +301,17 @@ export class WorkerRenderer {
     const endX = Math.min(gridWidth - 1, Math.ceil(viewRight / cellSize));
     const endY = Math.min(gridHeight - 1, Math.ceil(viewBottom / cellSize));
 
-    // Batch by color
+    // UI美化（task 19）：按图层渲染
+    // 1) 地形底图（grass/sand/water/rock 纹理）
+    const terrainBuckets = new Map<number, Array<[number, number]>>();
+    // 2) 障碍物纹理（terrain=2 水 跳过，按 obstacle 类型分桶）
+    const obstacleBuckets = new Map<number, Array<[number, number]>>();
+    // 3) 磨损土路（wearLevel > 0.3）
+    const wornCells: Array<[number, number]> = [];
+    // 4) 信息素 markers（rgb 颜色）
     const colorBuckets = new Map<string, Array<[number, number]>>();
+    // 5) 食物（按 NxN 锚点法）
+    const foodMap = new Map<number, { x: number; y: number; type: number; food: number; terrain: number; wall: number }>();
 
     for (let y = startY; y <= endY; y++) {
       for (let x = startX; x <= endX; x++) {
@@ -269,31 +319,114 @@ export class WorkerRenderer {
         const base = cellIdx * WORLD_FLOATS_PER_CELL;
         const packed = worldData[base];
         const wall = packed >= 10000 ? 1 : 0;
-        const food = packed >= 10000 ? 0 : packed;
-        let color = '';
+        const foodQty = packed >= 10000 ? 0 : packed;
+        const terrain = worldData[base + TERRAIN_OFFSET] | 0;
+        const obstacle = worldData[base + OBSTACLE_OFFSET] | 0;
+        const foodType = worldData[base + FOOD_TYPE_OFFSET] | 0;
+        const wearLevel = worldData[base + WEAR_OFFSET];
 
-        if (wall) {
-          color = '#726b6b';
-        } else if (food > 0) {
-          const g = Math.min(255, 100 + food * 10) | 0;
-          color = `rgb(0,${g},0)`;
-        } else if (this.drawMarkers) {
+        // 1) 地形：所有 cell 都画
+        if (terrain > 0) {
+          let bucket = terrainBuckets.get(terrain);
+          if (!bucket) { bucket = []; terrainBuckets.set(terrain, bucket); }
+          bucket.push([x, y]);
+        }
+
+        // 2) 障碍：wall && terrain!=2（保留水纹）
+        if (wall && terrain !== 2) {
+          let bucket = obstacleBuckets.get(obstacle);
+          if (!bucket) { bucket = []; obstacleBuckets.set(obstacle, bucket); }
+          bucket.push([x, y]);
+        }
+
+        // 3) 磨损土路
+        if (!wall && wearLevel > WEAR_THRESHOLD) {
+          wornCells.push([x, y]);
+        }
+
+        // 5) 食物：记录供 NxN 锚点扫描
+        if (foodQty > 0) {
+          foodMap.set(cellIdx, { x, y, type: foodType, food: foodQty, terrain, wall });
+        }
+
+        // 4) 信息素 markers：空地且非食物时才画
+        if (wall === 0 && foodQty === 0 && this.drawMarkers) {
           const r = Math.min(255, worldData[base + 1] * 255) | 0;
           const g = Math.min(255, worldData[base + 2] * 255) | 0;
           const b = Math.min(255, worldData[base + 3] * 255) | 0;
           if (r > 0 || g > 0 || b > 0) {
-            color = `rgb(${r},${g},${b})`;
+            const color = `rgb(${r},${g},${b})`;
+            let bucket = colorBuckets.get(color);
+            if (!bucket) { bucket = []; colorBuckets.set(color, bucket); }
+            bucket.push([x, y]);
           }
-        }
-
-        if (color) {
-          let bucket = colorBuckets.get(color);
-          if (!bucket) { bucket = []; colorBuckets.set(color, bucket); }
-          bucket.push([x, y]);
         }
       }
     }
 
+    // 1) 绘制地形底图
+    for (const [t, cells] of terrainBuckets) {
+      const key = this.terrainKeys.get(t);
+      if (!key) continue;
+      for (const [x, y] of cells) {
+        AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, cellSize);
+      }
+    }
+
+    // 2) 绘制障碍
+    for (const [o, cells] of obstacleBuckets) {
+      const key = this.obstacleKeys.get(o);
+      if (!key) continue;
+      for (const [x, y] of cells) {
+        AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, cellSize);
+      }
+    }
+
+    // 3) 绘制磨损土路
+    for (const [x, y] of wornCells) {
+      AssetRegistry.drawTile(ctx, this.wornKey, x * cellSize, y * cellSize, cellSize);
+    }
+
+    // 5) 绘制食物堆（NxN 锚点法）
+    const drawn = new Set<number>();
+    for (let y = startY; y <= endY; y++) {
+      for (let x = startX; x <= endX; x++) {
+        const idx = y * gridWidth + x;
+        if (drawn.has(idx)) continue;
+        const f = foodMap.get(idx);
+        if (!f) continue;
+        const type = f.type;
+        let blockSize = 1;
+        while (x + blockSize < gridWidth && y + blockSize < gridHeight) {
+          let allFood = true;
+          for (let bx = 0; bx <= blockSize; bx++) {
+            const c = foodMap.get((y + blockSize) * gridWidth + (x + bx));
+            if (!c || c.type !== type) { allFood = false; break; }
+          }
+          if (!allFood) break;
+          for (let by = 0; by <= blockSize; by++) {
+            const c = foodMap.get((y + by) * gridWidth + (x + blockSize));
+            if (!c || c.type !== type) { allFood = false; break; }
+          }
+          if (!allFood) break;
+          blockSize++;
+        }
+        for (let by = 0; by < blockSize; by++) {
+          for (let bx = 0; bx < blockSize; bx++) {
+            drawn.add((y + by) * gridWidth + (x + bx));
+          }
+        }
+        const qty = Math.max(1, blockSize * blockSize);
+        const size = foodSizeFromQty(qty);
+        const key = this.foodKeys.get(`${type}_${size}`);
+        const drawSize = blockSize * cellSize;
+        if (key) {
+          AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, drawSize);
+        }
+      }
+    }
+
+    // 4) 绘制信息素 markers（顶层覆盖）
     for (const [color, positions] of colorBuckets) {
       ctx.fillStyle = color;
       for (const [x, y] of positions) {

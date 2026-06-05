@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, Play, Trash2, Pencil } from 'lucide-react';
 import useStore from '@/store/useStore';
 import { fetchMaps, fetchMap, deleteMap, type MapInfo } from '@/api/maps';
+import { MapPreviewRenderer, type PreviewGridData } from '@/render/MapPreviewRenderer';
 
 export default function GameSetup() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,6 +28,10 @@ export default function GameSetup() {
   const [dragging, setDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0, offsetX: 0, offsetY: 0 });
 
+  // UI美化（task 19）：地图预览渲染器（地形/障碍/食物纹理）
+  const previewRendererRef = useRef<MapPreviewRenderer | null>(null);
+  const parsedGridRef = useRef<PreviewGridData | null>(null);
+
   // Load maps list
   useEffect(() => {
     fetchMaps().then((data) => {
@@ -39,6 +44,7 @@ export default function GameSetup() {
   useEffect(() => {
     if (selectedMapId === null) {
       setGridData('');
+      parsedGridRef.current = null;
       return;
     }
     fetchMap(selectedMapId).then((data) => {
@@ -46,6 +52,19 @@ export default function GameSetup() {
       setMapWidth(data.width);
       setMapHeight(data.height);
       setColonyPositions([]);
+      // UI美化（task 19）：解析 gridData 为 PreviewGridData
+      try {
+        const parsed = JSON.parse(data.grid_data) as PreviewGridData;
+        parsedGridRef.current = parsed;
+        const cs = parsed.cellSize || 4;
+        const gridW = Math.ceil(data.width / cs);
+        const gridH = Math.ceil(data.height / cs);
+        if (!previewRendererRef.current || previewRendererRef.current.cellSize !== cs) {
+          previewRendererRef.current = new MapPreviewRenderer(cs, gridW, gridH);
+        }
+      } catch {
+        parsedGridRef.current = null;
+      }
     });
   }, [selectedMapId, setColonyPositions]);
 
@@ -68,21 +87,9 @@ export default function GameSetup() {
     ctx.translate(vp.offsetX, vp.offsetY);
     ctx.scale(vp.zoom, vp.zoom);
 
-    // Parse and render grid data
-    if (gridData) {
-      try {
-        const data = JSON.parse(gridData);
-        const cs = data.cellSize || 4;
-        ctx.fillStyle = '#726b6b';
-        for (const [cx, cy] of data.walls || []) {
-          ctx.fillRect((cx as number) * cs, (cy as number) * cs, cs, cs);
-        }
-        for (const [cx, cy, qty] of data.foods || []) {
-          const g = Math.min(255, 100 + (qty as number) * 10) | 0;
-          ctx.fillStyle = `rgb(0,${g},0)`;
-          ctx.fillRect((cx as number) * cs, (cy as number) * cs, cs, cs);
-        }
-      } catch { /* ignore */ }
+    // UI美化（task 19）：用 MapPreviewRenderer 画地形/障碍/食物纹理
+    if (parsedGridRef.current && previewRendererRef.current) {
+      previewRendererRef.current.draw(ctx, parsedGridRef.current, vp, cw, ch);
     }
 
     // Render colony positions

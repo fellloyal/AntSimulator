@@ -14,8 +14,10 @@ export interface MapDetail extends MapInfo {
 
 export interface GridData {
   cellSize: number;
-  walls: number[][];   // [[cx, cy], ...]
-  foods: number[][];   // [[cx, cy, qty], ...]
+  walls: number[][];   // [[cx, cy, obstacleType?], ...]
+  foods: number[][];   // [[cx, cy, qty, foodType?], ...]
+  // UI美化（task 19）：地形数组 [[cx, cy, terrainType], ...]
+  terrain?: number[][];
 }
 
 const API_BASE = '/api/maps';

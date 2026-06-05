@@ -1,4 +1,6 @@
-// AssetRegistry - SVG → OffscreenCanvas 缓存单例
+// AssetRegistry - SVG → 高分辨率位图 缓存单例
+// 关键：缓存为固定 128x128，drawTile 时高质量缩小到目标尺寸
+// 这样小目标（如 4x4）也清晰，大目标（如 40x40）也清晰
 type TileKey = string;
 
 interface CachedTile {
@@ -7,16 +9,16 @@ interface CachedTile {
   height: number;
 }
 
+const TILE_RENDER_SIZE = 128;  // 固定高分辨率缓存，与 cellSize 无关
+
 class AssetRegistryImpl {
   private cache = new Map<TileKey, CachedTile>();
   private cellSize: number = 4;
   private pendingLoads: Array<Promise<void>> = [];
 
   setCellSize(size: number): void {
-    if (size !== this.cellSize) {
-      this.cache.clear();
-      this.cellSize = size;
-    }
+    // 缓存与 cellSize 无关（固定 128x128），不再清空
+    this.cellSize = size;
   }
 
   // 异步预加载 SVG（在构造函数/模块顶层调用）
@@ -27,10 +29,13 @@ class AssetRegistryImpl {
     if (!svg) return null; // 空 SVG 直接跳过
 
     const canvas = document.createElement('canvas');
-    canvas.width = this.cellSize * 2; // 2x density
-    canvas.height = this.cellSize * 2;
+    canvas.width = TILE_RENDER_SIZE;
+    canvas.height = TILE_RENDER_SIZE;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Failed to get 2d context');
+    // 高质量缩放（缩小到任意目标都清晰）
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const img = new Image();
     const blob = new Blob([svg], { type: 'image/svg+xml' });
@@ -65,6 +70,9 @@ class AssetRegistryImpl {
   drawTile(ctx: CanvasRenderingContext2D, key: TileKey, x: number, y: number, size: number): void {
     const tile = this.cache.get(key);
     if (!tile) return;
+    // 确保目标 ctx 也用高质量缩放
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(tile.canvas, x, y, size, size);
   }
 

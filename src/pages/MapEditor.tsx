@@ -360,12 +360,18 @@ export default function MapEditor() {
           obstacleRef.current.delete(idx);
           foodTypeRef.current.delete(idx);
         } else if (tool === 'terrain') {
-          // 地形不写入 grid（grid 仍为空），仅记录到 terrainRef
-          terrainRef.current.set(idx, terrainType);
-          // 地形为水时自动标记为墙
+          // 地形绘制必须清除之前的墙/障碍物标记，否则砖块纹理会覆盖在新地形上
+          // （例：先画砖再画沙，沙会被砖块覆盖；先画水再画沙也是）
           if (terrainType === 2) {
+            // 水：grid=1 标记为不可通过，清除 obstacleRef（水没有障碍物类型）
             grid[idx] = 1;
+            obstacleRef.current.delete(idx);
+          } else {
+            // 非水地形（草/沙/石）：可通行，grid 归 0，清除 obstacleRef
+            grid[idx] = 0;
+            obstacleRef.current.delete(idx);
           }
+          terrainRef.current.set(idx, terrainType);
         } else if (tool === 'obstacle') {
           grid[idx] = 1;
           obstacleRef.current.set(idx, obstacleType);

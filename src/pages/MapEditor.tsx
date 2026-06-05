@@ -75,6 +75,8 @@ export default function MapEditor() {
   const obstacleRef = useRef<Map<number, ObstacleType>>(new Map());
   const foodTypeRef = useRef<Map<number, FoodType>>(new Map());
   const dirtyRef = useRef<Set<number>>(new Set());
+  // Shift 按下时记录起点网格坐标，鼠标拖动期间从该起点拉水平/竖直直线
+  const shiftAnchorRef = useRef<{ x: number; y: number } | null>(null);
 
   // Viewport
   const viewportRef = useRef({ offsetX: 0, offsetY: 0, zoom: 1 });
@@ -317,14 +319,11 @@ export default function MapEditor() {
   }, [editorMapWidth, editorMapHeight, render]);
 
   // Paint on grid
-  const paint = useCallback((canvasX: number, canvasY: number) => {
+  // 在指定网格坐标 (cx, cy) 处应用当前工具 + 笔刷
+  // 把该函数从 paint() 中抽出，以便在 Shift 直线绘制时按单元逐个调用
+  const paintAtCell = useCallback((cx: number, cy: number) => {
     const grid = gridRef.current;
     if (!grid) return;
-    const vp = viewportRef.current;
-    const worldX = (canvasX - vp.offsetX) / vp.zoom;
-    const worldY = (canvasY - vp.offsetY) / vp.zoom;
-    const cx = Math.floor(worldX / CELL_SIZE);
-    const cy = Math.floor(worldY / CELL_SIZE);
 
     // 食物工具用 NxN 块大小（独立于笔刷）
     if (tool === 'food') {
@@ -340,7 +339,6 @@ export default function MapEditor() {
           dirtyRef.current.add(idx);
         }
       }
-      render();
       return;
     }
 
@@ -373,8 +371,52 @@ export default function MapEditor() {
         dirtyRef.current.add(idx);
       }
     }
+  }, [tool, brushSize, gridW, gridH, terrainType, obstacleType, foodType, foodBlockSize]);
+
+  const paint = useCallback((canvasX: number, canvasY: number) => {
+    const vp = viewportRef.current;
+    const worldX = (canvasX - vp.offsetX) / vp.zoom;
+    const worldY = (canvasY - vp.offsetY) / vp.zoom;
+    const cx = Math.floor(worldX / CELL_SIZE);
+    const cy = Math.floor(worldY / CELL_SIZE);
+    paintAtCell(cx, cy);
     render();
-  }, [tool, brushSize, gridW, gridH, render, terrainType, obstacleType, foodType, foodBlockSize]);
+  }, [paintAtCell, render]);
+
+  // Shift 直线绘制：从 (anchorX, anchorY) 到 (targetX, targetY)，按主轴方向拉水平或竖直线
+  const paintShiftLine = useCallback((anchorX: number, anchorY: number, targetX: number, targetY: number) => {
+    const dx = targetX - anchorX;
+    const dy = targetY - anchorY;
+    if (dx === 0 && dy === 0) {
+      paintAtCell(anchorX, anchorY);
+      return;
+    }
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      // 水平（dx 主导）：固定 y = anchorY，从 anchorX 沿 x 走到 targetX
+      const sign = dx >= 0 ? 1 : -1;
+      for (let x = anchorX; x !== targetX + sign; x += sign) {
+        paintAtCell(x, anchorY);
+      }
+    } else {
+      // 竖直（dy 主导）：固定 x = anchorX，从 anchorY 沿 y 走到 targetY
+      const sign = dy >= 0 ? 1 : -1;
+      for (let y = anchorY; y !== targetY + sign; y += sign) {
+        paintAtCell(anchorX, y);
+      }
+    }
+    render();
+  }, [paintAtCell, render]);
+
+  // 屏幕坐标 → 网格坐标（用于 Shift 起点的计算）
+  const canvasToCell = useCallback((canvasX: number, canvasY: number): { x: number; y: number } | null => {
+    const vp = viewportRef.current;
+    const worldX = (canvasX - vp.offsetX) / vp.zoom;
+    const worldY = (canvasY - vp.offsetY) / vp.zoom;
+    const x = Math.floor(worldX / CELL_SIZE);
+    const y = Math.floor(worldY / CELL_SIZE);
+    if (x < 0 || x >= gridW || y < 0 || y >= gridH) return null;
+    return { x, y };
+  }, [gridW, gridH]);
 
   // Mouse handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -386,11 +428,26 @@ export default function MapEditor() {
         offsetX: viewportRef.current.offsetX,
         offsetY: viewportRef.current.offsetY,
       };
+      shiftAnchorRef.current = null;
     } else if (e.button === 0) {
-      setDrawing(true);
-      paint(e.clientX, e.clientY);
+      // Shift+左键：进入直线模式（食物工具除外，因 NxN 块无直线语义）
+      if (e.shiftKey && tool !== 'food') {
+        const cell = canvasToCell(e.clientX, e.clientY);
+        if (cell) {
+          shiftAnchorRef.current = cell;
+          setDrawing(true);
+          paintAtCell(cell.x, cell.y);
+          render();
+        } else {
+          shiftAnchorRef.current = null;
+        }
+      } else {
+        shiftAnchorRef.current = null;
+        setDrawing(true);
+        paint(e.clientX, e.clientY);
+      }
     }
-  }, [paint]);
+  }, [paint, paintAtCell, render, tool, canvasToCell]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (dragging) {
@@ -400,13 +457,27 @@ export default function MapEditor() {
       viewportRef.current.offsetY = dragStartRef.current.offsetY + dy;
       render();
     } else if (drawing) {
-      paint(e.clientX, e.clientY);
+      // Shift 直线模式：每次都从原始 anchor 拉到当前鼠标位置（重画整条线）
+      if (shiftAnchorRef.current && tool !== 'food') {
+        const cell = canvasToCell(e.clientX, e.clientY);
+        if (cell) {
+          paintShiftLine(
+            shiftAnchorRef.current.x,
+            shiftAnchorRef.current.y,
+            cell.x,
+            cell.y
+          );
+        }
+      } else {
+        paint(e.clientX, e.clientY);
+      }
     }
-  }, [dragging, drawing, paint, render]);
+  }, [dragging, drawing, paint, paintShiftLine, render, tool, canvasToCell]);
 
   const handleMouseUp = useCallback(() => {
     setDragging(false);
     setDrawing(false);
+    shiftAnchorRef.current = null;
   }, []);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -737,6 +808,9 @@ export default function MapEditor() {
           onChange={(e) => setBrushSize(Number(e.target.value))}
           className="w-full custom-range"
         />
+        <div className="px-2 py-1 text-[10px] leading-tight" style={{ color: 'var(--text-secondary)' }}>
+          按住 Shift 拉水平/竖直直线
+        </div>
       </div>
 
       {/* Right: size panel */}

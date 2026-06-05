@@ -51,9 +51,9 @@ export class ObstacleRenderer {
       for (let x = sx; x <= ex; x++) {
         const cell = world.map.getByCoords({ x, y });
         if (!cell.wall) continue;
-        // UI美化（task 20）：水（terrain=2）和石头（terrain=3）也标记为 wall 用于游戏逻辑
-        // （不可通过），但视觉上应保留水纹/石纹，不要被砖块纹理覆盖
-        if (cell.terrain === 2 || cell.terrain === 3) continue;
+        // 水地形（terrain=2）也标记为 wall 用于游戏逻辑（不可通过），
+        // 但视觉上应保留水纹，不要被砖块纹理覆盖
+        if (cell.terrain === 2) continue;
         const o = cell.obstacle ?? 1;
         const key = this.obstacleKeys.get(o);
         if (key) {

@@ -217,10 +217,8 @@ export default function MapEditor() {
 
     // 障碍物用 SVG 纹理绘制
     for (const [x, y, type] of wallCells) {
-      // UI美化（task 20）：水/石头（terrain=2/3）也标记为 wall（不可通过），
-      // 但保留水纹/石纹不被砖块覆盖
-      const terrVal = terrain.get(y * gridW + x);
-      if (terrVal === 2 || terrVal === 3) continue;
+      // 水地形（terrain=2）也标记为 wall（不可通过），但保留水纹不被砖块覆盖
+      if (terrain.get(y * gridW + x) === 2) continue;
       const key = OBSTACLE_KEY[type];
       if (key && AssetRegistry.has(key)) {
         AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
@@ -364,13 +362,12 @@ export default function MapEditor() {
         } else if (tool === 'terrain') {
           // 地形绘制必须清除之前的墙/障碍物标记，否则砖块纹理会覆盖在新地形上
           // （例：先画砖再画沙，沙会被砖块覆盖；先画水再画沙也是）
-          if (terrainType === 2 || terrainType === 3) {
-            // UI美化（task 20）：水/石头：grid=1 标记为不可通过，清除 obstacleRef
-            // （水/石头没有障碍物类型，自动被 World.setTerrain 视为墙）
+          if (terrainType === 2) {
+            // 水：grid=1 标记为不可通过，清除 obstacleRef（水没有障碍物类型）
             grid[idx] = 1;
             obstacleRef.current.delete(idx);
           } else {
-            // 可通行地形（草/沙）：grid 归 0，清除 obstacleRef
+            // 非水地形（草/沙/石）：可通行，grid 归 0，清除 obstacleRef
             grid[idx] = 0;
             obstacleRef.current.delete(idx);
           }
@@ -521,11 +518,8 @@ export default function MapEditor() {
         // 地形（仅当非空）
         const t = terrainRef.current.get(i);
         if (t !== undefined) terrain.push([gx, gy, t]);
-        // UI美化（task 20）：水/石头（terrain=2/3）也属于不可通过，写入 walls 数组
-        // 这样 simulation 端会先把 cell 标 wall，再调用 setTerrain 时 wall 已为 1
-        const isImpassableTerrain = t === 2 || t === 3;
-        if (val === 1 || isImpassableTerrain) {
-          const o = obstacleRef.current.get(i) ?? (isImpassableTerrain ? 0 : 1);
+        if (val === 1) {
+          const o = obstacleRef.current.get(i) ?? 1;
           walls.push([gx, gy, o]);
         } else if (val >= 2) {
           const f = foodTypeRef.current.get(i) ?? 0;

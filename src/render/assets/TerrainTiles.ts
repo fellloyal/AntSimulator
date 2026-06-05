@@ -55,8 +55,7 @@ export const TERRAIN_TILES: Record<TerrainType, TerrainTile> = {
     id: 'rock',
     bg: '#6a6a72',
     accent: '#8a8a92',
-    // UI美化（task 20）：石头地形自动挡路（与 water 一致）
-    passable: false,
+    passable: true,
     svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
       <rect width="20" height="20" fill="#6a6a72"/>
       <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>

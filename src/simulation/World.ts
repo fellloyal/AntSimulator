@@ -67,13 +67,12 @@ export class World {
     if (this.map.checkCoords({ x: cx, y: cy })) {
       const cell = this.map.getByCoords({ x: cx, y: cy });
       cell.terrain = terrain;
-      // UI美化（task 20）：水（terrain=2）和石头（terrain=3）默认不可通过（视为墙）
-      // 视觉上保留水纹/石纹，但阻挡蚂蚁
-      if ((terrain === 2 || terrain === 3) && !cell.wall) {
+      // 水地形默认不可通过（视为墙）
+      if (terrain === 2 && !cell.wall) {
         cell.wall = 1;
         this.map.computeDistanceFieldAround(cx, cy);
-      } else if (terrain !== 2 && terrain !== 3 && cell.obstacle === 0 && cell.wall) {
-        // 切换到可通行地形（草/沙）时，如果当前是墙但没有 obstacle，降级
+      } else if (terrain !== 2 && cell.obstacle === 0 && cell.wall) {
+        // 切换非水地形时，如果当前是墙但没有 obstacle，可能是水，降级
         // 这里保守：不动 wall，由后续 setObstacle 处理
       }
     }

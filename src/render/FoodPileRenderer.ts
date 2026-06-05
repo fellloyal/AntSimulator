@@ -1,5 +1,5 @@
 // FoodPileRenderer - 3 尺寸食物堆绘制
-import { FOOD_SPRITES, foodSizeFromQty, type FoodType } from './assets/FoodSprites';
+import { foodSizeFromQty, preloadFoodSprite, type FoodType } from './assets/FoodSprites';
 import { AssetRegistry } from './AssetRegistry';
 import type { Viewport } from './TerrainRenderer';
 
@@ -17,7 +17,7 @@ export class FoodPileRenderer {
     for (const t of [0, 1, 2, 3] as FoodType[]) {
       for (const size of ['small', 'medium', 'large'] as const) {
         const key = `food_${t}_${size}`;
-        AssetRegistry.preloadSVG(FOOD_SPRITES[t][size], key);
+        preloadFoodSprite(AssetRegistry, t, size, key);
         this.foodKeys.set(`${t}_${size}`, key);
       }
     }

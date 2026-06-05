@@ -21,12 +21,12 @@ class AssetRegistryImpl {
     this.cellSize = size;
   }
 
-  // 异步预加载 SVG（在构造函数/模块顶层调用）
-  preloadSVG(svg: string, key: TileKey): CachedTile | null {
+  // 通用图片加载（接受 URL 或 data URL）
+  preloadImage(url: string, key: TileKey): CachedTile | null {
     const existing = this.cache.get(key);
     if (existing) return existing;
 
-    if (!svg) return null; // 空 SVG 直接跳过
+    if (!url) return null; // 空 URL 直接跳过
 
     const canvas = document.createElement('canvas');
     canvas.width = TILE_RENDER_SIZE;
@@ -38,18 +38,15 @@ class AssetRegistryImpl {
     ctx.imageSmoothingQuality = 'high';
 
     const img = new Image();
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
+    img.crossOrigin = 'anonymous';
 
     const loadPromise = new Promise<void>((resolve) => {
       img.onload = () => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        URL.revokeObjectURL(url);
         resolve();
       };
       img.onerror = () => {
-        URL.revokeObjectURL(url);
-        console.warn(`[AssetRegistry] Failed to load SVG: ${key}`);
+        console.warn(`[AssetRegistry] Failed to load image: ${key}`);
         resolve(); // 不阻塞，drawTile 时静默忽略
       };
       img.src = url;
@@ -59,6 +56,14 @@ class AssetRegistryImpl {
     const tile: CachedTile = { canvas, width: canvas.width, height: canvas.height };
     this.cache.set(key, tile);
     return tile;
+  }
+
+  // 异步预加载 SVG（在构造函数/模块顶层调用）
+  preloadSVG(svg: string, key: TileKey): CachedTile | null {
+    if (!svg) return null;
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    return this.preloadImage(url, key);
   }
 
   // 等待所有 SVG 加载完成（首次渲染前 await）

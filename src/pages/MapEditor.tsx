@@ -5,7 +5,7 @@ import { createMap, updateMap } from '@/api/maps';
 import { AssetRegistry } from '@/render/AssetRegistry';
 import { TERRAIN_TILES } from '@/render/assets/TerrainTiles';
 import { OBSTACLE_TILES } from '@/render/assets/ObstacleTiles';
-import { FOOD_SPRITES, foodSizeFromQty } from '@/render/assets/FoodSprites';
+import { FOOD_SPRITES, foodSizeFromQty, preloadFoodSprite } from '@/render/assets/FoodSprites';
 
 const CELL_SIZE = 4;
 
@@ -139,7 +139,7 @@ export default function MapEditor() {
     }
     for (const t of [0, 1, 2, 3] as FoodType[]) {
       for (const size of ['small', 'medium', 'large'] as const) {
-        AssetRegistry.preloadSVG(FOOD_SPRITES[t][size], foodKey(t, size));
+        preloadFoodSprite(AssetRegistry, t, size, foodKey(t, size));
       }
     }
     AssetRegistry.waitForLoad().then(() => {

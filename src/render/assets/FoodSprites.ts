@@ -1,5 +1,10 @@
-// FoodSprites - 4 种食物，使用 AI text_to_image 生成的高清图
-// 每种食物 1 张图，渲染时按尺寸缩放
+// FoodSprites - 4 种食物的预生成 JPG 图（AI 离线生成，构建时嵌入）
+// 用 Vite ?url 引入，避免运行时的 CORS 跨域问题
+import appleUrl from './food_images/apple.jpg?url';
+import chickenUrl from './food_images/chicken.jpg?url';
+import breadUrl from './food_images/bread.jpg?url';
+import berryUrl from './food_images/berry.jpg?url';
+
 export type FoodType = 0 | 1 | 2 | 3; // 0=chicken 1=apple 2=bread 3=berry
 export type FoodSize = 'small' | 'medium' | 'large';
 
@@ -11,38 +16,18 @@ export function foodSizeFromQty(qty: number): FoodSize {
   return 'small';
 }
 
-// AI 生成的图片 URL（每种食物 1 张，由 text_to_image API 生成）
-const API_BASE = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image';
-
-function imageUrl(prompt: string): string {
-  return `${API_BASE}?prompt=${encodeURIComponent(prompt)}&image_size=square`;
-}
-
-const APPLE_URL = imageUrl(
-  'a single red apple with green leaf and brown stem, simple flat icon style, white background, top view, food emoji, vibrant red color, high quality'
-);
-const CHICKEN_URL = imageUrl(
-  'a single golden brown fried chicken drumstick with white bone, simple flat icon style, white background, top view, food emoji, crispy fried, high quality'
-);
-const BREAD_URL = imageUrl(
-  'a single golden brown bread loaf with three diagonal score marks on top, simple flat icon style, white background, top view, food emoji, bakery style, high quality'
-);
-const BERRY_URL = imageUrl(
-  'a cluster of dark purple blueberries with green leaves and stems, simple flat icon style, white background, top view, food emoji, blueberry, high quality'
-);
-
 // 每种食物 1 张图，所有尺寸共用
 export const FOOD_SPRITES: Record<FoodType, Record<FoodSize, string>> = {
-  0: { small: CHICKEN_URL, medium: CHICKEN_URL, large: CHICKEN_URL },
-  1: { small: APPLE_URL, medium: APPLE_URL, large: APPLE_URL },
-  2: { small: BREAD_URL, medium: BREAD_URL, large: BREAD_URL },
-  3: { small: BERRY_URL, medium: BERRY_URL, large: BERRY_URL },
+  0: { small: chickenUrl, medium: chickenUrl, large: chickenUrl },
+  1: { small: appleUrl, medium: appleUrl, large: appleUrl },
+  2: { small: breadUrl, medium: breadUrl, large: breadUrl },
+  3: { small: berryUrl, medium: berryUrl, large: berryUrl },
 };
 
-// 加载食物资源（自动检测 URL 或 SVG）
+// 加载食物资源：4 种食物均为 JPG，使用 preloadImage
 export function preloadFoodSprite(reg: { preloadImage: (url: string, key: string) => unknown; preloadSVG: (svg: string, key: string) => unknown }, type: FoodType, size: FoodSize, key: string): void {
   const val = FOOD_SPRITES[type][size];
-  if (val.startsWith('http') || val.startsWith('data:')) {
+  if (val.startsWith('http') || val.startsWith('data:') || val.startsWith('/') || val.startsWith('blob:')) {
     reg.preloadImage(val, key);
   } else {
     reg.preloadSVG(val, key);

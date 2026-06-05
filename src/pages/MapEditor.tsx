@@ -5,7 +5,7 @@ import { createMap, updateMap } from '@/api/maps';
 import { AssetRegistry } from '@/render/AssetRegistry';
 import { TERRAIN_TILES } from '@/render/assets/TerrainTiles';
 import { OBSTACLE_TILES } from '@/render/assets/ObstacleTiles';
-import { FOOD_SPRITES, foodSizeFromQty, preloadFoodSprite } from '@/render/assets/FoodSprites';
+import { foodSizeFromQty, preloadFoodSprite } from '@/render/assets/FoodSprites';
 
 const CELL_SIZE = 4;
 

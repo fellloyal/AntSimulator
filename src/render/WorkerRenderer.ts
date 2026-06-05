@@ -332,8 +332,8 @@ export class WorkerRenderer {
           bucket.push([x, y]);
         }
 
-        // 2) 障碍：wall && terrain!=2（保留水纹）
-        if (wall && terrain !== 2) {
+        // 2) 障碍：wall 且不是水/石头（保留水纹/石纹）
+        if (wall && terrain !== 2 && terrain !== 3) {
           let bucket = obstacleBuckets.get(obstacle);
           if (!bucket) { bucket = []; obstacleBuckets.set(obstacle, bucket); }
           bucket.push([x, y]);

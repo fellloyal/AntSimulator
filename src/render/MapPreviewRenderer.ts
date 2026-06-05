@@ -129,13 +129,14 @@ export class MapPreviewRenderer {
       }
     }
 
-    // 2) 障碍（跳过水地形）
+    // 2) 障碍（跳过水/石头地形）
     for (let y = sy; y <= ey; y++) {
       for (let x = sx; x <= ex; x++) {
         const idx = y * this.gridWidth + x;
         const cell = cellMap.get(idx);
         if (!cell || !cell.wall) continue;
-        if (cell.terrain === 2) continue; // 水纹保留
+        // UI美化（task 20）：水/石头（terrain=2/3）保留原纹理
+        if (cell.terrain === 2 || cell.terrain === 3) continue;
         const key = this.obstacleKeys.get(cell.obstacle);
         if (!key) continue;
         AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, cellSize);

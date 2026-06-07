@@ -3,6 +3,7 @@ import { ArrowLeft, Play, Trash2, Pencil } from 'lucide-react';
 import useStore from '@/store/useStore';
 import { fetchMaps, fetchMap, deleteMap, type MapInfo } from '@/api/maps';
 import { MapPreviewRenderer, type PreviewGridData } from '@/render/MapPreviewRenderer';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 export default function GameSetup() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,6 +23,9 @@ export default function GameSetup() {
   const [workerCount, setWorkerCount] = useState(400);
   const [soldierCount, setSoldierCount] = useState(50);
   const [colonyCount, setColonyCount] = useState(1);
+
+  // Delete confirmation
+  const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string } | null>(null);
 
   // Viewport
   const viewportRef = useRef({ offsetX: 0, offsetY: 0, zoom: 1 });
@@ -197,11 +201,17 @@ export default function GameSetup() {
     render();
   }, [render, clientToCanvas]);
 
-  const handleDeleteMap = useCallback(async (id: number) => {
-    await deleteMap(id);
-    setMaps((prev) => prev.filter((m) => m.id !== id));
-    if (selectedMapId === id) setSelectedMapId(null);
-  }, [selectedMapId, setSelectedMapId]);
+  const handleDeleteMap = useCallback(async (id: number, name: string) => {
+    setDeleteTarget({ id, name });
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    if (!deleteTarget) return;
+    await deleteMap(deleteTarget.id);
+    setMaps((prev) => prev.filter((m) => m.id !== deleteTarget.id));
+    if (selectedMapId === deleteTarget.id) setSelectedMapId(null);
+    setDeleteTarget(null);
+  }, [deleteTarget, selectedMapId, setSelectedMapId]);
 
   const handleEditMap = useCallback(async (id: number) => {
     const data = await fetchMap(id);
@@ -281,7 +291,7 @@ export default function GameSetup() {
                     <Pencil size={12} />
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleDeleteMap(m.id); }}
+                    onClick={(e) => { e.stopPropagation(); handleDeleteMap(m.id, m.name); }}
                     className="text-[#8a9a8a] hover:text-red-400 transition-colors p-1"
                   >
                     <Trash2 size={12} />
@@ -414,6 +424,17 @@ export default function GameSetup() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="删除地图"
+        message={`确定要删除地图 "${deleteTarget?.name}" 吗？此操作不可撤销。`}
+        confirmLabel="删除"
+        cancelLabel="取消"
+        variant="danger"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

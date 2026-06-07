@@ -5,7 +5,17 @@
 import { TERRAIN_TILES, type TerrainType } from './assets/TerrainTiles';
 import { OBSTACLE_TILES, type ObstacleType } from './assets/ObstacleTiles';
 import { foodSizeFromQty, preloadFoodSprite, type FoodType } from './assets/FoodSprites';
+import { TERRAIN_AUTO_EDGE, TERRAIN_AUTO_CORNER } from './assets/TerrainAutoTiles';
 import { AssetRegistry } from './AssetRegistry';
+import {
+  computeEdgeMask,
+  computeCornerMask,
+  computeAllCorners,
+  makePreviewGridAdapter,
+  type TerrainGrid,
+  type Corner,
+} from './TerrainAdjacency';
+import useStore from '@/store/useStore';
 import type { Viewport } from './TerrainRenderer';
 
 export interface PreviewCell {
@@ -28,6 +38,8 @@ export class MapPreviewRenderer {
   private gridWidth: number;
   private gridHeight: number;
   private terrainKeys: Map<number, string> = new Map();
+  private autoEdgeKeys: Map<number, Map<number, string>> = new Map();
+  private autoCornerKeys: Map<number, Map<Corner, Map<'convex' | 'concave', string>>> = new Map();
   private obstacleKeys: Map<number, string> = new Map();
   private foodKeys: Map<string, string> = new Map();
 
@@ -51,6 +63,28 @@ export class MapPreviewRenderer {
       const key = `terrain_${TERRAIN_TILES[t].id}`;
       AssetRegistry.preloadSVG(TERRAIN_TILES[t].svg, key);
       this.terrainKeys.set(t, key);
+
+      // 24-tile 自动过渡：16 边变体
+      const edgeMap = new Map<number, string>();
+      for (let mask = 0; mask < 16; mask++) {
+        const ek = `auto_edge_${TERRAIN_TILES[t].id}_${mask}`;
+        AssetRegistry.preloadSVG(TERRAIN_AUTO_EDGE[t][mask], ek);
+        edgeMap.set(mask, ek);
+      }
+      this.autoEdgeKeys.set(t, edgeMap);
+
+      // 24-tile 自动过渡：4 角 × 2 variant
+      const cornerMap = new Map<Corner, Map<'convex' | 'concave', string>>();
+      for (const corner of ['tl', 'tr', 'bl', 'br'] as Corner[]) {
+        const variantMap = new Map<'convex' | 'concave', string>();
+        for (const variant of ['convex', 'concave'] as ('convex' | 'concave')[]) {
+          const ck = `auto_corner_${TERRAIN_TILES[t].id}_${corner}_${variant}`;
+          AssetRegistry.preloadSVG(TERRAIN_AUTO_CORNER[t][corner][variant], ck);
+          variantMap.set(variant, ck);
+        }
+        cornerMap.set(corner, variantMap);
+      }
+      this.autoCornerKeys.set(t, cornerMap);
     }
     for (const t of [1, 2, 3, 4] as ObstacleType[]) {
       const key = `obstacle_${OBSTACLE_TILES[t].id}`;
@@ -117,15 +151,19 @@ export class MapPreviewRenderer {
 
     const cellMap = this.buildCellMap(data);
 
-    // 1) 地形
-    for (let y = sy; y <= ey; y++) {
-      for (let x = sx; x <= ex; x++) {
-        const idx = y * this.gridWidth + x;
-        const cell = cellMap.get(idx);
-        if (!cell) continue;
-        const key = this.terrainKeys.get(cell.terrain);
-        if (!key) continue;
-        AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, cellSize);
+    // 1) 地形（auto-tile 开关：开启时用 24-tile 过渡，关闭时回退 4 地形硬切）
+    if (useStore.getState().enableAutoTiles) {
+      this.drawAutoTerrain(ctx, cellMap, sx, sy, ex, ey);
+    } else {
+      for (let y = sy; y <= ey; y++) {
+        for (let x = sx; x <= ex; x++) {
+          const idx = y * this.gridWidth + x;
+          const cell = cellMap.get(idx);
+          if (!cell) continue;
+          const key = this.terrainKeys.get(cell.terrain);
+          if (!key) continue;
+          AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, cellSize);
+        }
       }
     }
 
@@ -177,6 +215,75 @@ export class MapPreviewRenderer {
         const drawSize = blockSize * cellSize;
         if (key) {
           AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, drawSize);
+        }
+      }
+    }
+  }
+
+  // 24-tile 自动地形过渡
+  // 流程：
+  //   1) 按 (terrain, edgeMask) 分桶批量画主体瓦片
+  //   2) 单 cell 扫 4 角点，仅对触发凸/凹的角画 8x8 角贴片
+  private drawAutoTerrain(
+    ctx: CanvasRenderingContext2D,
+    cellMap: Map<number, PreviewCell>,
+    sx: number, sy: number, ex: number, ey: number,
+  ): void {
+    const { cellSize } = this;
+    const adapter: TerrainGrid = makePreviewGridAdapter(cellMap, this.gridWidth);
+
+    // === 1) 主体：按 (terrain, edgeMask) 分桶 ===
+    const buckets = new Map<number, Array<[number, number]>>();
+    for (let y = sy; y <= ey; y++) {
+      for (let x = sx; x <= ex; x++) {
+        const idx = y * this.gridWidth + x;
+        if (!cellMap.get(idx)) continue;
+        const t = adapter.getTerrainAt(x, y);
+        const edgeMask = computeEdgeMask(adapter, x, y);
+        const key = (t << 4) | edgeMask;
+        let bucket = buckets.get(key);
+        if (!bucket) {
+          bucket = [];
+          buckets.set(key, bucket);
+        }
+        bucket.push([x, y]);
+      }
+    }
+    for (const [key, cells] of buckets) {
+      const t = (key >> 4) & 0xf;
+      const edgeMask = key & 0xf;
+      const svgKey = this.autoEdgeKeys.get(t)?.get(edgeMask);
+      if (!svgKey) continue;
+      for (const [x, y] of cells) {
+        AssetRegistry.drawTile(ctx, svgKey, x * cellSize, y * cellSize, cellSize);
+      }
+    }
+
+    // === 2) 角点：单 cell 检查，仅画触发的角 ===
+    const CORNER_OFFSETS: Array<{ corner: Corner; dx: 0 | 1; dy: 0 | 1 }> = [
+      { corner: 'tl', dx: 0, dy: 0 },
+      { corner: 'tr', dx: 1, dy: 0 },
+      { corner: 'bl', dx: 0, dy: 1 },
+      { corner: 'br', dx: 1, dy: 1 },
+    ];
+    const cornerSize = 8;
+    for (let y = sy; y <= ey; y++) {
+      for (let x = sx; x <= ex; x++) {
+        const idx = y * this.gridWidth + x;
+        if (!cellMap.get(idx)) continue;
+        const t = adapter.getTerrainAt(x, y);
+        const edgeMask = computeEdgeMask(adapter, x, y);
+        const cornerMask = computeCornerMask(adapter, x, y);
+        const corners = computeAllCorners(edgeMask, cornerMask);
+        for (let i = 0; i < 4; i++) {
+          const c = corners[i];
+          if (!c.draw) continue;
+          const svgKey = this.autoCornerKeys.get(t)?.get(CORNER_OFFSETS[i].corner)?.get(c.variant);
+          if (!svgKey) continue;
+          const off = CORNER_OFFSETS[i];
+          const px = x * cellSize + (off.dx === 1 ? cellSize - cornerSize : 0);
+          const py = y * cellSize + (off.dy === 1 ? cellSize - cornerSize : 0);
+          AssetRegistry.drawTile(ctx, svgKey, px, py, cornerSize);
         }
       }
     }

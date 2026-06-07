@@ -4,8 +4,20 @@ import useStore, { type EditorTool } from '@/store/useStore';
 import { createMap, updateMap } from '@/api/maps';
 import { AssetRegistry } from '@/render/AssetRegistry';
 import { TERRAIN_TILES } from '@/render/assets/TerrainTiles';
+import { TERRAIN_AUTO_EDGE, TERRAIN_AUTO_CORNER } from '@/render/assets/TerrainAutoTiles';
 import { OBSTACLE_TILES } from '@/render/assets/ObstacleTiles';
 import { foodSizeFromQty, preloadFoodSprite } from '@/render/assets/FoodSprites';
+import {
+  computeEdgeMask,
+  computeCornerMask,
+  computeAllCorners,
+  type TerrainGrid,
+  type Corner,
+} from '@/render/TerrainAdjacency';
+
+// 24-tile 地图编辑器的自动地形过渡绘制
+// 适配 MapEditor 的 terrain: Map<number, number>（idx → terrain type）
+// 此函数在下方定义（依赖 CELL_SIZE / TERRAIN_KEY）
 
 const CELL_SIZE = 4;
 
@@ -46,6 +58,87 @@ const OBSTACLE_COLORS: Record<ObstacleType, string> = {
   3: '#8a5a30',  // wood
   4: '#7a7a82',  // fence
 };
+
+// 24-tile 自动地形过渡的编辑器实现
+// 适配 MapEditor 的 terrain: Map<number, number>（idx → terrain type）
+function drawEditorAutoTerrain(
+  ctx: CanvasRenderingContext2D,
+  terrain: Map<number, number>,
+  gridW: number,
+  gridH: number,
+  sx: number, sy: number, ex: number, ey: number,
+): void {
+  const adapter: TerrainGrid = {
+    getTerrainAt(x, y): 0 | 1 | 2 | 3 {
+      if (x < 0 || y < 0 || x >= gridW || y >= gridH) return 0;
+      return (terrain.get(y * gridW + x) ?? 0) as 0 | 1 | 2 | 3;
+    },
+  };
+
+  // === 1) 主体：按 (terrain, edgeMask) 分桶 ===
+  const buckets = new Map<number, Array<[number, number]>>();
+  for (let y = sy; y <= ey; y++) {
+    for (let x = sx; x <= ex; x++) {
+      const idx = y * gridW + x;
+      if (!terrain.has(idx)) continue;
+      const t = adapter.getTerrainAt(x, y);
+      const edgeMask = computeEdgeMask(adapter, x, y);
+      const key = (t << 4) | edgeMask;
+      let bucket = buckets.get(key);
+      if (!bucket) {
+        bucket = [];
+        buckets.set(key, bucket);
+      }
+      bucket.push([x, y]);
+    }
+  }
+  for (const [key, cells] of buckets) {
+    const t = (key >> 4) & 0xf;
+    const edgeMask = key & 0xf;
+    const baseKey = TERRAIN_KEY[t];
+    const svgKey = `auto_edge_${TERRAIN_TILES[t].id}_${edgeMask}`;
+    if (!AssetRegistry.has(svgKey)) {
+      if (AssetRegistry.has(baseKey)) {
+        for (const [x, y] of cells) {
+          AssetRegistry.drawTile(ctx, baseKey, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+        }
+      }
+      continue;
+    }
+    for (const [x, y] of cells) {
+      AssetRegistry.drawTile(ctx, svgKey, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+    }
+  }
+
+  // === 2) 角点：单 cell 检查，仅画触发的角 ===
+  const CORNER_OFFSETS: Array<{ corner: Corner; dx: 0 | 1; dy: 0 | 1 }> = [
+    { corner: 'tl', dx: 0, dy: 0 },
+    { corner: 'tr', dx: 1, dy: 0 },
+    { corner: 'bl', dx: 0, dy: 1 },
+    { corner: 'br', dx: 1, dy: 1 },
+  ];
+  const cornerSize = 8;
+  for (let y = sy; y <= ey; y++) {
+    for (let x = sx; x <= ex; x++) {
+      const idx = y * gridW + x;
+      if (!terrain.has(idx)) continue;
+      const t = adapter.getTerrainAt(x, y);
+      const edgeMask = computeEdgeMask(adapter, x, y);
+      const cornerMask = computeCornerMask(adapter, x, y);
+      const corners = computeAllCorners(edgeMask, cornerMask);
+      for (let i = 0; i < 4; i++) {
+        const c = corners[i];
+        if (!c.draw) continue;
+        const svgKey = `auto_corner_${TERRAIN_TILES[t].id}_${CORNER_OFFSETS[i].corner}_${c.variant}`;
+        if (!AssetRegistry.has(svgKey)) continue;
+        const off = CORNER_OFFSETS[i];
+        const px = x * CELL_SIZE + (off.dx === 1 ? CELL_SIZE - cornerSize : 0);
+        const py = y * CELL_SIZE + (off.dy === 1 ? CELL_SIZE - cornerSize : 0);
+        AssetRegistry.drawTile(ctx, svgKey, px, py, cornerSize);
+      }
+    }
+  }
+}
 
 export default function MapEditor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -137,6 +230,18 @@ export default function MapEditor() {
     AssetRegistry.setCellSize(CELL_SIZE);
     for (const t of [0, 1, 2, 3] as TerrainType[]) {
       AssetRegistry.preloadSVG(TERRAIN_TILES[t].svg, TERRAIN_KEY[t]);
+      // 24-tile 自动过渡的 96 张子瓦片
+      for (let mask = 0; mask < 16; mask++) {
+        AssetRegistry.preloadSVG(TERRAIN_AUTO_EDGE[t][mask], `auto_edge_${TERRAIN_TILES[t].id}_${mask}`);
+      }
+      for (const corner of ['tl', 'tr', 'bl', 'br'] as Corner[]) {
+        for (const variant of ['convex', 'concave'] as ('convex' | 'concave')[]) {
+          AssetRegistry.preloadSVG(
+            TERRAIN_AUTO_CORNER[t][corner][variant],
+            `auto_corner_${TERRAIN_TILES[t].id}_${corner}_${variant}`,
+          );
+        }
+      }
     }
     for (const t of [1, 2, 3, 4] as ObstacleType[]) {
       AssetRegistry.preloadSVG(OBSTACLE_TILES[t].svg, OBSTACLE_KEY[t]);
@@ -191,17 +296,22 @@ export default function MapEditor() {
     const ey = Math.min(gridH - 1, Math.ceil(vb / CELL_SIZE));
 
     // UI美化（bug fix）：用 SVG 纹理绘制地形（fallback 到纯色）
-    for (let y = sy; y <= ey; y++) {
-      for (let x = sx; x <= ex; x++) {
-        const idx = y * gridW + x;
-        const t = terrain.get(idx);
-        if (t === undefined) continue;
-        const key = TERRAIN_KEY[t];
-        if (AssetRegistry.has(key)) {
-          AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
-        } else {
-          ctx.fillStyle = TERRAIN_COLORS[t];
-          ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    // 24-tile 开关：开启时用 auto 路径，关闭时回退 4 地形硬切
+    if (enableAutoTiles) {
+      drawEditorAutoTerrain(ctx, terrain, gridW, gridH, sx, sy, ex, ey);
+    } else {
+      for (let y = sy; y <= ey; y++) {
+        for (let x = sx; x <= ex; x++) {
+          const idx = y * gridW + x;
+          const t = terrain.get(idx);
+          if (t === undefined) continue;
+          const key = TERRAIN_KEY[t];
+          if (AssetRegistry.has(key)) {
+            AssetRegistry.drawTile(ctx, key, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
+          } else {
+            ctx.fillStyle = TERRAIN_COLORS[t];
+            ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          }
         }
       }
     }
@@ -297,7 +407,7 @@ export default function MapEditor() {
     ctx.strokeRect(0, 0, editorMapWidth, editorMapHeight);
 
     ctx.restore();
-  }, [gridW, gridH, editorMapWidth, editorMapHeight]);
+  }, [gridW, gridH, editorMapWidth, editorMapHeight, enableAutoTiles]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

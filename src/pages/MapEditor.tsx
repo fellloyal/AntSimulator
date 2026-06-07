@@ -56,6 +56,8 @@ export default function MapEditor() {
   const editorMapHeight = useStore((s) => s.editorMapHeight);
   const editorGridData = useStore((s) => s.editorGridData);
   const setEditorMap = useStore((s) => s.setEditorMap);
+  const enableAutoTiles = useStore((s) => s.enableAutoTiles);
+  const setEnableAutoTiles = useStore((s) => s.setEnableAutoTiles);
 
   const [tool, setTool] = useState<EditorTool>('terrain');
   const [terrainType, setTerrainType] = useState<TerrainType>(0);
@@ -897,6 +899,23 @@ export default function MapEditor() {
           >
             应用尺寸
           </button>
+        </div>
+
+        <div className="border-t border-black/5" />
+
+        {/* 24-tile 自动地形过渡开关 */}
+        <div className="flex flex-col gap-1">
+          <label className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <input
+              type="checkbox"
+              checked={enableAutoTiles}
+              onChange={(e) => setEnableAutoTiles(e.target.checked)}
+            />
+            自动地形过渡（24-tile）
+          </label>
+          <div className="text-xs opacity-60" style={{ color: 'var(--text-secondary)' }}>
+            灰度开关；启用后地图预览与主视图一致
+          </div>
         </div>
 
         <div className="border-t border-black/5" />

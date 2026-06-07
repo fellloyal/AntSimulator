@@ -57,6 +57,10 @@ interface SimulatorState {
   }>;
   fps: number;
 
+  // 24-tile 自动地形过渡开关（默认关闭，灰度启用）
+  enableAutoTiles: boolean;
+  setEnableAutoTiles: (v: boolean) => void;
+
   togglePause: () => void;
   setSpeed: (speed: number) => void;
   toggleMaxSpeed: () => void;
@@ -101,6 +105,10 @@ const useStore = create<SimulatorState>((set) => ({
   brushSize: 3,
   colonyStats: [],
   fps: 0,
+
+  // 24-tile 自动地形过渡（默认关闭，Phase 1 灰度）
+  enableAutoTiles: false,
+  setEnableAutoTiles: (enableAutoTiles) => set({ enableAutoTiles }),
 
   togglePause: () => set((s) => ({ paused: !s.paused })),
   setSpeed: (speed) => set({ speed, maxSpeed: false }),

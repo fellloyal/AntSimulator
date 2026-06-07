@@ -36,3 +36,7 @@ test_apple.jpg
 # Food image intermediates
 src/render/assets/food_images/b64.json
 src/render/assets/food_images/*.jpg
+
+# SQLite runtime files
+server/data/maps.db-shm
+server/data/maps.db-wal

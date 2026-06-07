@@ -11,1051 +11,955 @@ export type TerrainId = 'grass' | 'sand' | 'water' | 'rock';
 export const TERRAIN_AUTO_EDGE: Record<TerrainType, Record<number, string>> = {
   0: {
     0: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     1: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     2: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     3: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     4: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     5: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     6: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     7: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="#5a8a35" opacity="0.85"/>
-        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     8: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     9: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     10: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     11: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     12: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     13: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     14: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/>
-          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="#5a8a35" opacity="0.85"/>
-          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="#6a9a40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
-          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="#4a7a28" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
     15: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="#5a8a35" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="#4a7a28" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="#6a9a40" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="#6a9a40" opacity="0.3"/></svg>`,
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/></svg>`,
   },
   1: {
     0: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     1: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     2: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     3: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     4: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     5: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     6: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     7: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <circle cx="18" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-        <circle cx="18" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-        <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-        <circle cx="19.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-        <circle cx="19.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+        <circle cx="16" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="16" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+        <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+        <circle cx="19.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+        <circle cx="19.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+        <circle cx="19.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     8: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     9: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     10: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     11: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="2" cy="1.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="5" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="8.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="12" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="2" cy="15.5" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="1" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="10" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="0.5" cy="17" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="4" cy="2" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="7" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="4" cy="12" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="3" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="0.5" cy="10" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="0.5" cy="5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="0.5" cy="15" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     12: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     13: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="19" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="18" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="19" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="19.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="19.5" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="16" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="17" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="19.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="19.5" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     14: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <circle cx="1.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="5" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="8.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="12" cy="1" r="1.8" fill="#a8854a" opacity="0.8"/>
-          <circle cx="15.5" cy="2" r="2" fill="#a8854a" opacity="0.85"/>
-          <circle cx="19" cy="1" r="1.5" fill="#b8965a" opacity="0.9"/>
-          <circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/>
-          <circle cx="10" cy="0.5" r="0.8" fill="#b8965a" opacity="0.85"/>
-          <circle cx="17" cy="0.5" r="1" fill="#b8965a" opacity="0.85"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/>
+          <circle cx="2" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="7" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="12" cy="4" r="3.5" fill="#d4ad6a" opacity="0.85"/>
+          <circle cx="17" cy="3" r="3" fill="#d4ad6a" opacity="0.8"/>
+          <circle cx="10" cy="0.5" r="1.5" fill="#e8c890" opacity="0.9"/>
+          <circle cx="5" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/>
+          <circle cx="15" cy="0.5" r="1.2" fill="#e8c890" opacity="0.85"/></svg>`,
     15: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#c9a866"/>
-        <circle cx="3" cy="3" r="0.6" fill="#a8854a" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="#a8854a" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="#a8854a" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="#a8854a" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="#a8854a" stroke-width="0.3" fill="none" opacity="0.5"/></svg>`,
+        <circle cx="9" cy="9" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="#d4ad6a" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="#e8c890" opacity="0.5"/></svg>`,
   },
   2: {
     0: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     1: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     2: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     3: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     4: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     5: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     6: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     7: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="#a8c0e0" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
+        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     8: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     9: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     10: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     11: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     12: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     13: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     14: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/>
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="#a8c0e0" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="#7a9aca" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="#a8c0e0" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="#a8c0e0" opacity="0.9"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
+          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
+          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
+          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
+          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
+          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
+          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/></svg>`,
     15: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="#7a9aca" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="#7a9aca" stroke-width="0.4" fill="none" opacity="0.5"/></svg>`,
+        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/></svg>`,
   },
   3: {
     0: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     1: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     2: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     3: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     4: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     5: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     6: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     7: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     8: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     9: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     10: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     11: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     12: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     13: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     14: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/>
-          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="#7a7a82" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="1" opacity="0.95"/>
-          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="#3a3a52" stroke-width="1" fill="none" opacity="0.8"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>`,
     15: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.3"/></svg>`,
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/></svg>`,
   },
 };
 
@@ -1063,74 +967,74 @@ export const TERRAIN_AUTO_EDGE: Record<TerrainType, Record<number, string>> = {
 export const TERRAIN_AUTO_CORNER: Record<TerrainType, Record<Corner, Record<CornerVariant, string>>> = {
   0: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 4,0 5,5" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M1,5 L2,2 L3,5 M2,2 L3,1 L4,2" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="2" fill="#5a8a35" opacity="0.9"/><path d="M1,2 L1,0 M2,2 L2,0 M3,2 L3,0" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#7ab045" opacity="0.9"/><path d="M1,5 L2,1 L3,5 M2,1 L3,0 L4,1 M2,5 L4,5" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#7ab045" opacity="0.95"/><path d="M1,5 L1,1 M3,5 L3,1 M5,5 L5,1" stroke="#9ad85a" stroke-width="1" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 4,0 3,5" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M7,5 L6,2 L5,5 M6,2 L5,1 L4,2" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="2" fill="#5a8a35" opacity="0.9"/><path d="M5,2 L5,0 M6,2 L6,0 M7,2 L7,0" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#7ab045" opacity="0.9"/><path d="M7,5 L6,1 L5,5 M6,1 L5,0 L4,1 M6,5 L4,5" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#7ab045" opacity="0.95"/><path d="M3,5 L3,1 M5,5 L5,1 M7,5 L7,1" stroke="#9ad85a" stroke-width="1" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 4,8 5,3" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M1,3 L2,6 L3,3 M2,6 L3,7 L4,6" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="2" fill="#5a8a35" opacity="0.9"/><path d="M1,6 L1,8 M2,6 L2,8 M3,6 L3,8" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#7ab045" opacity="0.9"/><path d="M1,3 L2,7 L3,3 M2,7 L3,8 L4,7 M2,3 L4,3" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#7ab045" opacity="0.95"/><path d="M1,3 L1,7 M3,3 L3,7 M5,3 L5,7" stroke="#9ad85a" stroke-width="1" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 4,8 3,3" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M7,3 L6,6 L5,3 M6,6 L5,7 L4,6" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="2" fill="#5a8a35" opacity="0.9"/><path d="M5,6 L5,8 M6,6 L6,8 M7,6 L7,8" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#7ab045" opacity="0.9"/><path d="M7,3 L6,7 L5,3 M6,7 L5,8 L4,7 M6,3 L4,3" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#7ab045" opacity="0.95"/><path d="M3,3 L3,7 M5,3 L5,7 M7,3 L7,7" stroke="#9ad85a" stroke-width="1" fill="none" stroke-linecap="round" opacity="1"/></svg>`,
     },
   },
   1: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="1.5" cy="1.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="0.5" cy="0.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#d4ad6a" opacity="0.95"/><circle cx="2" cy="2" r="1.2" fill="#e8c890" opacity="1"/><circle cx="4" cy="0.5" r="0.8" fill="#e8c890" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#d4ad6a" opacity="1"/><circle cx="2" cy="2" r="1.5" fill="#e8c890" opacity="1"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6.5" cy="1.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="4.5" cy="0.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="7.5" cy="3.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="7.5" cy="0.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#d4ad6a" opacity="0.95"/><circle cx="6" cy="2" r="1.2" fill="#e8c890" opacity="1"/><circle cx="4" cy="0.5" r="0.8" fill="#e8c890" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#d4ad6a" opacity="1"/><circle cx="6" cy="2" r="1.5" fill="#e8c890" opacity="1"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="1.5" cy="6.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="3.5" cy="7.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="0.5" cy="4.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="0.5" cy="7.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#d4ad6a" opacity="0.95"/><circle cx="2" cy="6" r="1.2" fill="#e8c890" opacity="1"/><circle cx="4" cy="7.5" r="0.8" fill="#e8c890" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#d4ad6a" opacity="1"/><circle cx="2" cy="6" r="1.5" fill="#e8c890" opacity="1"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6.5" cy="6.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="4.5" cy="7.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="7.5" cy="4.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="7.5" cy="7.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#d4ad6a" opacity="0.95"/><circle cx="6" cy="6" r="1.2" fill="#e8c890" opacity="1"/><circle cx="4" cy="7.5" r="0.8" fill="#e8c890" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#d4ad6a" opacity="1"/><circle cx="6" cy="6" r="1.5" fill="#e8c890" opacity="1"/></svg>`,
     },
   },
   2: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,5 Q2,3 4,5 Q2,1 0,3" fill="#a8c0e0" opacity="0.85"/><path d="M0,3 Q3,1 5,3" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,4 Q2,2 4,4 M0,2 Q3,0 5,2" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M0,2 Q2,0 4,2" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#d8e8f8" opacity="0.95"/><path d="M0,4 Q2,2 4,4 Q2,0 0,2" fill="#a8c0e0" opacity="0.9"/><path d="M0,2 Q3,0 5,2" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#d8e8f8" opacity="0.9"/><path d="M0,4 Q2,2 4,4 M0,2 Q3,0 5,2" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="1"/><path d="M0,2 Q2,0 4,2" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,5 Q6,3 4,5 Q6,1 8,3" fill="#a8c0e0" opacity="0.85"/><path d="M8,3 Q5,1 3,3" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,4 Q6,2 4,4 M8,2 Q5,0 3,2" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M8,2 Q6,0 4,2" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#d8e8f8" opacity="0.95"/><path d="M8,4 Q6,2 4,4 Q6,0 8,2" fill="#a8c0e0" opacity="0.9"/><path d="M8,2 Q5,0 3,2" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#d8e8f8" opacity="0.9"/><path d="M8,4 Q6,2 4,4 M8,2 Q5,0 3,2" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="1"/><path d="M8,2 Q6,0 4,2" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,3 Q2,5 4,3 Q2,7 0,5" fill="#a8c0e0" opacity="0.85"/><path d="M0,5 Q3,7 5,5" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,4 Q2,6 4,4 M0,6 Q3,8 5,6" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M0,6 Q2,8 4,6" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#d8e8f8" opacity="0.95"/><path d="M0,4 Q2,6 4,4 Q2,8 0,6" fill="#a8c0e0" opacity="0.9"/><path d="M0,6 Q3,8 5,6" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#d8e8f8" opacity="0.9"/><path d="M0,4 Q2,6 4,4 M0,6 Q3,8 5,6" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="1"/><path d="M0,6 Q2,8 4,6" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,3 Q6,5 4,3 Q6,7 8,5" fill="#a8c0e0" opacity="0.85"/><path d="M8,5 Q5,7 3,5" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,4 Q6,6 4,4 M8,6 Q5,8 3,6" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M8,6 Q6,8 4,6" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#d8e8f8" opacity="0.95"/><path d="M8,4 Q6,6 4,4 Q6,8 8,6" fill="#a8c0e0" opacity="0.9"/><path d="M8,6 Q5,8 3,6" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#d8e8f8" opacity="0.9"/><path d="M8,4 Q6,6 4,4 M8,6 Q5,8 3,6" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="1"/><path d="M8,6 Q6,8 4,6" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
     },
   },
   3: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 3,1 5,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,3 3,0 5,2 4,4 1,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M2,2 L2,1 M3,2 L3,0.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="0" width="6" height="6" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1" opacity="1"/><path d="M2,2 L2,1 M3,2 L3,0.5" stroke="#3a3a52" stroke-width="0.8" fill="none"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 5,1 3,3 4,5 7,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,3 5,0 3,2 4,4 7,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M6,2 L6,1 M5,2 L5,0.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="0" width="6" height="6" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1" opacity="1"/><path d="M6,2 L6,1 M5,2 L5,0.5" stroke="#3a3a52" stroke-width="0.8" fill="none"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 3,7 5,5 4,3 1,3" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,5 3,8 5,6 4,4 1,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M2,6 L2,7 M3,6 L3,7.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="0" y="2" width="6" height="6" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1" opacity="1"/><path d="M2,6 L2,7 M3,6 L3,7.5" stroke="#3a3a52" stroke-width="0.8" fill="none"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 5,7 3,5 4,3 7,3" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,5 5,8 3,6 4,4 7,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M6,6 L6,7 M5,6 L5,7.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1" opacity="1"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><rect x="2" y="2" width="6" height="6" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1" opacity="1"/><path d="M6,6 L6,7 M5,6 L5,7.5" stroke="#3a3a52" stroke-width="0.8" fill="none"/></svg>`,
     },
   },
 };

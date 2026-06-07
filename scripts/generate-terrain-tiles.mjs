@@ -87,111 +87,155 @@ function internalTexture(t) {
 
 // ============================================================
 // Edge feathering（4 边各异）
-// 每种地形在 cell 边缘画一组向外延伸的小元素（草尖/沙粒/水波/碎裂纹）
+// 关键：feathering 必须在 4×4 cell 渲染下可见，因此 SVG units 取 2-4
+// 20×20 viewBox → 4×4 像素时，每单位 = 0.2px，所以 2-4 单位 = 0.4-0.8px（AA 可见）
+// 每种地形在 cell 边缘画一组明显的外延元素（草尖/沙粒/水波/碎裂纹）
 // ============================================================
 function edgeFeather(t, side) {
-  // side: 'top' | 'bottom' | 'left' | 'right'
-  // feathering 集中在边缘 1-3px 范围
   switch (t.id) {
     case 'grass': {
-      // 草尖：每边 3-4 个小尖刺
+      // 草尖：4-5 条 4-5 单位宽的"草丛"（1.0-1.2 像素可见）
       if (side === 'top') {
         return `
-          <path d="M2,2 L2.5,0.5 M6,2 L6.5,0.5 M10,2 L10.5,0.5 M14,2 L14.5,0.5 M18,2 L17.5,0.5" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/>
-          <path d="M4,2 L4,1 M12,2 L12,1 M16,2 L16,1" stroke="${t.accent2}" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.7"/>`;
+          <path d="M0,4 Q1,0 3,4 Q4,0 6,4 Q7,0 9,4 Q10,0 12,4 Q13,0 15,4 Q16,0 18,4 Q19,0 20,4 L20,5 L0,5 Z" fill="${t.accent}" opacity="0.85"/>
+          <path d="M2,4 Q2.5,1 3,4 M7,4 Q7.5,1 8,4 M12,4 Q12.5,1 13,4 M17,4 Q17.5,1 18,4" stroke="${t.accentLight}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
+          <path d="M1,2 L1,0.5 M6,2 L6,0.5 M11,2 L11,0.5 M16,2 L16,0.5" stroke="${t.accent2}" stroke-width="0.8" fill="none" stroke-linecap="round"/>`;
       }
       if (side === 'bottom') {
         return `
-          <path d="M2,18 L2.5,19.5 M6,18 L6.5,19.5 M10,18 L10.5,19.5 M14,18 L14.5,19.5 M18,18 L17.5,19.5" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/>
-          <path d="M4,18 L4,19 M12,18 L12,19 M16,18 L16,19" stroke="${t.accent2}" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.7"/>`;
+          <path d="M0,16 Q1,20 3,16 Q4,20 6,16 Q7,20 9,16 Q10,20 12,16 Q13,20 15,16 Q16,20 18,16 Q19,20 20,16 L20,15 L0,15 Z" fill="${t.accent}" opacity="0.85"/>
+          <path d="M2,16 Q2.5,19 3,16 M7,16 Q7.5,19 8,16 M12,16 Q12.5,19 13,16 M17,16 Q17.5,19 18,16" stroke="${t.accentLight}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
+          <path d="M1,18 L1,19.5 M6,18 L6,19.5 M11,18 L11,19.5 M16,18 L16,19.5" stroke="${t.accent2}" stroke-width="0.8" fill="none" stroke-linecap="round"/>`;
       }
       if (side === 'left') {
         return `
-          <path d="M2,2 L0.5,2.5 M2,6 L0.5,6.5 M2,10 L0.5,10.5 M2,14 L0.5,14.5 M2,18 L0.5,17.5" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/>
-          <path d="M2,4 L1,4 M2,12 L1,12 M2,16 L1,16" stroke="${t.accent2}" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.7"/>`;
+          <path d="M4,0 Q0,1 4,3 Q0,4 4,6 Q0,7 4,9 Q0,10 4,12 Q0,13 4,15 Q0,16 4,18 Q0,19 4,20 L5,20 L5,0 Z" fill="${t.accent}" opacity="0.85"/>
+          <path d="M4,2 Q1,2.5 4,3 M4,7 Q1,7.5 4,8 M4,12 Q1,12.5 4,13 M4,17 Q1,17.5 4,18" stroke="${t.accentLight}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
+          <path d="M2,1 L0.5,1 M2,6 L0.5,6 M2,11 L0.5,11 M2,16 L0.5,16" stroke="${t.accent2}" stroke-width="0.8" fill="none" stroke-linecap="round"/>`;
       }
       // right
       return `
-        <path d="M18,2 L19.5,2.5 M18,6 L19.5,6.5 M18,10 L19.5,10.5 M18,14 L19.5,14.5 M18,18 L19.5,17.5" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/>
-        <path d="M18,4 L19,4 M18,12 L19,12 M18,16 L19,16" stroke="${t.accent2}" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.7"/>`;
+        <path d="M16,0 Q20,1 16,3 Q20,4 16,6 Q20,7 16,9 Q20,10 16,12 Q20,13 16,15 Q20,16 16,18 Q20,19 16,20 L15,20 L15,0 Z" fill="${t.accent}" opacity="0.85"/>
+        <path d="M16,2 Q19,2.5 16,3 M16,7 Q19,7.5 16,8 M16,12 Q19,12.5 16,13 M16,17 Q19,17.5 16,18" stroke="${t.accentLight}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.95"/>
+        <path d="M18,1 L19.5,1 M18,6 L19.5,6 M18,11 L19.5,11 M18,16 L19.5,16" stroke="${t.accent2}" stroke-width="0.8" fill="none" stroke-linecap="round"/>`;
     }
     case 'sand': {
-      // 沙粒：每边 4-5 个小圆点
+      // 沙粒：5-6 个大圆点 r=1.8-2.0 (3-4 单位直径 → 0.6-0.8 像素)
       if (side === 'top') {
         return `
-          <circle cx="2" cy="1" r="0.4" fill="${t.accent}" opacity="0.7"/>
-          <circle cx="5" cy="0.5" r="0.4" fill="${t.accent}" opacity="0.6"/>
-          <circle cx="9" cy="1" r="0.3" fill="${t.accent}" opacity="0.7"/>
-          <circle cx="13" cy="0.5" r="0.4" fill="${t.accent}" opacity="0.6"/>
-          <circle cx="17" cy="1" r="0.3" fill="${t.accent}" opacity="0.7"/>`;
+          <circle cx="1.5" cy="2" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="5" cy="1" r="1.8" fill="${t.accent}" opacity="0.8"/>
+          <circle cx="8.5" cy="2" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="12" cy="1" r="1.8" fill="${t.accent}" opacity="0.8"/>
+          <circle cx="15.5" cy="2" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="19" cy="1" r="1.5" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="3.5" cy="0.5" r="1" fill="${t.accentLight}" opacity="0.85"/>
+          <circle cx="10" cy="0.5" r="0.8" fill="${t.accentLight}" opacity="0.85"/>
+          <circle cx="17" cy="0.5" r="1" fill="${t.accentLight}" opacity="0.85"/>`;
       }
       if (side === 'bottom') {
         return `
-          <circle cx="2" cy="19" r="0.4" fill="${t.accent}" opacity="0.7"/>
-          <circle cx="5" cy="19.5" r="0.4" fill="${t.accent}" opacity="0.6"/>
-          <circle cx="9" cy="19" r="0.3" fill="${t.accent}" opacity="0.7"/>
-          <circle cx="13" cy="19.5" r="0.4" fill="${t.accent}" opacity="0.6"/>
-          <circle cx="17" cy="19" r="0.3" fill="${t.accent}" opacity="0.7"/>`;
+          <circle cx="1.5" cy="18" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="5" cy="19" r="1.8" fill="${t.accent}" opacity="0.8"/>
+          <circle cx="8.5" cy="18" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="12" cy="19" r="1.8" fill="${t.accent}" opacity="0.8"/>
+          <circle cx="15.5" cy="18" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="19" cy="19" r="1.5" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="3.5" cy="19.5" r="1" fill="${t.accentLight}" opacity="0.85"/>
+          <circle cx="10" cy="19.5" r="0.8" fill="${t.accentLight}" opacity="0.85"/>
+          <circle cx="17" cy="19.5" r="1" fill="${t.accentLight}" opacity="0.85"/>`;
       }
       if (side === 'left') {
         return `
-          <circle cx="1" cy="2" r="0.4" fill="${t.accent}" opacity="0.7"/>
-          <circle cx="0.5" cy="6" r="0.4" fill="${t.accent}" opacity="0.6"/>
-          <circle cx="1" cy="10" r="0.3" fill="${t.accent}" opacity="0.7"/>
-          <circle cx="0.5" cy="14" r="0.4" fill="${t.accent}" opacity="0.6"/>
-          <circle cx="1" cy="18" r="0.3" fill="${t.accent}" opacity="0.7"/>`;
+          <circle cx="2" cy="1.5" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="1" cy="5" r="1.8" fill="${t.accent}" opacity="0.8"/>
+          <circle cx="2" cy="8.5" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="1" cy="12" r="1.8" fill="${t.accent}" opacity="0.8"/>
+          <circle cx="2" cy="15.5" r="2" fill="${t.accent}" opacity="0.85"/>
+          <circle cx="1" cy="19" r="1.5" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="0.5" cy="3.5" r="1" fill="${t.accentLight}" opacity="0.85"/>
+          <circle cx="0.5" cy="10" r="0.8" fill="${t.accentLight}" opacity="0.85"/>
+          <circle cx="0.5" cy="17" r="1" fill="${t.accentLight}" opacity="0.85"/>`;
       }
       // right
       return `
-        <circle cx="19" cy="2" r="0.4" fill="${t.accent}" opacity="0.7"/>
-        <circle cx="19.5" cy="6" r="0.4" fill="${t.accent}" opacity="0.6"/>
-        <circle cx="19" cy="10" r="0.3" fill="${t.accent}" opacity="0.7"/>
-        <circle cx="19.5" cy="14" r="0.4" fill="${t.accent}" opacity="0.6"/>
-        <circle cx="19" cy="18" r="0.3" fill="${t.accent}" opacity="0.7"/>`;
+        <circle cx="18" cy="1.5" r="2" fill="${t.accent}" opacity="0.85"/>
+        <circle cx="19" cy="5" r="1.8" fill="${t.accent}" opacity="0.8"/>
+        <circle cx="18" cy="8.5" r="2" fill="${t.accent}" opacity="0.85"/>
+        <circle cx="19" cy="12" r="1.8" fill="${t.accent}" opacity="0.8"/>
+        <circle cx="18" cy="15.5" r="2" fill="${t.accent}" opacity="0.85"/>
+        <circle cx="19" cy="19" r="1.5" fill="${t.accentLight}" opacity="0.9"/>
+        <circle cx="19.5" cy="3.5" r="1" fill="${t.accentLight}" opacity="0.85"/>
+        <circle cx="19.5" cy="10" r="0.8" fill="${t.accentLight}" opacity="0.85"/>
+        <circle cx="19.5" cy="17" r="1" fill="${t.accentLight}" opacity="0.85"/>`;
     }
     case 'water': {
-      // 水波/浪花：每边 1-2 条波浪线
+      // 浪花/泡沫：粗波浪线 + 实色填充条
       if (side === 'top') {
         return `
-          <path d="M0,1 Q3,0 6,1 T12,1 T18,1 T20,1" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="0.7"/>
-          <path d="M0,2.5 Q4,2 8,2.5 T16,2.5" stroke="${t.accent}" stroke-width="0.4" fill="none" opacity="0.5"/>`;
+          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="${t.accentLight}" opacity="0.6"/>
+          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
+          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
+          <circle cx="3" cy="1.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="10" cy="1" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="17" cy="1.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
       }
       if (side === 'bottom') {
         return `
-          <path d="M0,18.5 Q3,19.5 6,18.5 T12,18.5 T18,18.5 T20,18.5" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="0.7"/>
-          <path d="M0,17.5 Q4,18 8,17.5 T16,17.5" stroke="${t.accent}" stroke-width="0.4" fill="none" opacity="0.5"/>`;
+          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="${t.accentLight}" opacity="0.6"/>
+          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
+          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
+          <circle cx="3" cy="18.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="10" cy="19" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="17" cy="18.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
       }
       if (side === 'left') {
         return `
-          <path d="M1,0 Q0,3 1,6 T1,12 T1,18 T1,20" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="0.7"/>
-          <path d="M2.5,0 Q2,4 2.5,8 T2.5,16" stroke="${t.accent}" stroke-width="0.4" fill="none" opacity="0.5"/>`;
+          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="${t.accentLight}" opacity="0.6"/>
+          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
+          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
+          <circle cx="1.5" cy="3" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="1" cy="10" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
+          <circle cx="1.5" cy="17" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
       }
       // right
       return `
-        <path d="M19,0 Q20,3 19,6 T19,12 T19,18 T19,20" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="0.7"/>
-        <path d="M17.5,0 Q18,4 17.5,8 T17.5,16" stroke="${t.accent}" stroke-width="0.4" fill="none" opacity="0.5"/>`;
+        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="${t.accentLight}" opacity="0.6"/>
+        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
+        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
+        <circle cx="18.5" cy="3" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
+        <circle cx="19" cy="10" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
+        <circle cx="18.5" cy="17" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
     }
     case 'rock': {
-      // 石头裂纹：每边 2-3 个小碎裂纹
+      // 碎石：3-4 个大块（3-5 单位宽）+ 黑色边
       if (side === 'top') {
         return `
-          <path d="M3,2 L3,0.5 M8,2 L8.5,0.5 M14,2 L13.5,0.5 M17,2 L17,0.5" stroke="${t.accentDark}" stroke-width="0.4" fill="none" opacity="0.7"/>
-          <path d="M5,2 L5.5,0.8 M11,2 L10.5,0.8 M16,2 L16.5,0.8" stroke="${t.accentDark}" stroke-width="0.3" fill="none" opacity="0.6"/>`;
+          <polygon points="0,4 3,0 5,1 6,3 4,5 1,5" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <polygon points="6,4 9,0 12,1 13,3 11,5 7,5" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <polygon points="13,4 16,0 18,1 19,3 17,5 14,5" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <path d="M3,1 L4,0.5 M9,1 L10,0.5 M16,1 L17,0.5" stroke="${t.accentDark}" stroke-width="1" fill="none" opacity="0.8"/>`;
       }
       if (side === 'bottom') {
         return `
-          <path d="M3,18 L3,19.5 M8,18 L8.5,19.5 M14,18 L13.5,19.5 M17,18 L17,19.5" stroke="${t.accentDark}" stroke-width="0.4" fill="none" opacity="0.7"/>
-          <path d="M5,18 L5.5,19.2 M11,18 L10.5,19.2 M16,18 L16.5,19.2" stroke="${t.accentDark}" stroke-width="0.3" fill="none" opacity="0.6"/>`;
+          <polygon points="0,16 3,20 5,19 6,17 4,15 1,15" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <polygon points="6,16 9,20 12,19 13,17 11,15 7,15" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <polygon points="13,16 16,20 18,19 19,17 17,15 14,15" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <path d="M3,19 L4,19.5 M9,19 L10,19.5 M16,19 L17,19.5" stroke="${t.accentDark}" stroke-width="1" fill="none" opacity="0.8"/>`;
       }
       if (side === 'left') {
         return `
-          <path d="M2,3 L0.5,3 M2,8 L0.5,8.5 M2,14 L0.5,13.5 M2,17 L0.5,17" stroke="${t.accentDark}" stroke-width="0.4" fill="none" opacity="0.7"/>
-          <path d="M2,5 L0.8,5.5 M2,11 L0.8,10.5 M2,16 L0.8,16.5" stroke="${t.accentDark}" stroke-width="0.3" fill="none" opacity="0.6"/>`;
+          <polygon points="4,0 0,3 1,5 3,6 5,4 5,1" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <polygon points="4,6 0,9 1,12 3,13 5,11 5,7" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <polygon points="4,13 0,16 1,18 3,19 5,17 5,14" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+          <path d="M1,3 L0.5,4 M1,9 L0.5,10 M1,16 L0.5,17" stroke="${t.accentDark}" stroke-width="1" fill="none" opacity="0.8"/>`;
       }
       // right
       return `
-        <path d="M18,3 L19.5,3 M18,8 L19.5,8.5 M18,14 L19.5,13.5 M18,17 L19.5,17" stroke="${t.accentDark}" stroke-width="0.4" fill="none" opacity="0.7"/>
-        <path d="M18,5 L19.2,5.5 M18,11 L19.2,10.5 M18,16 L19.2,16.5" stroke="${t.accentDark}" stroke-width="0.3" fill="none" opacity="0.6"/>`;
+        <polygon points="16,0 20,3 19,5 17,6 15,4 15,1" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+        <polygon points="16,6 20,9 19,12 17,13 15,11 15,7" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+        <polygon points="16,13 20,16 19,18 17,19 15,17 15,14" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="1" opacity="0.95"/>
+        <path d="M19,3 L19.5,4 M19,9 L19.5,10 M19,16 L19.5,17" stroke="${t.accentDark}" stroke-width="1" fill="none" opacity="0.8"/>`;
     }
   }
   return '';
@@ -200,78 +244,64 @@ function edgeFeather(t, side) {
 // ============================================================
 // Corner feathering（4 角）
 // 8x8 角贴片，2 种 variant (convex 凸出 / concave 凹入)
-// 用 4 角方向 (tl/tr/bl/br) 区分
+// 关键：8x8 viewBox 直接渲染到 8x8 像素，1:1 映射，所有元素 1-3 单位都可见
 // ============================================================
 function cornerFeather(t, corner, variant) {
   // corner: 'tl' | 'tr' | 'bl' | 'br'
   // variant: 'convex' | 'concave'
-  // 输出：8x8 SVG，仅含角点贴片本体（不含 cell 底色）
-  const opacity = variant === 'convex' ? 0.9 : 0.85;
   switch (t.id) {
     case 'grass': {
-      // 草尖
       if (variant === 'convex') {
-        // 凸角：中心 cell 草地向角点外延伸
-        if (corner === 'tl') return `<path d="M6,6 L4,4 M6,6 L2,2 M6,6 L0,4 M6,6 L0,6" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<path d="M2,6 L4,4 M2,6 L6,2 M2,6 L8,4 M2,6 L8,6" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<path d="M6,2 L4,4 M6,2 L2,6 M6,2 L0,4 M6,2 L0,2" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="${opacity}"/>`;
-        // br
-        return `<path d="M2,2 L4,4 M2,2 L6,6 M2,2 L8,4 M2,2 L8,2" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="${opacity}"/>`;
+        // 凸角：草丛向对角方向延伸
+        if (corner === 'tl') return `<polygon points="0,4 4,0 5,5" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M1,5 L2,2 L3,5 M2,2 L3,1 L4,2" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        if (corner === 'tr') return `<polygon points="8,4 4,0 3,5" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M7,5 L6,2 L5,5 M6,2 L5,1 L4,2" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        if (corner === 'bl') return `<polygon points="0,4 4,8 5,3" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M1,3 L2,6 L3,3 M2,6 L3,7 L4,6" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        return `<polygon points="8,4 4,8 3,3" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M7,3 L6,6 L5,3 M6,6 L5,7 L4,6" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
       } else {
-        // 凹角：补一个小草尖填角
-        if (corner === 'tl') return `<circle cx="2" cy="2" r="0.8" fill="${t.accentLight}" opacity="${opacity}"/><path d="M2,2 L0,0" stroke="${t.accent}" stroke-width="0.5" stroke-linecap="round" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<circle cx="6" cy="2" r="0.8" fill="${t.accentLight}" opacity="${opacity}"/><path d="M6,2 L8,0" stroke="${t.accent}" stroke-width="0.5" stroke-linecap="round" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<circle cx="2" cy="6" r="0.8" fill="${t.accentLight}" opacity="${opacity}"/><path d="M2,6 L0,8" stroke="${t.accent}" stroke-width="0.5" stroke-linecap="round" opacity="${opacity}"/>`;
-        // br
-        return `<circle cx="6" cy="6" r="0.8" fill="${t.accentLight}" opacity="${opacity}"/><path d="M6,6 L8,8" stroke="${t.accent}" stroke-width="0.5" stroke-linecap="round" opacity="${opacity}"/>`;
+        // 凹角：填一个小草簇
+        if (corner === 'tl') return `<circle cx="2" cy="2" r="2" fill="${t.accent}" opacity="0.9"/><path d="M1,2 L1,0 M2,2 L2,0 M3,2 L3,0" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        if (corner === 'tr') return `<circle cx="6" cy="2" r="2" fill="${t.accent}" opacity="0.9"/><path d="M5,2 L5,0 M6,2 L6,0 M7,2 L7,0" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        if (corner === 'bl') return `<circle cx="2" cy="6" r="2" fill="${t.accent}" opacity="0.9"/><path d="M1,6 L1,8 M2,6 L2,8 M3,6 L3,8" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        return `<circle cx="6" cy="6" r="2" fill="${t.accent}" opacity="0.9"/><path d="M5,6 L5,8 M6,6 L6,8 M7,6 L7,8" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
       }
     }
     case 'sand': {
-      // 沙粒
       if (variant === 'convex') {
-        if (corner === 'tl') return `<circle cx="1" cy="1" r="0.5" fill="${t.accent}" opacity="${opacity}"/><circle cx="3" cy="0.5" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/><circle cx="0.5" cy="3" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/>`;
-        if (corner === 'tr') return `<circle cx="7" cy="1" r="0.5" fill="${t.accent}" opacity="${opacity}"/><circle cx="5" cy="0.5" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/><circle cx="7.5" cy="3" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/>`;
-        if (corner === 'bl') return `<circle cx="1" cy="7" r="0.5" fill="${t.accent}" opacity="${opacity}"/><circle cx="3" cy="7.5" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/><circle cx="0.5" cy="5" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/>`;
-        // br
-        return `<circle cx="7" cy="7" r="0.5" fill="${t.accent}" opacity="${opacity}"/><circle cx="5" cy="7.5" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/><circle cx="7.5" cy="5" r="0.4" fill="${t.accent}" opacity="${opacity * 0.8}"/>`;
+        if (corner === 'tl') return `<circle cx="1.5" cy="1.5" r="1.5" fill="${t.accent}" opacity="0.9"/><circle cx="3.5" cy="0.5" r="1" fill="${t.accentLight}" opacity="0.8"/><circle cx="0.5" cy="3.5" r="1" fill="${t.accentLight}" opacity="0.8"/>`;
+        if (corner === 'tr') return `<circle cx="6.5" cy="1.5" r="1.5" fill="${t.accent}" opacity="0.9"/><circle cx="4.5" cy="0.5" r="1" fill="${t.accentLight}" opacity="0.8"/><circle cx="7.5" cy="3.5" r="1" fill="${t.accentLight}" opacity="0.8"/>`;
+        if (corner === 'bl') return `<circle cx="1.5" cy="6.5" r="1.5" fill="${t.accent}" opacity="0.9"/><circle cx="3.5" cy="7.5" r="1" fill="${t.accentLight}" opacity="0.8"/><circle cx="0.5" cy="4.5" r="1" fill="${t.accentLight}" opacity="0.8"/>`;
+        return `<circle cx="6.5" cy="6.5" r="1.5" fill="${t.accent}" opacity="0.9"/><circle cx="4.5" cy="7.5" r="1" fill="${t.accentLight}" opacity="0.8"/><circle cx="7.5" cy="4.5" r="1" fill="${t.accentLight}" opacity="0.8"/>`;
       } else {
-        if (corner === 'tl') return `<circle cx="1" cy="1" r="0.7" fill="${t.accentLight}" opacity="${opacity}"/><circle cx="2.5" cy="0.5" r="0.3" fill="${t.accent}" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<circle cx="7" cy="1" r="0.7" fill="${t.accentLight}" opacity="${opacity}"/><circle cx="5.5" cy="0.5" r="0.3" fill="${t.accent}" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<circle cx="1" cy="7" r="0.7" fill="${t.accentLight}" opacity="${opacity}"/><circle cx="2.5" cy="7.5" r="0.3" fill="${t.accent}" opacity="${opacity}"/>`;
-        // br
-        return `<circle cx="7" cy="7" r="0.7" fill="${t.accentLight}" opacity="${opacity}"/><circle cx="5.5" cy="7.5" r="0.3" fill="${t.accent}" opacity="${opacity}"/>`;
+        if (corner === 'tl') return `<circle cx="2" cy="2" r="2.5" fill="${t.accent}" opacity="0.95"/><circle cx="0.5" cy="0.5" r="1" fill="${t.accentLight}" opacity="0.9"/>`;
+        if (corner === 'tr') return `<circle cx="6" cy="2" r="2.5" fill="${t.accent}" opacity="0.95"/><circle cx="7.5" cy="0.5" r="1" fill="${t.accentLight}" opacity="0.9"/>`;
+        if (corner === 'bl') return `<circle cx="2" cy="6" r="2.5" fill="${t.accent}" opacity="0.95"/><circle cx="0.5" cy="7.5" r="1" fill="${t.accentLight}" opacity="0.9"/>`;
+        return `<circle cx="6" cy="6" r="2.5" fill="${t.accent}" opacity="0.95"/><circle cx="7.5" cy="7.5" r="1" fill="${t.accentLight}" opacity="0.9"/>`;
       }
     }
     case 'water': {
-      // 浪花
       if (variant === 'convex') {
-        if (corner === 'tl') return `<path d="M0,4 Q2,2 4,4 M0,2 Q3,0 6,2" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<path d="M8,4 Q6,2 4,4 M8,2 Q5,0 2,2" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<path d="M0,4 Q2,6 4,4 M0,6 Q3,8 6,6" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="${opacity}"/>`;
-        // br
-        return `<path d="M8,4 Q6,6 4,4 M8,6 Q5,8 2,6" stroke="${t.accentLight}" stroke-width="0.5" fill="none" opacity="${opacity}"/>`;
+        if (corner === 'tl') return `<path d="M0,5 Q2,3 4,5 Q2,1 0,3" fill="${t.accentLight}" opacity="0.85"/><path d="M0,3 Q3,1 5,3" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
+        if (corner === 'tr') return `<path d="M8,5 Q6,3 4,5 Q6,1 8,3" fill="${t.accentLight}" opacity="0.85"/><path d="M8,3 Q5,1 3,3" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
+        if (corner === 'bl') return `<path d="M0,3 Q2,5 4,3 Q2,7 0,5" fill="${t.accentLight}" opacity="0.85"/><path d="M0,5 Q3,7 5,5" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
+        return `<path d="M8,3 Q6,5 4,3 Q6,7 8,5" fill="${t.accentLight}" opacity="0.85"/><path d="M8,5 Q5,7 3,5" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
       } else {
-        if (corner === 'tl') return `<path d="M0,2 Q2,0 4,2 M0,4 Q2,2 4,4" stroke="${t.accentLight}" stroke-width="0.4" fill="none" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<path d="M8,2 Q6,0 4,2 M8,4 Q6,2 4,4" stroke="${t.accentLight}" stroke-width="0.4" fill="none" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<path d="M0,6 Q2,8 4,6 M0,4 Q2,6 4,4" stroke="${t.accentLight}" stroke-width="0.4" fill="none" opacity="${opacity}"/>`;
-        // br
-        return `<path d="M8,6 Q6,8 4,6 M8,4 Q6,6 4,4" stroke="${t.accentLight}" stroke-width="0.4" fill="none" opacity="${opacity}"/>`;
+        if (corner === 'tl') return `<path d="M0,4 Q2,2 4,4 M0,2 Q3,0 5,2" stroke="${t.accentLight}" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M0,2 Q2,0 4,2" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
+        if (corner === 'tr') return `<path d="M8,4 Q6,2 4,4 M8,2 Q5,0 3,2" stroke="${t.accentLight}" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M8,2 Q6,0 4,2" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
+        if (corner === 'bl') return `<path d="M0,4 Q2,6 4,4 M0,6 Q3,8 5,6" stroke="${t.accentLight}" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M0,6 Q2,8 4,6" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
+        return `<path d="M8,4 Q6,6 4,4 M8,6 Q5,8 3,6" stroke="${t.accentLight}" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M8,6 Q6,8 4,6" stroke="${t.accent}" stroke-width="1" fill="none" opacity="0.7"/>`;
       }
     }
     case 'rock': {
-      // 碎石
       if (variant === 'convex') {
-        if (corner === 'tl') return `<polygon points="0,4 3,1 5,3 4,5 1,5" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<polygon points="8,4 5,1 3,3 4,5 7,5" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<polygon points="0,4 3,7 5,5 4,3 1,3" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
-        // br
-        return `<polygon points="8,4 5,7 3,5 4,3 7,3" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
+        if (corner === 'tl') return `<polygon points="0,4 3,1 5,3 4,5 1,5" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/>`;
+        if (corner === 'tr') return `<polygon points="8,4 5,1 3,3 4,5 7,5" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/>`;
+        if (corner === 'bl') return `<polygon points="0,4 3,7 5,5 4,3 1,3" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/>`;
+        return `<polygon points="8,4 5,7 3,5 4,3 7,3" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/>`;
       } else {
-        if (corner === 'tl') return `<polygon points="0,3 2,0 4,2 3,4 1,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
-        if (corner === 'tr') return `<polygon points="8,3 6,0 4,2 5,4 7,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
-        if (corner === 'bl') return `<polygon points="0,5 2,8 4,6 3,4 1,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
-        // br
-        return `<polygon points="8,5 6,8 4,6 5,4 7,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.3" opacity="${opacity}"/>`;
+        if (corner === 'tl') return `<polygon points="0,3 3,0 5,2 4,4 1,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/><path d="M2,2 L2,1 M3,2 L3,0.5" stroke="${t.accentDark}" stroke-width="0.6" fill="none"/>`;
+        if (corner === 'tr') return `<polygon points="8,3 5,0 3,2 4,4 7,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/><path d="M6,2 L6,1 M5,2 L5,0.5" stroke="${t.accentDark}" stroke-width="0.6" fill="none"/>`;
+        if (corner === 'bl') return `<polygon points="0,5 3,8 5,6 4,4 1,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/><path d="M2,6 L2,7 M3,6 L3,7.5" stroke="${t.accentDark}" stroke-width="0.6" fill="none"/>`;
+        return `<polygon points="8,5 5,8 3,6 4,4 7,4" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.8" opacity="0.95"/><path d="M6,6 L6,7 M5,6 L5,7.5" stroke="${t.accentDark}" stroke-width="0.6" fill="none"/>`;
       }
     }
   }

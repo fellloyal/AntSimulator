@@ -1,30 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a8a"/>
-        <path d="M6,10 Q10,9 14,10" stroke="#a8c0e0" stroke-width="0.3" fill="none" opacity="0.5"/>
-          <rect x="0" y="0" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
-          <path d="M0,5 L20,5 L20,9 L0,9 Z" fill="#a8c0e0" opacity="0.85"/>
-          <path d="M0,3 Q4,0 8,3 T16,3 T20,3" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
-          <path d="M0,7 Q5,5 10,7 T20,7" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
-          <circle cx="3" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
-          <circle cx="10" cy="1.5" r="0.8" fill="#d8e8f8" opacity="1"/>
-          <circle cx="17" cy="2" r="1" fill="#d8e8f8" opacity="1"/>
-          <rect x="0" y="16" width="20" height="4" fill="#d8e8f8" opacity="0.7"/>
-          <path d="M0,11 L20,11 L20,15 L0,15 Z" fill="#a8c0e0" opacity="0.85"/>
-          <path d="M0,17 Q4,20 8,17 T16,17 T20,17" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
-          <path d="M0,13 Q5,15 10,13 T20,13" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
-          <circle cx="3" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
-          <circle cx="10" cy="18.5" r="0.8" fill="#d8e8f8" opacity="1"/>
-          <circle cx="17" cy="18" r="1" fill="#d8e8f8" opacity="1"/>
-          <rect x="0" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
-          <path d="M5,0 L9,0 L9,20 L5,20 Z" fill="#a8c0e0" opacity="0.85"/>
-          <path d="M3,0 Q0,4 3,8 T3,16 T3,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
-          <path d="M7,0 Q5,5 7,10 T7,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
-          <circle cx="2" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
-          <circle cx="1.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
-          <circle cx="2" cy="17" r="1" fill="#d8e8f8" opacity="1"/>
-        <rect x="16" y="0" width="4" height="20" fill="#d8e8f8" opacity="0.7"/>
-        <path d="M11,0 L15,0 L15,20 L11,20 Z" fill="#a8c0e0" opacity="0.85"/>
-        <path d="M17,0 Q20,4 17,8 T17,16 T17,20" stroke="#d8e8f8" stroke-width="3" fill="none" opacity="1" stroke-linecap="round"/>
-        <path d="M13,0 Q15,5 13,10 T13,20" stroke="#d8e8f8" stroke-width="2" fill="none" opacity="0.95" stroke-linecap="round"/>
-        <circle cx="18" cy="3" r="1" fill="#d8e8f8" opacity="1"/>
-        <circle cx="18.5" cy="10" r="0.8" fill="#d8e8f8" opacity="1"/>
-        <circle cx="18" cy="17" r="1" fill="#d8e8f8" opacity="1"/></svg>
+        <path d="M0,10 Q5,8 10,10 T20,10" stroke="#7a9aca" stroke-width="0.3" fill="none" opacity="0.5"/>
+          <path d="M0,2 L20,2 L20,4 L0,4 Z" fill="#a8c0e0" opacity="0.5"/>
+          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>
+          <path d="M0,16 L20,16 L20,18 L0,18 Z" fill="#a8c0e0" opacity="0.5"/>
+          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>
+          <path d="M2,0 L4,0 L4,20 L2,20 Z" fill="#a8c0e0" opacity="0.5"/>
+          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>
+        <path d="M16,0 L18,0 L18,20 L16,20 Z" fill="#a8c0e0" opacity="0.5"/>
+        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="#a8c0e0" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/></svg>

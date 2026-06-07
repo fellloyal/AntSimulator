@@ -839,74 +839,74 @@ export const TERRAIN_AUTO_EDGE: Record<TerrainType, Record<number, string>> = {
 export const TERRAIN_AUTO_CORNER: Record<TerrainType, Record<Corner, Record<CornerVariant, string>>> = {
   0: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 4,0 5,5" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M1,5 L2,2 L3,5 M2,2 L3,1 L4,2" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="2" fill="#5a8a35" opacity="0.9"/><path d="M1,2 L1,0 M2,2 L2,0 M3,2 L3,0" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M2,5 L3,2 M3,2 L4,1 M2,5 L4,1" stroke="#6a9a40" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="2.5" cy="1.5" r="0.3" fill="#6a9a40" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="0.4" fill="#6a9a40" opacity="0.95"/><circle cx="3" cy="3" r="0.3" fill="#5a8a35" opacity="0.85"/><path d="M1.5,1.5 L2.5,2.5" stroke="#6a9a40" stroke-width="0.4" fill="none"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 4,0 3,5" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M7,5 L6,2 L5,5 M6,2 L5,1 L4,2" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="2" fill="#5a8a35" opacity="0.9"/><path d="M5,2 L5,0 M6,2 L6,0 M7,2 L7,0" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M6,5 L5,2 M5,2 L4,1 M6,5 L4,1" stroke="#6a9a40" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="5.5" cy="1.5" r="0.3" fill="#6a9a40" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="0.4" fill="#6a9a40" opacity="0.95"/><circle cx="5" cy="3" r="0.3" fill="#5a8a35" opacity="0.85"/><path d="M6.5,1.5 L5.5,2.5" stroke="#6a9a40" stroke-width="0.4" fill="none"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 4,8 5,3" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M1,3 L2,6 L3,3 M2,6 L3,7 L4,6" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="2" fill="#5a8a35" opacity="0.9"/><path d="M1,6 L1,8 M2,6 L2,8 M3,6 L3,8" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M2,3 L3,6 M3,6 L4,7 M2,3 L4,7" stroke="#6a9a40" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="2.5" cy="6.5" r="0.3" fill="#6a9a40" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="0.4" fill="#6a9a40" opacity="0.95"/><circle cx="3" cy="5" r="0.3" fill="#5a8a35" opacity="0.85"/><path d="M1.5,6.5 L2.5,5.5" stroke="#6a9a40" stroke-width="0.4" fill="none"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 4,8 3,3" fill="#5a8a35" stroke="#6a9a40" stroke-width="0.5"/><path d="M7,3 L6,6 L5,3 M6,6 L5,7 L4,6" stroke="#6a9a40" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="2" fill="#5a8a35" opacity="0.9"/><path d="M5,6 L5,8 M6,6 L6,8 M7,6 L7,8" stroke="#6a9a40" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M6,3 L5,6 M5,6 L4,7 M6,3 L4,7" stroke="#6a9a40" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="5.5" cy="6.5" r="0.3" fill="#6a9a40" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="0.4" fill="#6a9a40" opacity="0.95"/><circle cx="5" cy="5" r="0.3" fill="#5a8a35" opacity="0.85"/><path d="M6.5,6.5 L5.5,5.5" stroke="#6a9a40" stroke-width="0.4" fill="none"/></svg>`,
     },
   },
   1: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="1.5" cy="1.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="3.5" cy="0.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="0.5" cy="3.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="0.5" cy="0.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="1.5" cy="1.5" r="0.35" fill="#b8965a" opacity="0.9"/><circle cx="3" cy="2.8" r="0.3" fill="#a8854a" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="0.4" fill="#a8854a" opacity="0.9"/><path d="M1,3.5 Q2,3 3,3.5" stroke="#b8965a" stroke-width="0.4" fill="none"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6.5" cy="1.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="4.5" cy="0.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="7.5" cy="3.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="7.5" cy="0.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6.5" cy="1.5" r="0.35" fill="#b8965a" opacity="0.9"/><circle cx="5" cy="2.8" r="0.3" fill="#a8854a" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="0.4" fill="#a8854a" opacity="0.9"/><path d="M5,3.5 Q6,3 7,3.5" stroke="#b8965a" stroke-width="0.4" fill="none"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="1.5" cy="6.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="3.5" cy="7.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="0.5" cy="4.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="0.5" cy="7.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="1.5" cy="6.5" r="0.35" fill="#b8965a" opacity="0.9"/><circle cx="3" cy="5.2" r="0.3" fill="#a8854a" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="0.4" fill="#a8854a" opacity="0.9"/><path d="M1,4.5 Q2,5 3,4.5" stroke="#b8965a" stroke-width="0.4" fill="none"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6.5" cy="6.5" r="1.5" fill="#a8854a" opacity="0.9"/><circle cx="4.5" cy="7.5" r="1" fill="#b8965a" opacity="0.8"/><circle cx="7.5" cy="4.5" r="1" fill="#b8965a" opacity="0.8"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="2.5" fill="#a8854a" opacity="0.95"/><circle cx="7.5" cy="7.5" r="1" fill="#b8965a" opacity="0.9"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6.5" cy="6.5" r="0.35" fill="#b8965a" opacity="0.9"/><circle cx="5" cy="5.2" r="0.3" fill="#a8854a" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="0.4" fill="#a8854a" opacity="0.9"/><path d="M5,4.5 Q6,5 7,4.5" stroke="#b8965a" stroke-width="0.4" fill="none"/></svg>`,
     },
   },
   2: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,5 Q2,3 4,5 Q2,1 0,3" fill="#a8c0e0" opacity="0.85"/><path d="M0,3 Q3,1 5,3" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,4 Q2,2 4,4 M0,2 Q3,0 5,2" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M0,2 Q2,0 4,2" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M1,3 Q2.5,1.5 4,3" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="3.5" cy="1.5" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M1,4 Q2.5,2.5 4,4" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/><circle cx="2" cy="2" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,5 Q6,3 4,5 Q6,1 8,3" fill="#a8c0e0" opacity="0.85"/><path d="M8,3 Q5,1 3,3" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,4 Q6,2 4,4 M8,2 Q5,0 3,2" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M8,2 Q6,0 4,2" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M7,3 Q5.5,1.5 4,3" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="4.5" cy="1.5" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M7,4 Q5.5,2.5 4,4" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/><circle cx="6" cy="2" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,3 Q2,5 4,3 Q2,7 0,5" fill="#a8c0e0" opacity="0.85"/><path d="M0,5 Q3,7 5,5" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M0,4 Q2,6 4,4 M0,6 Q3,8 5,6" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M0,6 Q2,8 4,6" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M1,5 Q2.5,6.5 4,5" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="3.5" cy="6.5" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M1,4 Q2.5,5.5 4,4" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/><circle cx="2" cy="6" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,3 Q6,5 4,3 Q6,7 8,5" fill="#a8c0e0" opacity="0.85"/><path d="M8,5 Q5,7 3,5" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M8,4 Q6,6 4,4 M8,6 Q5,8 3,6" stroke="#a8c0e0" stroke-width="1.5" fill="none" opacity="0.9"/><path d="M8,6 Q6,8 4,6" stroke="#7a9aca" stroke-width="1" fill="none" opacity="0.7"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M7,5 Q5.5,6.5 4,5" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="4.5" cy="6.5" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M7,4 Q5.5,5.5 4,4" stroke="#a8c0e0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.9"/><circle cx="6" cy="6" r="0.3" fill="#a8c0e0" opacity="0.9"/></svg>`,
     },
   },
   3: {
     tl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 3,1 5,3 4,5 1,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,3 3,0 5,2 4,4 1,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M2,2 L2,1 M3,2 L3,0.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M1,4 L3,2 M3,2 L4,1" stroke="#3a3a52" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.95"/><path d="M0.5,2.5 L1.5,3.5" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="3.5" cy="3" r="0.3" fill="#7a7a82" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="2" r="0.4" fill="#3a3a52" opacity="0.9"/><path d="M1,1 L1.8,1.8" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="3.5" cy="3.5" r="0.25" fill="#7a7a82" opacity="0.7"/></svg>`,
     },
     tr: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 5,1 3,3 4,5 7,5" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,3 5,0 3,2 4,4 7,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M6,2 L6,1 M5,2 L5,0.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M7,4 L5,2 M5,2 L4,1" stroke="#3a3a52" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.95"/><path d="M7.5,2.5 L6.5,3.5" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="4.5" cy="3" r="0.3" fill="#7a7a82" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="2" r="0.4" fill="#3a3a52" opacity="0.9"/><path d="M7,1 L6.2,1.8" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="4.5" cy="3.5" r="0.25" fill="#7a7a82" opacity="0.7"/></svg>`,
     },
     bl: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,4 3,7 5,5 4,3 1,3" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="0,5 3,8 5,6 4,4 1,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M2,6 L2,7 M3,6 L3,7.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M1,4 L3,6 M3,6 L4,7" stroke="#3a3a52" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.95"/><path d="M0.5,5.5 L1.5,4.5" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="3.5" cy="5" r="0.3" fill="#7a7a82" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="2" cy="6" r="0.4" fill="#3a3a52" opacity="0.9"/><path d="M1,7 L1.8,6.2" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="3.5" cy="4.5" r="0.25" fill="#7a7a82" opacity="0.7"/></svg>`,
     },
     br: {
-      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,4 5,7 3,5 4,3 7,3" fill="#8a8a92" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/></svg>`,
-      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><polygon points="8,5 5,8 3,6 4,4 7,4" fill="#7a7a82" stroke="#3a3a52" stroke-width="0.8" opacity="0.95"/><path d="M6,6 L6,7 M5,6 L5,7.5" stroke="#3a3a52" stroke-width="0.6" fill="none"/></svg>`,
+      convex: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><path d="M7,4 L5,6 M5,6 L4,7" stroke="#3a3a52" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.95"/><path d="M7.5,5.5 L6.5,4.5" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="4.5" cy="5" r="0.3" fill="#7a7a82" opacity="0.85"/></svg>`,
+      concave: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><circle cx="6" cy="6" r="0.4" fill="#3a3a52" opacity="0.9"/><path d="M7,7 L6.2,6.2" stroke="#3a3a52" stroke-width="0.4" fill="none"/><circle cx="4.5" cy="4.5" r="0.25" fill="#7a7a82" opacity="0.7"/></svg>`,
     },
   },
 };

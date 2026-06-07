@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#3a5a20"/>
+        <path d="M7,7 L8,9 M11,7 L12,9 M9,7 L10,10 M13,7 L13,9" stroke="#5a8a35" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="8" cy="11" r="0.3" fill="#9ad85a" opacity="0.3"/>
+        <circle cx="12" cy="11" r="0.2" fill="#9ad85a" opacity="0.3"/>
+          <rect x="0" y="0" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,9 Q2,0 4,9 Q6,0 8,9 Q10,0 12,9 Q14,0 16,9 Q18,0 20,9 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,9 Q2.5,1 3,9 M7,9 Q7.5,1 8,9 M12,9 Q12.5,1 13,9 M17,9 Q17.5,1 18,9" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,5 L1,2 M6,5 L6,2 M11,5 L11,2 M16,5 L16,2" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="11" width="20" height="9" fill="#7ab045" opacity="0.7"/>
+          <path d="M0,11 Q2,20 4,11 Q6,20 8,11 Q10,20 12,11 Q14,20 16,11 Q18,20 20,11 L20,10 L0,10 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M2,11 Q2.5,19 3,11 M7,11 Q7.5,19 8,11 M12,11 Q12.5,19 13,11 M17,11 Q17.5,19 18,11" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M1,15 L1,18 M6,15 L6,18 M11,15 L11,18 M16,15 L16,18" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <rect x="0" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+          <path d="M9,0 Q0,2 9,4 Q0,6 9,8 Q0,10 9,12 Q0,14 9,16 Q0,18 9,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+          <path d="M9,2 Q1,2.5 9,3 M9,7 Q1,7.5 9,8 M9,12 Q1,12.5 9,13 M9,17 Q1,17.5 9,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+          <path d="M5,1 L2,1 M5,6 L2,6 M5,11 L2,11 M5,16 L2,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="11" y="0" width="9" height="20" fill="#7ab045" opacity="0.7"/>
+        <path d="M11,0 Q20,2 11,4 Q20,6 11,8 Q20,10 11,12 Q20,14 11,16 Q20,18 11,20 L10,20 L10,0 Z" fill="#7ab045" opacity="0.95"/>
+        <path d="M11,2 Q19,2.5 11,3 M11,7 Q19,7.5 11,8 M11,12 Q19,12.5 11,13 M11,17 Q19,17.5 11,18" stroke="#9ad85a" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="1"/>
+        <path d="M15,1 L18,1 M15,6 L18,6 M15,11 L18,11 M15,16 L18,16" stroke="#9ad85a" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>

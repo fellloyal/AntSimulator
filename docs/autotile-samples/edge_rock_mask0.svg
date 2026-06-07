@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="#6a6a72"/>
+        <polygon points="8,7 11,6 12,9 10,11 8,10" fill="#b0b0b8" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,11 13,10 13,12 12,12" fill="#9a9aa2" stroke="#3a3a52" stroke-width="0.2" opacity="0.7"/>
+          <polygon points="0,8 3,0 7,1 8,3 6,9 1,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 11,0 15,1 16,3 14,9 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,8 19,0 20,1 20,3 18,9 17,9" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,2 L4,1 M11,2 L12,1 M18,2 L19,1" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,7 L20,7" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="0,12 3,20 7,19 8,17 6,11 1,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,12 11,20 15,19 16,17 14,11 9,11" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="16,12 19,20 20,19 20,17 18,11 17,11" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M3,18 L4,19 M11,18 L12,19 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M0,13 L20,13" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+          <polygon points="8,0 0,3 1,7 3,8 9,6 9,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,8 0,11 1,15 3,16 9,14 9,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <polygon points="8,16 0,19 1,20 3,20 9,18 9,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+          <path d="M2,3 L1,4 M2,11 L1,12 M2,18 L1,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+          <path d="M7,0 L7,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <polygon points="12,0 20,3 19,7 17,8 11,6 11,1" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,8 20,11 19,15 17,16 11,14 11,9" fill="#9a9aa2" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <polygon points="12,16 20,19 19,20 17,20 11,18 11,17" fill="#b0b0b8" stroke="#3a3a52" stroke-width="1.2" opacity="1"/>
+        <path d="M18,3 L19,4 M18,11 L19,12 M18,18 L19,19" stroke="#3a3a52" stroke-width="0.8" fill="none" opacity="0.9"/>
+        <path d="M13,0 L13,20" stroke="#3a3a52" stroke-width="0.5" fill="none" opacity="0.4"/></svg>

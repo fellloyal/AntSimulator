@@ -57,7 +57,7 @@ export default function MapEditor() {
   const editorGridData = useStore((s) => s.editorGridData);
   const setEditorMap = useStore((s) => s.setEditorMap);
 
-  const [tool, setTool] = useState<EditorTool>('wall');
+  const [tool, setTool] = useState<EditorTool>('terrain');
   const [terrainType, setTerrainType] = useState<TerrainType>(0);
   const [obstacleType, setObstacleType] = useState<ObstacleType>(1);
   const [foodType, setFoodType] = useState<FoodType>(0);
@@ -165,12 +165,16 @@ export default function MapEditor() {
     const vp = viewportRef.current;
 
     ctx.clearRect(0, 0, cw, ch);
-    ctx.fillStyle = '#111111';
+    ctx.fillStyle = '#e8ece8';
     ctx.fillRect(0, 0, cw, ch);
 
     ctx.save();
     ctx.translate(vp.offsetX, vp.offsetY);
     ctx.scale(vp.zoom, vp.zoom);
+
+    // 地图区域底色（与页面背景区分）
+    ctx.fillStyle = 'rgba(66, 153, 66, 0.10)';
+    ctx.fillRect(0, 0, editorMapWidth, editorMapHeight);
 
     // Visible range
     const invZoom = 1.0 / vp.zoom;
@@ -282,11 +286,11 @@ export default function MapEditor() {
       }
     }
 
-    // UI美化：地图区域明亮边线（双层：内亮外淡）
+    // UI美化：地图边框（双层：外层柔和光晕 + 内层亮绿实线）
     ctx.strokeStyle = 'rgba(66, 153, 66, 0.35)';
     ctx.lineWidth = 5;
     ctx.strokeRect(0, 0, editorMapWidth, editorMapHeight);
-    ctx.strokeStyle = '#7fe07f';
+    ctx.strokeStyle = '#2a8a2a';
     ctx.lineWidth = 2;
     ctx.strokeRect(0, 0, editorMapWidth, editorMapHeight);
 
@@ -306,8 +310,7 @@ export default function MapEditor() {
     return () => window.removeEventListener('resize', resize);
   }, [render, texturesReady]);
 
-  // 修改地图尺寸后，地图中心应对应页面中心（否则容易找不到地图）
-  // 公式：offsetX = canvasW/2 - mapW/2 * zoom，offsetY 同理
+  // 修改地图尺寸后，自动缩放使整个地图 fit-to-view
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -315,6 +318,11 @@ export default function MapEditor() {
     const ch = canvas.clientHeight;
     if (cw === 0 || ch === 0) return;  // 画布尚未布局
     const vp = viewportRef.current;
+    // 留 40px 边距
+    const padding = 40;
+    const scaleX = (cw - padding * 2) / editorMapWidth;
+    const scaleY = (ch - padding * 2) / editorMapHeight;
+    vp.zoom = Math.min(scaleX, scaleY, 10);
     vp.offsetX = cw / 2 - (editorMapWidth / 2) * vp.zoom;
     vp.offsetY = ch / 2 - (editorMapHeight / 2) * vp.zoom;
     render();
@@ -350,11 +358,7 @@ export default function MapEditor() {
         const gy = cy + dy;
         if (gx < 0 || gx >= gridW || gy < 0 || gy >= gridH) continue;
         const idx = gy * gridW + gx;
-        if (tool === 'wall') {
-          grid[idx] = 1;
-          obstacleRef.current.set(idx, obstacleType);
-          terrainRef.current.delete(idx);
-        } else if (tool === 'erase') {
+        if (tool === 'erase') {
           grid[idx] = 0;
           terrainRef.current.delete(idx);
           obstacleRef.current.delete(idx);
@@ -499,6 +503,21 @@ export default function MapEditor() {
     vp.zoom = newZoom;
     render();
   }, [render]);
+
+  // Keyboard shortcuts for tool switching
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      switch (e.key.toLowerCase()) {
+        case 'o': setTool('obstacle'); break;
+        case 'f': setTool('food'); break;
+        case 't': setTool('terrain'); break;
+        case 'e': setTool('erase'); break;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Save
   const handleSave = useCallback(async () => {
@@ -645,15 +664,14 @@ export default function MapEditor() {
   }
 
   const tools: { id: EditorTool; icon: React.ReactNode; label: string }[] = [
-    { id: 'wall', icon: <Square size={16} />, label: '墙壁(W)' },
+    { id: 'terrain', icon: <Mountain size={16} />, label: '地形(T)' },
     { id: 'obstacle', icon: <Layers size={16} />, label: '障碍(O)' },
     { id: 'food', icon: <Apple size={16} />, label: '食物(F)' },
-    { id: 'terrain', icon: <Mountain size={16} />, label: '地形(T)' },
     { id: 'erase', icon: <Eraser size={16} />, label: '擦除(E)' },
   ];
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#0a0f0a]">
+    <div className="relative h-screen w-screen overflow-hidden bg-[#f0f4f0]">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full cursor-crosshair"
@@ -669,7 +687,7 @@ export default function MapEditor() {
       <div className="absolute left-4 right-4 top-4 z-10 flex items-center gap-3">
         <button
           onClick={() => setPage('menu')}
-          className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-sm text-[#8a9a8a] transition-colors hover:bg-white/10"
+          className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2 text-base text-[#5a7a5a] transition-colors hover:bg-white/10"
         >
           <ArrowLeft size={16} />
           返回
@@ -679,7 +697,7 @@ export default function MapEditor() {
           type="text"
           value={mapName}
           onChange={(e) => setMapName(e.target.value)}
-          className="rounded-lg bg-white/5 px-3 py-2 text-sm text-[#e0e8e0] outline-none border border-white/10 focus:border-[#429942]/50"
+          className="rounded-lg bg-white/5 px-3 py-2 text-base text-[#1a2e1a] outline-none border border-black/10 focus:border-[#3a8a3a]/50"
           style={{ width: 160 }}
           placeholder="地图名称"
         />
@@ -687,8 +705,8 @@ export default function MapEditor() {
         <div className="flex-1" />
 
         {saveMsg && (
-          <span className="text-sm font-medium px-3 py-1 rounded-lg" style={{
-            color: saveMsg.includes('成功') ? '#429942' : '#ff4944',
+          <span className="text-base font-medium px-3 py-1 rounded-lg" style={{
+            color: saveMsg.includes('成功') ? '#3a8a3a' : '#ff4944',
             background: saveMsg.includes('成功') ? 'rgba(66,153,66,0.1)' : 'rgba(255,73,68,0.1)',
           }}>
             {saveMsg}
@@ -698,7 +716,7 @@ export default function MapEditor() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-colors"
+          className="flex items-center gap-2 rounded-lg px-4 py-2 text-base font-bold transition-colors"
           style={{
             background: saving ? 'rgba(66,153,66,0.3)' : 'var(--accent-green)',
             color: '#000',
@@ -715,7 +733,7 @@ export default function MapEditor() {
           <button
             key={t.id}
             onClick={() => setTool(t.id)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs transition-colors"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-base transition-colors"
             style={{
               background: tool === t.id ? 'var(--accent-green)' : 'transparent',
               color: tool === t.id ? '#000' : 'var(--text-secondary)',
@@ -728,13 +746,13 @@ export default function MapEditor() {
 
         {/* UI美化（task 21）：地形/障碍/食物类型二级选择 */}
         {tool === 'terrain' && (
-          <div className="border-t border-white/5 mt-1 pt-2 px-1 flex flex-col gap-1">
-            <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>地形</div>
+          <div className="border-t border-black/5 mt-1 pt-2 px-1 flex flex-col gap-1">
+            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>地形</div>
             {([[0, '草地', '#4a7a2a'], [1, '沙地', '#c8a878'], [2, '水', '#3a5a8a'], [3, '石头', '#6a6a6a']] as [TerrainType, string, string][]).map(([v, label, color]) => (
               <button
                 key={v}
                 onClick={() => setTerrainType(v)}
-                className="flex items-center gap-1 rounded px-2 py-1 text-[10px] transition-colors"
+                className="flex items-center gap-1 rounded px-2 py-1 text-sm transition-colors"
                 style={{
                   background: terrainType === v ? color : 'transparent',
                   color: terrainType === v ? '#fff' : 'var(--text-secondary)',
@@ -748,13 +766,13 @@ export default function MapEditor() {
         )}
 
         {tool === 'obstacle' && (
-          <div className="border-t border-white/5 mt-1 pt-2 px-1 flex flex-col gap-1">
-            <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>障碍</div>
+          <div className="border-t border-black/5 mt-1 pt-2 px-1 flex flex-col gap-1">
+            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>障碍</div>
             {([1, 2, 3, 4] as ObstacleType[]).map((v) => (
               <button
                 key={v}
                 onClick={() => setObstacleType(v)}
-                className="flex items-center gap-1 rounded px-2 py-1 text-[10px] transition-colors"
+                className="flex items-center gap-1 rounded px-2 py-1 text-sm transition-colors"
                 style={{
                   background: obstacleType === v ? OBSTACLE_COLORS[v] : 'transparent',
                   color: obstacleType === v ? '#fff' : 'var(--text-secondary)',
@@ -768,13 +786,13 @@ export default function MapEditor() {
         )}
 
         {tool === 'food' && (
-          <div className="border-t border-white/5 mt-1 pt-2 px-1 flex flex-col gap-1">
-            <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>食物</div>
+          <div className="border-t border-black/5 mt-1 pt-2 px-1 flex flex-col gap-1">
+            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>食物</div>
             {([0, 1, 2, 3] as FoodType[]).map((v) => (
               <button
                 key={v}
                 onClick={() => setFoodType(v)}
-                className="flex items-center gap-1 rounded px-2 py-1 text-[10px] transition-colors"
+                className="flex items-center gap-1 rounded px-2 py-1 text-sm transition-colors"
                 style={{
                   background: foodType === v ? 'var(--accent-green)' : 'transparent',
                   color: foodType === v ? '#000' : 'var(--text-secondary)',
@@ -784,15 +802,15 @@ export default function MapEditor() {
               </button>
             ))}
             {/* UI美化：食物块大小 NxN（1-4） */}
-            <div className="text-[10px] mt-1" style={{ color: 'var(--text-secondary)' }}>块大小</div>
+            <div className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>块大小</div>
             <div className="grid grid-cols-4 gap-1">
               {[1, 2, 3, 4].map((n) => (
                 <button
                   key={n}
                   onClick={() => setFoodBlockSize(n)}
-                  className="rounded px-1 py-1 text-[10px] transition-colors"
+                  className="rounded px-1 py-1 text-sm transition-colors"
                   style={{
-                    background: foodBlockSize === n ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                    background: foodBlockSize === n ? 'var(--accent-green)' : 'rgba(0,0,0,0.05)',
                     color: foodBlockSize === n ? '#000' : 'var(--text-secondary)',
                   }}
                   title={`每次画 ${n}×${n} 格`}
@@ -804,8 +822,8 @@ export default function MapEditor() {
           </div>
         )}
 
-        <div className="border-t border-white/5 my-1" />
-        <div className="px-2 py-1 text-[10px]" style={{ color: 'var(--text-secondary)' }}>
+        <div className="border-t border-black/5 my-1" />
+        <div className="px-2 py-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
           笔刷
         </div>
         <input
@@ -816,26 +834,26 @@ export default function MapEditor() {
           onChange={(e) => setBrushSize(Number(e.target.value))}
           className="w-full custom-range"
         />
-        <div className="px-2 py-1 text-[10px] leading-tight" style={{ color: 'var(--text-secondary)' }}>
+        <div className="px-2 py-1 text-sm leading-tight" style={{ color: 'var(--text-secondary)' }}>
           按住 Shift 拉水平/竖直直线
         </div>
       </div>
 
       {/* Right: size panel */}
       <div className="absolute right-4 top-20 z-10 glass-panel p-3 w-52 flex flex-col gap-3">
-        <div className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>地图尺寸</div>
+        <div className="text-base font-semibold" style={{ color: 'var(--text-secondary)' }}>地图尺寸</div>
 
         {/* 比例选择 */}
         <div className="flex flex-col gap-1">
-          <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>比例</div>
+          <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>比例</div>
           <div className="grid grid-cols-5 gap-1">
             {RATIOS.map((r) => (
               <button
                 key={r.id}
                 onClick={() => handleRatioChange(r.id)}
-                className="rounded px-1 py-1 text-[10px] transition-colors"
+                className="rounded px-1 py-1 text-sm transition-colors"
                 style={{
-                  background: ratio === r.id ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                  background: ratio === r.id ? 'var(--accent-green)' : 'rgba(0,0,0,0.05)',
                   color: ratio === r.id ? '#000' : 'var(--text-secondary)',
                 }}
                 title={r.id}
@@ -848,30 +866,30 @@ export default function MapEditor() {
 
         {/* 自定义宽高 */}
         <div className="flex flex-col gap-1">
-          <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>自定义（按比例）</div>
+          <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>自定义（按比例）</div>
           <div className="flex items-center gap-1">
-            <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>宽</span>
+            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>宽</span>
             <input
               type="number"
               min={100}
               max={6000}
               value={customW}
               onChange={(e) => handleWidthChange(Math.max(100, Math.min(6000, Number(e.target.value) || 0)))}
-              className="flex-1 rounded bg-white/5 px-2 py-1 text-xs text-[#e0e8e0] outline-none border border-white/10 focus:border-[#429942]/50 w-0"
+              className="flex-1 rounded bg-white/5 px-2 py-1 text-base text-[#1a2e1a] outline-none border border-black/10 focus:border-[#3a8a3a]/50 w-0"
             />
-            <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>高</span>
+            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>高</span>
             <input
               type="number"
               min={100}
               max={6000}
               value={customH}
               onChange={(e) => handleHeightChange(Math.max(100, Math.min(6000, Number(e.target.value) || 0)))}
-              className="flex-1 rounded bg-white/5 px-2 py-1 text-xs text-[#e0e8e0] outline-none border border-white/10 focus:border-[#429942]/50 w-0"
+              className="flex-1 rounded bg-white/5 px-2 py-1 text-base text-[#1a2e1a] outline-none border border-black/10 focus:border-[#3a8a3a]/50 w-0"
             />
           </div>
           <button
             onClick={applyCustomSize}
-            className="rounded-lg py-1 text-xs font-bold transition-colors"
+            className="rounded-lg py-1 text-base font-bold transition-colors"
             style={{
               background: 'var(--accent-green)',
               color: '#000',
@@ -881,14 +899,14 @@ export default function MapEditor() {
           </button>
         </div>
 
-        <div className="border-t border-white/5" />
+        <div className="border-t border-black/5" />
 
         {/* 预设分组 */}
         <div className="flex flex-col gap-2">
-          <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>预设（16:9 / 9:16）</div>
+          <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>预设（16:9 / 9:16）</div>
           {SIZE_PRESETS.map((g) => (
             <div key={g.tier} className="flex flex-col gap-1">
-              <div className="text-[10px] opacity-70" style={{ color: 'var(--text-secondary)' }}>{g.tier}</div>
+              <div className="text-sm opacity-70" style={{ color: 'var(--text-secondary)' }}>{g.tier}</div>
               <div className="grid grid-cols-2 gap-1">
                 {g.items.map((p) => {
                   const active = editorMapWidth === p.w && editorMapHeight === p.h;
@@ -896,9 +914,9 @@ export default function MapEditor() {
                     <button
                       key={p.w + 'x' + p.h}
                       onClick={() => setEditorMap(null, mapName, p.w, p.h)}
-                      className="rounded px-1 py-1 text-[10px] transition-colors"
+                      className="rounded px-1 py-1 text-sm transition-colors"
                       style={{
-                        background: active ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                        background: active ? 'var(--accent-green)' : 'rgba(0,0,0,0.05)',
                         color: active ? '#000' : 'var(--text-secondary)',
                       }}
                     >
@@ -913,8 +931,8 @@ export default function MapEditor() {
       </div>
 
       {/* Keyboard shortcuts */}
-      <div className="absolute bottom-4 left-4 z-10 text-[10px]" style={{ color: 'var(--text-secondary)' }}>
-        Alt+拖拽: 平移 | 滚轮: 缩放 | W: 墙壁 | O: 障碍 | F: 食物 | T: 地形 | E: 擦除
+      <div className="absolute bottom-4 left-4 z-10 text-sm" style={{ color: 'var(--text-secondary)' }}>
+        Alt+拖拽: 平移 | 滚轮: 缩放 | T: 地形 | O: 障碍 | F: 食物 | E: 擦除
       </div>
     </div>
   );

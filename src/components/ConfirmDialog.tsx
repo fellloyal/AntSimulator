@@ -47,7 +47,7 @@ export default function ConfirmDialog({
       onClick={onCancel}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
 
       {/* Dialog */}
       <div
@@ -56,13 +56,13 @@ export default function ConfirmDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <h3
-          className="text-sm font-bold"
+          className="text-base font-bold"
           style={{ color: 'var(--text-primary)' }}
         >
           {title}
         </h3>
         <p
-          className="text-xs leading-relaxed"
+          className="text-sm leading-relaxed"
           style={{ color: 'var(--text-secondary)' }}
         >
           {message}
@@ -70,9 +70,9 @@ export default function ConfirmDialog({
         <div className="flex gap-2 justify-end">
           <button
             onClick={onCancel}
-            className="px-4 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            className="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
             style={{
-              background: 'rgba(255,255,255,0.06)',
+              background: 'rgba(0,0,0,0.06)',
               color: 'var(--text-secondary)',
             }}
           >
@@ -81,7 +81,7 @@ export default function ConfirmDialog({
           <button
             ref={confirmRef}
             onClick={onConfirm}
-            className="px-4 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            className="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
             style={{
               background: variant === 'danger' ? 'var(--accent-red)' : 'var(--accent-green)',
               color: variant === 'danger' ? '#fff' : '#000',

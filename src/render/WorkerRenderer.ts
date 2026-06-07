@@ -136,7 +136,7 @@ export class WorkerRenderer {
     antData: Float32Array | null
   ): void {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = '#111111';
+    ctx.fillStyle = '#e8ece8';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     ctx.save();

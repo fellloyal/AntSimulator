@@ -84,7 +84,7 @@ export default function GameSetup() {
     const vp = viewportRef.current;
 
     ctx.clearRect(0, 0, cw, ch);
-    ctx.fillStyle = '#111111';
+    ctx.fillStyle = '#e8ece8';
     ctx.fillRect(0, 0, cw, ch);
 
     ctx.save();
@@ -116,7 +116,7 @@ export default function GameSetup() {
     }
 
     // Map border
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
     ctx.lineWidth = 1;
     ctx.strokeRect(0, 0, mapWidth, mapHeight);
 
@@ -243,14 +243,14 @@ export default function GameSetup() {
   }, [selectedMapId, colonyPositions, colonyCount, workerCount, soldierCount, mapWidth, mapHeight, gridData, startSimulation]);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#0a0f0a] flex">
+    <div className="relative h-screen w-screen overflow-hidden bg-[#f0f4f0] flex">
       {/* Left panel: map list */}
-      <div className="w-72 h-full glass-panel rounded-none border-r border-white/5 flex flex-col">
-        <div className="p-4 border-b border-white/5 flex items-center justify-between">
-          <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>选择地图</h2>
+      <div className="w-72 h-full glass-panel rounded-none border-r border-black/5 flex flex-col">
+        <div className="p-4 border-b border-black/5 flex items-center justify-between">
+          <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>选择地图</h2>
           <button
             onClick={() => setPage('menu')}
-            className="text-[#8a9a8a] hover:text-[#e0e8e0] transition-colors"
+            className="text-[#5a7a5a] hover:text-[#1a2e1a] transition-colors"
           >
             <ArrowLeft size={16} />
           </button>
@@ -258,10 +258,10 @@ export default function GameSetup() {
 
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
           {loading && (
-            <p className="text-xs text-center" style={{ color: 'var(--text-secondary)' }}>加载中...</p>
+            <p className="text-base text-center" style={{ color: 'var(--text-secondary)' }}>加载中...</p>
           )}
           {!loading && maps.length === 0 && (
-            <p className="text-xs text-center" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-base text-center" style={{ color: 'var(--text-secondary)' }}>
               暂无地图，请先制作地图
             </p>
           )}
@@ -271,28 +271,28 @@ export default function GameSetup() {
               onClick={() => setSelectedMapId(m.id)}
               className="rounded-lg p-3 cursor-pointer transition-colors"
               style={{
-                background: selectedMapId === m.id ? 'rgba(66,153,66,0.15)' : 'rgba(255,255,255,0.03)',
+                background: selectedMapId === m.id ? 'rgba(66,153,66,0.15)' : 'rgba(0,0,0,0.03)',
                 border: selectedMapId === m.id ? '1px solid rgba(66,153,66,0.3)' : '1px solid transparent',
               }}
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{m.name}</p>
-                  <p className="text-[10px] mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-base font-medium" style={{ color: 'var(--text-primary)' }}>{m.name}</p>
+                  <p className="text-base mt-1" style={{ color: 'var(--text-secondary)' }}>
                     {m.width}×{m.height}
                   </p>
                 </div>
                 <div className="flex gap-1">
                   <button
                     onClick={(e) => { e.stopPropagation(); handleEditMap(m.id); }}
-                    className="text-[#8a9a8a] hover:text-[#429942] transition-colors p-1"
+                    className="text-[#5a7a5a] hover:text-[#3a8a3a] transition-colors p-1"
                     title="编辑地图"
                   >
                     <Pencil size={12} />
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDeleteMap(m.id, m.name); }}
-                    className="text-[#8a9a8a] hover:text-red-400 transition-colors p-1"
+                    className="text-[#5a7a5a] hover:text-red-500 transition-colors p-1"
                   >
                     <Trash2 size={12} />
                   </button>
@@ -326,22 +326,22 @@ export default function GameSetup() {
 
         {selectedMapId === null && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>请从左侧选择一个地图</p>
+            <p className="text-base" style={{ color: 'var(--text-secondary)' }}>请从左侧选择一个地图</p>
           </div>
         )}
       </div>
 
       {/* Right panel: config */}
-      <div className="w-64 h-full glass-panel rounded-none border-l border-white/5 flex flex-col">
-        <div className="p-4 border-b border-white/5">
-          <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>游戏配置</h2>
+      <div className="w-64 h-full glass-panel rounded-none border-l border-black/5 flex flex-col">
+        <div className="p-4 border-b border-black/5">
+          <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>游戏配置</h2>
         </div>
 
         {selectedMapId !== null ? (
           <div className="flex-1 overflow-y-auto p-4 space-y-5">
             {/* Colony count */}
             <div>
-              <label className="text-xs mb-2 block" style={{ color: 'var(--text-secondary)' }}>蚁群数量</label>
+              <label className="text-base mb-2 block" style={{ color: 'var(--text-secondary)' }}>蚁群数量</label>
               <div className="flex gap-2">
                 {[1, 2, 3, 4].map((n) => (
                   <button
@@ -350,9 +350,9 @@ export default function GameSetup() {
                       setColonyCount(n);
                       setColonyPositions(colonyPositions.slice(0, n));
                     }}
-                    className="flex-1 py-2 rounded-lg text-sm font-medium transition-all"
+                    className="flex-1 py-2 rounded-lg text-base font-medium transition-all"
                     style={{
-                      background: colonyCount === n ? 'var(--accent-green)' : 'rgba(255,255,255,0.05)',
+                      background: colonyCount === n ? 'var(--accent-green)' : 'rgba(0,0,0,0.05)',
                       color: colonyCount === n ? '#000' : 'var(--text-secondary)',
                     }}
                   >
@@ -364,7 +364,7 @@ export default function GameSetup() {
 
             {/* Worker count */}
             <div>
-              <label className="flex items-center justify-between text-xs mb-2">
+              <label className="flex items-center justify-between text-base mb-2">
                 <span style={{ color: 'var(--text-secondary)' }}>工蚁数量</span>
                 <span className="font-mono" style={{ color: 'var(--text-primary)' }}>{workerCount}</span>
               </label>
@@ -381,7 +381,7 @@ export default function GameSetup() {
 
             {/* Soldier count */}
             <div>
-              <label className="flex items-center justify-between text-xs mb-2">
+              <label className="flex items-center justify-between text-base mb-2">
                 <span style={{ color: 'var(--text-secondary)' }}>兵蚁数量</span>
                 <span className="font-mono" style={{ color: 'var(--text-primary)' }}>{soldierCount}</span>
               </label>
@@ -397,19 +397,19 @@ export default function GameSetup() {
             </div>
 
             {/* Colony positions hint */}
-            <div className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-glass)' }}>
-              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+            <div className="rounded-lg p-3" style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid var(--border-glass)' }}>
+              <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
                 点击地图放置蚁巢位置
               </p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-secondary)' }}>
-                已放置: {colonyPositions.length}/{colonyCount}
+              <p className="text-base mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  已放置: {colonyPositions.length}/{colonyCount}
                 {colonyPositions.length < colonyCount && ' (不足则自动分配)'}
               </p>
             </div>
 
             <button
               onClick={handleStart}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-sm font-bold tracking-wider transition-all"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-base font-bold tracking-wider transition-all"
               style={{ background: 'var(--accent-green)', color: '#000' }}
             >
               <Play size={16} />
@@ -418,7 +418,7 @@ export default function GameSetup() {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center p-4">
-            <p className="text-xs text-center" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-base text-center" style={{ color: 'var(--text-secondary)' }}>
               选择地图后可配置蚁群
             </p>
           </div>

@@ -7,7 +7,7 @@ export default function MainMenu() {
   return (
     <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
       <div className="absolute inset-0 opacity-5" style={{
-        backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+        backgroundImage: `radial-gradient(circle at 2px 2px, rgba(0,0,0,0.08) 1px, transparent 0)`,
         backgroundSize: '32px 32px',
       }} />
 
@@ -16,7 +16,7 @@ export default function MainMenu() {
           <h1 className="text-3xl font-bold tracking-wide" style={{ color: 'var(--accent-green)' }}>
             AntSimulator
           </h1>
-          <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-base mt-2" style={{ color: 'var(--text-secondary)' }}>
             蚂蚁群体行为模拟游戏
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function MainMenu() {
           </button>
         </div>
 
-        <p className="text-center text-xs mt-6" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-center text-sm mt-6" style={{ color: 'var(--text-secondary)' }}>
           制作地图后可选择地图设定蚁群开始模拟
         </p>
       </div>

@@ -9,7 +9,7 @@ interface ToggleProps {
 function Toggle({ active, onToggle, label }: ToggleProps) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-xs font-sans text-[#8a9a8a]">{label}</span>
+      <span className="text-sm font-sans text-[#5a7a5a]">{label}</span>
       <div
         className={`toggle-switch ${active ? 'active' : ''}`}
         onClick={onToggle}

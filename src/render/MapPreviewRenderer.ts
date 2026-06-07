@@ -122,7 +122,7 @@ export class MapPreviewRenderer {
       for (let x = sx; x <= ex; x++) {
         const idx = y * this.gridWidth + x;
         const cell = cellMap.get(idx);
-        if (!cell || cell.terrain === 0) continue;
+        if (!cell) continue;
         const key = this.terrainKeys.get(cell.terrain);
         if (!key) continue;
         AssetRegistry.drawTile(ctx, key, x * cellSize, y * cellSize, cellSize);

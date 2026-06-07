@@ -21,7 +21,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
     <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5" style={{
-        backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+        backgroundImage: `radial-gradient(circle at 2px 2px, rgba(0,0,0,0.08) 1px, transparent 0)`,
         backgroundSize: '32px 32px',
       }} />
 
@@ -31,14 +31,14 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
           <h1 className="text-2xl font-bold tracking-wide" style={{ color: 'var(--accent-green)' }}>
             🐜 AntSimulator
           </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-base mt-1" style={{ color: 'var(--text-secondary)' }}>
             蚂蚁群体行为模拟器
           </p>
         </div>
 
         {/* Colony count */}
         <div className="mb-6">
-          <label className="flex items-center gap-2 text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+          <label className="flex items-center gap-2 text-base mb-2" style={{ color: 'var(--text-secondary)' }}>
             <Users size={14} />
             蚁群数量
           </label>
@@ -47,11 +47,11 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
               <button
                 key={n}
                 onClick={() => setColonyCount(n)}
-                className="flex-1 py-2 rounded-lg text-sm font-medium transition-all"
+                className="flex-1 py-2 rounded-lg text-base font-medium transition-all"
                 style={{
                   background: colonyCount === n
                     ? 'var(--accent-green)'
-                    : 'rgba(255,255,255,0.05)',
+                    : 'rgba(0,0,0,0.05)',
                   color: colonyCount === n ? '#000' : 'var(--text-secondary)',
                   border: colonyCount === n ? 'none' : '1px solid var(--border-glass)',
                 }}
@@ -69,7 +69,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
                   style={{ background: ['#ff4944', '#4488ff', '#ffdd44', '#32ffff'][i] }}
                 />
               ))}
-              <span className="text-xs ml-1" style={{ color: 'var(--text-secondary)' }}>
+              <span className="text-sm ml-1" style={{ color: 'var(--text-secondary)' }}>
                 蚁群颜色
               </span>
             </div>
@@ -78,7 +78,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
 
         {/* Worker count */}
         <div className="mb-5">
-          <label className="flex items-center justify-between text-sm mb-2">
+          <label className="flex items-center justify-between text-base mb-2">
             <span className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               <Bug size={14} />
               工蚁数量
@@ -98,7 +98,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
 
         {/* Soldier count */}
         <div className="mb-6">
-          <label className="flex items-center justify-between text-sm mb-2">
+          <label className="flex items-center justify-between text-base mb-2">
             <span className="flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               <Shield size={14} />
               兵蚁数量
@@ -117,11 +117,11 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
         </div>
 
         {/* Summary */}
-        <div className="rounded-lg p-3 mb-6 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-glass)' }}>
-          <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+        <div className="rounded-lg p-3 mb-6 text-center" style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid var(--border-glass)' }}>
+          <span className="text-base" style={{ color: 'var(--text-secondary)' }}>
             总蚂蚁数: <span className="font-mono font-bold" style={{ color: 'var(--accent-green)' }}>{totalAnts.toLocaleString()}</span>
           </span>
-          <span className="text-xs ml-3" style={{ color: 'var(--text-secondary)' }}>
+          <span className="text-sm ml-3" style={{ color: 'var(--text-secondary)' }}>
             ({colonyCount} 蚁群 × {workerCount + soldierCount}/群)
           </span>
         </div>
@@ -129,7 +129,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
         {/* Start button */}
         <button
           onClick={handleStart}
-          className="w-full py-3 rounded-lg text-sm font-bold tracking-wider transition-all flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-lg text-base font-bold tracking-wider transition-all flex items-center justify-center gap-2"
           style={{
             background: 'var(--accent-green)',
             color: '#000',
@@ -140,7 +140,7 @@ export default function SetupScreen({ onStart }: SetupScreenProps) {
         </button>
 
         {/* Keyboard hint */}
-        <p className="text-center text-xs mt-4" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-center text-sm mt-4" style={{ color: 'var(--text-secondary)' }}>
           快捷键: P 暂停 · M 标记 · A 蚂蚁 · S 加速
         </p>
       </div>

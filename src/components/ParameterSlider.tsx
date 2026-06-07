@@ -17,9 +17,9 @@ export default function ParameterSlider({
 }: ParameterSliderProps) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-[#8a9a8a] font-sans">{label}</span>
-        <span className="text-[#e0e8e0] font-mono tabular-nums">{value}</span>
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-[#5a7a5a] font-sans">{label}</span>
+        <span className="text-[#1a2e1a] font-mono tabular-nums">{value}</span>
       </div>
       <input
         type="range"

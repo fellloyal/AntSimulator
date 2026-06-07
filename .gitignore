@@ -25,3 +25,14 @@ dist-ssr
 
 # Brainstorm visual companion
 .superpowers/
+
+# Dev script PIDs
+.pids/
+
+# Test images
+apple_test.jpg
+test_apple.jpg
+
+# Food image intermediates
+src/render/assets/food_images/b64.json
+src/render/assets/food_images/*.jpg

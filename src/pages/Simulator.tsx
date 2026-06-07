@@ -79,7 +79,7 @@ export default function Simulator({
   }, [handleKeyDown]);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#0a0f0a]">
+    <div className="relative h-screen w-screen overflow-hidden bg-[#f0f4f0]">
       {/* Canvas */}
       <canvas
         ref={canvasRef}
@@ -95,7 +95,7 @@ export default function Simulator({
       <div className="absolute left-4 top-4 z-10 flex items-start gap-2">
         <button
           onClick={resetSimulation}
-          className="flex items-center gap-1 rounded-lg bg-white/5 px-3 py-2 text-xs text-[#8a9a8a] transition-colors hover:bg-white/10 hover:text-[#e0e8e0]"
+          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-2 text-sm text-[#5a7a5a] transition-colors hover:bg-black/10 hover:text-[#1a2e1a]"
           title="返回主菜单"
         >
           <ArrowLeft size={14} />
@@ -113,7 +113,7 @@ export default function Simulator({
       <button
         onClick={() => setRightPanelOpen((v) => !v)}
         className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center
-                   rounded-lg bg-white/5 text-[#8a9a8a] transition-colors hover:bg-white/10 hover:text-[#e0e8e0]"
+                   rounded-lg bg-black/5 text-[#5a7a5a] transition-colors hover:bg-black/10 hover:text-[#1a2e1a]"
         title={rightPanelOpen ? '收起面板' : '展开面板'}
       >
         {rightPanelOpen ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -126,9 +126,9 @@ export default function Simulator({
                     ${rightPanelOpen ? 'w-56 opacity-100' : 'w-0 opacity-0'}`}
       >
         {/* Display Options section */}
-        <div className="border-b border-white/5">
+        <div className="border-b border-black/5">
           <div className="px-3 pt-3 pb-1">
-            <h3 className="text-[10px] font-sans font-semibold uppercase tracking-wider text-[#8a9a8a]">
+            <h3 className="text-sm font-sans font-semibold uppercase tracking-wider text-[#5a7a5a]">
               显示
             </h3>
           </div>
@@ -136,9 +136,9 @@ export default function Simulator({
         </div>
 
         {/* Colony Info section */}
-        <div className="flex-1 overflow-y-auto border-b border-white/5">
+        <div className="flex-1 overflow-y-auto border-b border-black/5">
           <div className="px-3 pt-3 pb-1">
-            <h3 className="text-[10px] font-sans font-semibold uppercase tracking-wider text-[#8a9a8a]">
+            <h3 className="text-sm font-sans font-semibold uppercase tracking-wider text-[#5a7a5a]">
               蚁群
             </h3>
           </div>
@@ -150,8 +150,8 @@ export default function Simulator({
           <button
             onClick={() => setActiveTool('colony')}
             className="flex w-full items-center justify-center gap-2 rounded-lg
-                       bg-[#429942]/20 px-3 py-2 text-xs font-sans text-[#429942]
-                       transition-colors hover:bg-[#429942]/30"
+                       bg-[#3a8a3a]/20 px-3 py-2 text-sm font-sans text-[#3a8a3a]
+                       transition-colors hover:bg-[#3a8a3a]/30"
           >
             <PlusCircle size={14} />
             添加蚁群

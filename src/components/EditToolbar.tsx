@@ -3,10 +3,10 @@ import useStore, { type EditTool } from '@/store/useStore';
 import ParameterSlider from './ParameterSlider';
 
 const TOOLS: { id: EditTool; icon: typeof Apple; label: string; color: string }[] = [
-  { id: 'food', icon: Apple, label: '食物 (F)', color: '#429942' },
+  { id: 'food', icon: Apple, label: '食物 (F)', color: '#3a8a3a' },
   { id: 'wall', icon: Square, label: '墙壁 (W)', color: '#8a8a8a' },
   { id: 'erase', icon: Eraser, label: '擦除 (E)', color: '#ff8844' },
-  { id: 'colony', icon: PlusCircle, label: '蚁群', color: '#ff4944' },
+  { id: 'colony', icon: PlusCircle, label: '蚁群', color: '#d9362e' },
 ];
 
 export default function EditToolbar() {
@@ -29,8 +29,8 @@ export default function EditToolbar() {
                         transition-all duration-150
               ${
                 isActive
-                  ? 'ring-1 ring-white/20'
-                  : 'text-[#8a9a8a] hover:bg-white/10 hover:text-[#e0e8e0]'
+                  ? 'ring-1 ring-black/20'
+                  : 'text-[#5a7a5a] hover:bg-black/10 hover:text-[#1a2e1a]'
               }`}
             style={isActive ? { backgroundColor: `${color}40`, color } : undefined}
             title={label}
@@ -42,7 +42,7 @@ export default function EditToolbar() {
 
       {/* Brush size slider */}
       {showBrush && (
-        <div className="mt-1 w-full border-t border-white/10 px-1 pt-2">
+        <div className="mt-1 w-full border-t border-black/10 px-1 pt-2">
           <ParameterSlider
             label="笔刷"
             value={brushSize}

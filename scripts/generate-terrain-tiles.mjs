@@ -55,32 +55,31 @@ const TERRAINS = [
 // 内部纹理（与 TerrainTiles.ts 保持一致）
 // ============================================================
 function internalTexture(t) {
+  // 调优：缩短到中央 4-5 unit + 减量，避免与 4 边 feathering 在 4x4 cell 上叠加成网状
   switch (t.id) {
     case 'grass':
+      // 2 条短草叶（5 unit 高）+ 2 个小点，居中 7-13 unit
       return `
-        <path d="M2,18 L4,8 M8,18 L7,5 M12,18 L13,9 M16,18 L15,6" stroke="${t.accent}" stroke-width="1" fill="none" stroke-linecap="round"/>
-        <path d="M4,18 L3,11 M10,18 L11,9 M14,18 L13,8" stroke="${t.accent2}" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-        <circle cx="3" cy="3" r="0.5" fill="${t.accentLight}" opacity="0.4"/>
-        <circle cx="14" cy="14" r="0.4" fill="${t.accentLight}" opacity="0.4"/>
-        <circle cx="7" cy="6" r="0.3" fill="${t.accentLight}" opacity="0.3"/>`;
+        <path d="M8,13 L9,7 M12,13 L11,7" stroke="${t.accent}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.7"/>
+        <path d="M7,13 L8,9 M13,13 L12,9" stroke="${t.accent2}" stroke-width="0.4" fill="none" stroke-linecap="round" opacity="0.5"/>
+        <circle cx="9" cy="11" r="0.3" fill="${t.accentLight}" opacity="0.4"/>
+        <circle cx="11" cy="11" r="0.3" fill="${t.accentLight}" opacity="0.4"/>`;
     case 'sand':
+      // 2-3 个小圆点 + 1 条短曲线，居中
       return `
-        <circle cx="3" cy="3" r="0.6" fill="${t.accent}" opacity="0.5"/>
-        <circle cx="14" cy="7" r="0.5" fill="${t.accent}" opacity="0.4"/>
-        <circle cx="7" cy="14" r="0.5" fill="${t.accent}" opacity="0.5"/>
-        <circle cx="17" cy="13" r="0.4" fill="${t.accent}" opacity="0.4"/>
-        <path d="M2,12 Q5,11 8,12" stroke="${t.accent}" stroke-width="0.3" fill="none" opacity="0.5"/>
-        <path d="M10,5 Q13,4 16,5" stroke="${t.accent}" stroke-width="0.3" fill="none" opacity="0.5"/>`;
+        <circle cx="9" cy="9" r="0.5" fill="${t.accent}" opacity="0.5"/>
+        <circle cx="11" cy="11" r="0.4" fill="${t.accent}" opacity="0.4"/>
+        <circle cx="10" cy="10" r="0.2" fill="${t.accentLight}" opacity="0.5"/>
+        <path d="M8,12 Q10,11 12,12" stroke="${t.accent}" stroke-width="0.3" fill="none" opacity="0.4"/>`;
     case 'water':
+      // 1 条中央波浪线（不再画 3 条）
       return `
-        <path d="M0,5 Q5,3 10,5 T20,5" stroke="${t.accent}" stroke-width="0.6" fill="none" opacity="0.7"/>
-        <path d="M0,10 Q5,8 10,10 T20,10" stroke="${t.accent}" stroke-width="0.5" fill="none" opacity="0.6"/>
-        <path d="M0,15 Q5,13 10,15 T20,15" stroke="${t.accent}" stroke-width="0.4" fill="none" opacity="0.5"/>`;
+        <path d="M0,10 Q5,8 10,10 T20,10" stroke="${t.accent}" stroke-width="0.3" fill="none" opacity="0.5"/>`;
     case 'rock':
+      // 1-2 个 polygon 居中
       return `
-        <polygon points="3,8 8,4 13,9 10,14 5,13" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.3"/>
-        <polygon points="14,15 18,12 19,18 16,19" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.3"/>
-        <polygon points="2,17 5,16 6,19 3,19" fill="#9a9aa2" stroke="${t.accentDark}" stroke-width="0.3"/>`;
+        <polygon points="8,8 11,7 12,10 10,12 8,11" fill="${t.accent}" stroke="${t.accentDark}" stroke-width="0.2" opacity="0.7"/>
+        <polygon points="11,12 13,11 13,13 12,13" fill="${t.accent2}" stroke="${t.accentDark}" stroke-width="0.2" opacity="0.7"/>`;
   }
   return '';
 }
@@ -170,42 +169,27 @@ function edgeFeather(t, side) {
         <circle cx="19.5" cy="17" r="1" fill="${t.accentLight}" opacity="0.85"/>`;
     }
     case 'water': {
-      // 浪花/泡沫：粗波浪线 + 实色填充条
+      // 调优：硬色条宽度减半(4→2)，波浪 stroke 减半(2→1, 1.5→0.8)，移除圆点
+      // 4 边叠加时更"轻"，避免在 4x4 cell 上形成满亮蓝框
       if (side === 'top') {
         return `
-          <path d="M0,3 L20,3 L20,5 L0,5 Z" fill="${t.accentLight}" opacity="0.6"/>
-          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,4.5 Q5,3 10,4.5 T20,4.5" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="1.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
-          <circle cx="10" cy="1" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
-          <circle cx="17" cy="1.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
+          <path d="M0,2 L20,2 L20,4 L0,4 Z" fill="${t.accentLight}" opacity="0.5"/>
+          <path d="M0,2.5 Q4,0 8,2.5 T16,2.5 T20,2.5" stroke="${t.accentLight}" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>`;
       }
       if (side === 'bottom') {
         return `
-          <path d="M0,15 L20,15 L20,17 L0,17 Z" fill="${t.accentLight}" opacity="0.6"/>
-          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M0,15.5 Q5,17 10,15.5 T20,15.5" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="3" cy="18.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
-          <circle cx="10" cy="19" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
-          <circle cx="17" cy="18.5" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
+          <path d="M0,16 L20,16 L20,18 L0,18 Z" fill="${t.accentLight}" opacity="0.5"/>
+          <path d="M0,17.5 Q4,20 8,17.5 T16,17.5 T20,17.5" stroke="${t.accentLight}" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>`;
       }
       if (side === 'left') {
         return `
-          <path d="M3,0 L5,0 L5,20 L3,20 Z" fill="${t.accentLight}" opacity="0.6"/>
-          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-          <path d="M4.5,0 Q3,5 4.5,10 T4.5,20" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-          <circle cx="1.5" cy="3" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
-          <circle cx="1" cy="10" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
-          <circle cx="1.5" cy="17" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
+          <path d="M2,0 L4,0 L4,20 L2,20 Z" fill="${t.accentLight}" opacity="0.5"/>
+          <path d="M2.5,0 Q0,4 2.5,8 T2.5,16 T2.5,20" stroke="${t.accentLight}" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>`;
       }
       // right
       return `
-        <path d="M15,0 L17,0 L17,20 L15,20 Z" fill="${t.accentLight}" opacity="0.6"/>
-        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="${t.accentLight}" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
-        <path d="M15.5,0 Q17,5 15.5,10 T15.5,20" stroke="${t.accent}" stroke-width="1.5" fill="none" opacity="0.85" stroke-linecap="round"/>
-        <circle cx="18.5" cy="3" r="0.6" fill="${t.accentLight}" opacity="0.9"/>
-        <circle cx="19" cy="10" r="0.5" fill="${t.accentLight}" opacity="0.9"/>
-        <circle cx="18.5" cy="17" r="0.6" fill="${t.accentLight}" opacity="0.9"/>`;
+        <path d="M16,0 L18,0 L18,20 L16,20 Z" fill="${t.accentLight}" opacity="0.5"/>
+        <path d="M17.5,0 Q20,4 17.5,8 T17.5,16 T17.5,20" stroke="${t.accentLight}" stroke-width="1" fill="none" opacity="0.85" stroke-linecap="round"/>`;
     }
     case 'rock': {
       // 碎石：3-4 个大块（3-5 单位宽）+ 黑色边

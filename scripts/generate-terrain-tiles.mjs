@@ -226,27 +226,27 @@ function edgeFeather(t, side) {
 }
 
 // ============================================================
-// Corner feathering（4 角）
-// 8x8 角贴片，2 种 variant (convex 凸出 / concave 凹入)
-// 关键：8x8 viewBox 直接渲染到 8x8 像素，1:1 映射，所有元素 1-3 单位都可见
+// Corner feathering（4 角）— 方案 F 重设计版
+// 8x8 角贴片（保留），2 种 variant (convex 凸出 / concave 凹入)
+// 关键改动：移除 5x5 unit 满铺色块，只画 0.3-1.5 unit 细线条/小圆点
+// 8x8 viewBox → 8x8 像素（跨 2x2 cell），但内部细节只占 1-1.5 像素
+// 4 cell 角点叠加时 = 4 条细 stroke 集中 = 自然细节群，无大色块
 // ============================================================
 function cornerFeather(t, corner, variant) {
-  // corner: 'tl' | 'tr' | 'bl' | 'br'
-  // variant: 'convex' | 'concave'
   switch (t.id) {
     case 'grass': {
       if (variant === 'convex') {
-        // 凸角：草丛向对角方向延伸
-        if (corner === 'tl') return `<polygon points="0,4 4,0 5,5" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M1,5 L2,2 L3,5 M2,2 L3,1 L4,2" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
-        if (corner === 'tr') return `<polygon points="8,4 4,0 3,5" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M7,5 L6,2 L5,5 M6,2 L5,1 L4,2" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
-        if (corner === 'bl') return `<polygon points="0,4 4,8 5,3" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M1,3 L2,6 L3,3 M2,6 L3,7 L4,6" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
-        return `<polygon points="8,4 4,8 3,3" fill="${t.accent}" stroke="${t.accentLight}" stroke-width="0.5"/><path d="M7,3 L6,6 L5,3 M6,6 L5,7 L4,6" stroke="${t.accentLight}" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        // 凸角：3 像素细草叶 V 形 + 1 个小亮点（无 fill 满铺）
+        if (corner === 'tl') return `<path d="M2,5 L3,2 M3,2 L4,1 M2,5 L4,1" stroke="${t.accentLight}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="2.5" cy="1.5" r="0.3" fill="${t.accentLight}" opacity="0.9"/>`;
+        if (corner === 'tr') return `<path d="M6,5 L5,2 M5,2 L4,1 M6,5 L4,1" stroke="${t.accentLight}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="5.5" cy="1.5" r="0.3" fill="${t.accentLight}" opacity="0.9"/>`;
+        if (corner === 'bl') return `<path d="M2,3 L3,6 M3,6 L4,7 M2,3 L4,7" stroke="${t.accentLight}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="2.5" cy="6.5" r="0.3" fill="${t.accentLight}" opacity="0.9"/>`;
+        return `<path d="M6,3 L5,6 M5,6 L4,7 M6,3 L4,7" stroke="${t.accentLight}" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.95"/><circle cx="5.5" cy="6.5" r="0.3" fill="${t.accentLight}" opacity="0.9"/>`;
       } else {
-        // 凹角：填一个小草簇
-        if (corner === 'tl') return `<circle cx="2" cy="2" r="2" fill="${t.accent}" opacity="0.9"/><path d="M1,2 L1,0 M2,2 L2,0 M3,2 L3,0" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
-        if (corner === 'tr') return `<circle cx="6" cy="2" r="2" fill="${t.accent}" opacity="0.9"/><path d="M5,2 L5,0 M6,2 L6,0 M7,2 L7,0" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
-        if (corner === 'bl') return `<circle cx="2" cy="6" r="2" fill="${t.accent}" opacity="0.9"/><path d="M1,6 L1,8 M2,6 L2,8 M3,6 L3,8" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
-        return `<circle cx="6" cy="6" r="2" fill="${t.accent}" opacity="0.9"/><path d="M5,6 L5,8 M6,6 L6,8 M7,6 L7,8" stroke="${t.accentLight}" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.9"/>`;
+        // 凹角：2 个小亮点 + 1 条细线
+        if (corner === 'tl') return `<circle cx="2" cy="2" r="0.4" fill="${t.accentLight}" opacity="0.95"/><circle cx="3" cy="3" r="0.3" fill="${t.accent}" opacity="0.85"/><path d="M1.5,1.5 L2.5,2.5" stroke="${t.accentLight}" stroke-width="0.4" fill="none"/>`;
+        if (corner === 'tr') return `<circle cx="6" cy="2" r="0.4" fill="${t.accentLight}" opacity="0.95"/><circle cx="5" cy="3" r="0.3" fill="${t.accent}" opacity="0.85"/><path d="M6.5,1.5 L5.5,2.5" stroke="${t.accentLight}" stroke-width="0.4" fill="none"/>`;
+        if (corner === 'bl') return `<circle cx="2" cy="6" r="0.4" fill="${t.accentLight}" opacity="0.95"/><circle cx="3" cy="5" r="0.3" fill="${t.accent}" opacity="0.85"/><path d="M1.5,6.5 L2.5,5.5" stroke="${t.accentLight}" stroke-width="0.4" fill="none"/>`;
+        return `<circle cx="6" cy="6" r="0.4" fill="${t.accentLight}" opacity="0.95"/><circle cx="5" cy="5" r="0.3" fill="${t.accent}" opacity="0.85"/><path d="M6.5,6.5 L5.5,5.5" stroke="${t.accentLight}" stroke-width="0.4" fill="none"/>`;
       }
     }
     case 'sand': {
